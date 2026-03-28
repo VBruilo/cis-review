@@ -134,7 +134,7 @@
 <div class="container">
   <div class="header">
     <h1>Fill in the Gaps — Exam Prep</h1>
-    <div class="subtitle">CIS · Lückentexte zu Terraform, Regions & AZs, Lambda, Kubernetes, Aurora, Boto3-Code &amp; Terraform-Code</div>
+    <div class="subtitle">CIS · Lückentexte zu Terraform, Regions & AZs, Lambda, Kubernetes, Aurora, Boto3-Code &amp; 3× Terraform-Code</div>
   </div>
 
   <div class="tabs">
@@ -144,7 +144,9 @@
     <button class="tab" onclick="showTab('k8s')">Kubernetes</button>
     <button class="tab" onclick="showTab('aurora')">Aurora</button>
     <button class="tab" onclick="showTab('boto3')">Boto3 Code</button>
-    <button class="tab" onclick="showTab('tfcode')">Terraform Code</button>
+    <button class="tab" onclick="showTab('tfcode')">TF: EC2</button>
+    <button class="tab" onclick="showTab('tfs3')">TF: S3 + Output</button>
+    <button class="tab" onclick="showTab('tfsg')">TF: Security Group</button>
   </div>
 
   <!-- ===================== TAB 1: TERRAFORM ===================== -->
@@ -301,6 +303,50 @@
     </div>
   </div>
 
+  <!-- ===================== TAB 8: TF S3 + OUTPUT ===================== -->
+  <div id="tab-tfs3" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Lecture 5 + Exercise 3</div>
+      <div class="param"><strong>Type:</strong> Code Gap-Fill (Terraform HCL)</div>
+      <div class="param"><strong>Focus:</strong> resource + output blocks</div>
+    </div>
+    <div class="info-banner">A Terraform configuration that creates an S3 bucket and exports its ARN via an output. Fill in the missing HCL keywords and resource references.</div>
+    <div class="gap-exercise" id="ex-tfs3">
+      <div class="word-bank code-word-bank"><div class="word-label">Code Fragments</div></div>
+      <div class="code-block"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('tfs3')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('tfs3')">Reset</button>
+        <span class="score-badge hidden" id="score-tfs3"></span>
+      </div>
+    </div>
+    <div class="hbox purple-bg" style="margin-bottom:20px">
+      <strong>Key Concepts:</strong> <code>resource "TYPE" "NAME"</code> creates infra objects. <code>output</code> blocks export values. Resource attributes are referenced as <code>TYPE.NAME.ATTRIBUTE</code> (e.g., <code>aws_s3_bucket.data.arn</code>).
+    </div>
+  </div>
+
+  <!-- ===================== TAB 9: TF SECURITY GROUP ===================== -->
+  <div id="tab-tfsg" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Lecture 5 + Exercise 1</div>
+      <div class="param"><strong>Type:</strong> Code Gap-Fill (Terraform HCL)</div>
+      <div class="param"><strong>Focus:</strong> Security Group with ingress/egress rules</div>
+    </div>
+    <div class="info-banner">A Terraform security group allowing HTTP inbound and all outbound traffic. Fill in the missing HCL keywords and nested block names.</div>
+    <div class="gap-exercise" id="ex-tfsg">
+      <div class="word-bank code-word-bank"><div class="word-label">Code Fragments</div></div>
+      <div class="code-block"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('tfsg')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('tfsg')">Reset</button>
+        <span class="score-badge hidden" id="score-tfsg"></span>
+      </div>
+    </div>
+    <div class="hbox orange-bg" style="margin-bottom:20px">
+      <strong>Key Concepts:</strong> Security groups define firewall rules. <code>ingress</code> = inbound, <code>egress</code> = outbound. <code>protocol = "-1"</code> means all protocols. <code>cidr_blocks = ["0.0.0.0/0"]</code> means any IP.
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -426,6 +472,62 @@ const exercises = {
       {type:'line', num:24, parts:[{t:'t',v:'    Name = '},{t:'str',v:'"'},{t:'gap',i:5},{t:'str',v:'-instance"'}]},
       {type:'line', num:25, parts:[{t:'t',v:'  }'}]},
       {type:'line', num:26, parts:[{t:'t',v:'}'}]},
+    ]
+  },
+
+  // ---------- TF: S3 + OUTPUT ----------
+  tfs3: {
+    isCode: true,
+    words: [
+      'resource','aws_s3_bucket','bucket','output','value','aws_s3_bucket.data.arn',
+      'data','module','name','aws_s3_object','result','aws_s3_bucket.data.id','local','description'
+    ],
+    answers: ['resource','aws_s3_bucket','bucket','output','description','value'],
+    codeLines: [
+      {type:'line', num:1,  parts:[{t:'gap',i:0},{t:'t',v:' '},{t:'str',v:'"'},{t:'gap',i:1},{t:'str',v:'"'},{t:'t',v:' '},{t:'str',v:'"data"'},{t:'t',v:' {'}]},
+      {type:'line', num:2,  parts:[{t:'t',v:'  '},{t:'gap',i:2},{t:'t',v:' = '},{t:'str',v:'"cis-exam-data-bucket"'}]},
+      {type:'line', num:3,  parts:[]},
+      {type:'line', num:4,  parts:[{t:'t',v:'  tags = {'}]},
+      {type:'line', num:5,  parts:[{t:'t',v:'    Environment = '},{t:'str',v:'"production"'}]},
+      {type:'line', num:6,  parts:[{t:'t',v:'  }'}]},
+      {type:'line', num:7,  parts:[{t:'t',v:'}'}]},
+      {type:'line', num:8,  parts:[]},
+      {type:'line', num:9,  parts:[{t:'gap',i:3},{t:'t',v:' '},{t:'str',v:'"bucket_arn"'},{t:'t',v:' {'}]},
+      {type:'line', num:10, parts:[{t:'t',v:'  '},{t:'gap',i:4},{t:'t',v:' = '},{t:'str',v:'"ARN of the S3 bucket"'}]},
+      {type:'line', num:11, parts:[{t:'t',v:'  '},{t:'gap',i:5},{t:'t',v:'       = aws_s3_bucket.data.arn'}]},
+      {type:'line', num:12, parts:[{t:'t',v:'}'}]},
+    ]
+  },
+
+  // ---------- TF: SECURITY GROUP ----------
+  tfsg: {
+    isCode: true,
+    words: [
+      'resource','aws_security_group','ingress','protocol','cidr_blocks','egress',
+      'data','aws_security_rule','inbound','port_range','ip_ranges','outbound','module','aws_vpc_security'
+    ],
+    answers: ['resource','aws_security_group','ingress','protocol','cidr_blocks','egress'],
+    codeLines: [
+      {type:'line', num:1,  parts:[{t:'gap',i:0},{t:'t',v:' '},{t:'str',v:'"'},{t:'gap',i:1},{t:'str',v:'"'},{t:'t',v:' '},{t:'str',v:'"web"'},{t:'t',v:' {'}]},
+      {type:'line', num:2,  parts:[{t:'t',v:'  name        = '},{t:'str',v:'"web-sg"'}]},
+      {type:'line', num:3,  parts:[{t:'t',v:'  description = '},{t:'str',v:'"Allow HTTP inbound traffic"'}]},
+      {type:'line', num:4,  parts:[]},
+      {type:'line', num:5,  parts:[{t:'t',v:'  '},{t:'cm',v:'# Allow HTTP from anywhere'}]},
+      {type:'line', num:6,  parts:[{t:'t',v:'  '},{t:'gap',i:2},{t:'t',v:' {'}]},
+      {type:'line', num:7,  parts:[{t:'t',v:'    from_port   = 80'}]},
+      {type:'line', num:8,  parts:[{t:'t',v:'    to_port     = 80'}]},
+      {type:'line', num:9,  parts:[{t:'t',v:'    '},{t:'gap',i:3},{t:'t',v:'    = '},{t:'str',v:'"tcp"'}]},
+      {type:'line', num:10, parts:[{t:'t',v:'    '},{t:'gap',i:4},{t:'t',v:' = ['},{t:'str',v:'"0.0.0.0/0"'},{t:'t',v:']'}]},
+      {type:'line', num:11, parts:[{t:'t',v:'  }'}]},
+      {type:'line', num:12, parts:[]},
+      {type:'line', num:13, parts:[{t:'t',v:'  '},{t:'cm',v:'# Allow all outbound traffic'}]},
+      {type:'line', num:14, parts:[{t:'t',v:'  '},{t:'gap',i:5},{t:'t',v:' {'}]},
+      {type:'line', num:15, parts:[{t:'t',v:'    from_port   = 0'}]},
+      {type:'line', num:16, parts:[{t:'t',v:'    to_port     = 0'}]},
+      {type:'line', num:17, parts:[{t:'t',v:'    protocol    = '},{t:'str',v:'"-1"'}]},
+      {type:'line', num:18, parts:[{t:'t',v:'    cidr_blocks = ['},{t:'str',v:'"0.0.0.0/0"'},{t:'t',v:']'}]},
+      {type:'line', num:19, parts:[{t:'t',v:'  }'}]},
+      {type:'line', num:20, parts:[{t:'t',v:'}'}]},
     ]
   }
 };
