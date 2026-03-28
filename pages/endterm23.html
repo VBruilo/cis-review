@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS 2023 Endterm — Klausur Aufschlüsselung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--amber:#b45309;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}.sr.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}.badge.red{background:#fef2f2;color:#991b1b}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}.ds.am{border-left:4px solid var(--amber)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}.st.amber{color:var(--amber)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}.tr .amt.amber{color:var(--amber)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){
+    .sr.c2,.sr.c3,.sr.c4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:155px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>CIS 2023 Endterm — Klausur Aufschlüsselung</h1>
+    <div class="sub">28. Juli 2023 · Prof. Leis · 90 Credits · TUMCloud Pricing 2023</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('p4')">P4 Benchmarking</button>
+    <button class="tab" onclick="showTab('p5')">P5 ML Hardware</button>
+    <button class="tab" onclick="showTab('p6')">P6 Workload Cost</button>
+    <button class="tab" onclick="showTab('p7')">P7 Container Pricing</button>
+    <button class="tab" onclick="showTab('p8')">P8 TUMStore Architecture</button>
+  </div>
+
+  <!-- ==================== P4: BENCHMARKING ==================== -->
+  <div id="tab-p4" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Amdahl's Law:</strong> 100 min, 90% parallelisierbar</div>
+      <div class="pm"><strong>CDN:</strong> 90% hit rate, 10µs hit, 1ms miss</div>
+    </div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Max Speedup</div>
+        <div class="tc">10×</div>
+        <div class="nt">Amdahl's Law</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) Avg Latency</div>
+        <div class="tc">109 µs</div>
+        <div class="nt">gewichteter Mittelwert</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">b) Tail Latency</div>
+        <div class="tc">p50 = 10µs · p95 = 1ms</div>
+        <div class="nt">Median vs Tail</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Amdahl's Law — Max Speedup</div><div class="sv">10×</div></div>
+      <div class="li"><div class="lab">Total Work</div><div class="frm">given</div><div class="amt">100 min</div></div>
+      <div class="li"><div class="lab">Parallel Fraction (p)</div><div class="frm">given</div><div class="amt">90%</div></div>
+      <div class="li"><div class="lab">Serial Fraction (1−p)</div><div class="frm">1 − 0.9</div><div class="amt">10%</div></div>
+      <div class="tr"><div class="lab">Max Speedup</div><div class="frm">1 / (1 − p) = 1 / 0.1</div><div class="amt blue">10×</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Amdahl's Law</div>
+      Speedup_max = 1 / (1 − p) &nbsp;&nbsp;wobei p = parallel fraction
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">b) CDN Latency — Avg, Median, Tail</div></div>
+      <div class="li"><div class="lab">Hit Rate</div><div class="frm">given</div><div class="amt">90%</div></div>
+      <div class="li"><div class="lab">Hit Latency</div><div class="frm">given</div><div class="amt">10 µs</div></div>
+      <div class="li"><div class="lab">Miss Latency</div><div class="frm">given</div><div class="amt">1,000 µs (1 ms)</div></div>
+      <div class="li sec"><div class="lab">Berechnungen:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Average</div><div class="frm">0.9 × 10 + 0.1 × 1000</div><div class="amt" style="color:var(--purple)">109 µs</div></div>
+      <div class="li"><div class="lab">Median (p50)</div><div class="frm">50% der Req sind Hits → Hit-Latenz</div><div class="amt" style="color:var(--green)">10 µs</div></div>
+      <div class="li"><div class="lab">5% Tail (p95)</div><div class="frm">Top 5% sind Misses (10% miss > 5%)</div><div class="amt" style="color:var(--red)">1 ms</div></div>
+    </div>
+
+    <div class="hb pu"><strong>Intuition:</strong> Median ist 10µs weil 90% der Requests Hits sind (alle schnell). Aber die langsamsten 5% sind guaranteed Misses → p95 = 1ms. Average wird durch die 10% Misses hochgezogen.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P5: ML HARDWARE ==================== -->
+  <div id="tab-p5" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Training:</strong> 7,200 TFLOP total</div>
+      <div class="pm"><strong>Target:</strong> genau 1 Stunde</div>
+      <div class="pm"><strong>Constraint:</strong> most cost-efficient instance</div>
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--indigo)">Best Instance</div>
+        <div class="tc">ai2.large</div>
+        <div class="nt">500 TFLOP/s · $8/h</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">Instances Needed</div>
+        <div class="tc">4</div>
+        <div class="nt">7200 / 1800 TFLOP per instance-hour</div>
+      </div>
+    </div>
+
+    <div class="ds in">
+      <div class="sh"><div class="st indigo">Instance Selection — FLOP/$ Analyse</div></div>
+      <div class="li"><div class="lab">ai2.large</div><div class="frm">5×10¹¹ FLOP/s ÷ $8/h</div><div class="amt">6.25×10¹⁰ FLOP/$/h</div></div>
+      <div class="li"><div class="lab">ai2.2xlarge</div><div class="frm">7.5×10¹¹ FLOP/s ÷ $16/h</div><div class="amt">4.69×10¹⁰ FLOP/$/h</div></div>
+      <div class="tr"><div class="lab">Best FLOP/$</div><div class="frm">ai2.large hat 33% mehr FLOP/$</div><div class="amt indigo">ai2.large</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Kapazitätsberechnung</div><div class="sv">4 Instances</div></div>
+      <div class="li"><div class="lab">TFLOP per instance per hour</div><div class="frm">5×10¹¹ × 3600 / 10¹²</div><div class="amt">1,800 TFLOP</div></div>
+      <div class="li"><div class="lab">Total needed</div><div class="frm">given</div><div class="amt">7,200 TFLOP</div></div>
+      <div class="tr"><div class="lab">Instances</div><div class="frm">7,200 / 1,800</div><div class="amt green">4</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Methodik:</strong> 1) FLOP/$ für alle GPU-Instances berechnen → bestes Preis-Leistung finden. 2) TFLOP pro Instance-Hour ausrechnen. 3) Durch Gesamtbedarf teilen. Gleiche Methodik wie Exercise 8.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P6: WORKLOAD COST ==================== -->
+  <div id="tab-p6" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> cis1.small</div>
+      <div class="pm"><strong>Jobs:</strong> 45 total, je 15 min</div>
+      <div class="pm"><strong>Peak:</strong> 7 simultane Jobs</div>
+      <div class="pm"><strong>Trace:</strong> 12 × 15-min Slots über 3h</div>
+    </div>
+
+    <div class="ib">Workload: 3, 6, 5, 1, 3, 5, 7, 3, 0, 6, 4, 2 Jobs pro 15-min Slot</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) On-Demand</div>
+        <div class="tc">$22.50</div>
+        <div class="nt">45 Jobs × 0.25h × $2/h</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">b) Spot <span class="badge green">Cheapest</span></div>
+        <div class="tc">$11.25</div>
+        <div class="nt">50% of On-Demand</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">c) Reserved</div>
+        <div class="tc">$21.00</div>
+        <div class="nt">7 × 3h × $1/h</div>
+      </div>
+    </div>
+
+    <!-- On-Demand -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) On-Demand</div><div class="sv">$22.50</div></div>
+      <div class="li"><div class="lab">Total Jobs</div><div class="frm">3+6+5+1+3+5+7+3+0+6+4+2</div><div class="amt">45 Jobs</div></div>
+      <div class="li"><div class="lab">Runtime per Job</div><div class="frm">given</div><div class="amt">15 min = 0.25h</div></div>
+      <div class="li"><div class="lab">Total Instance-Hours</div><div class="frm">45 × 0.25</div><div class="amt">11.25 h</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">11.25h × $2/h</div><div class="amt blue">$22.50</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Spot -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">b) Spot Instances</div><div class="sv">$11.25</div></div>
+      <div class="li"><div class="lab">Spot Price</div><div class="frm">$1/h (50% of On-Demand)</div><div class="amt">$1.00/h</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">11.25h × $1/h</div><div class="amt green">$11.25</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Reserved -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">c) Reserved (3h Commitment)</div><div class="sv">$21.00</div></div>
+      <div class="li"><div class="lab">Peak Load</div><div class="frm">max(3,6,5,1,3,5,7,3,0,6,4,2)</div><div class="amt">7 Instances</div></div>
+      <div class="li"><div class="lab">Reservation Duration</div><div class="frm">3h commitment (covers full trace)</div><div class="amt">3 hours</div></div>
+      <div class="li"><div class="lab">Reserved Rate</div><div class="frm">given</div><div class="amt">$1/h</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">7 × 3h × $1/h</div><div class="amt orange">$21.00</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Ranking:</strong> Spot ($11.25) < Reserved ($21.00) < On-Demand ($22.50). Reserved ist fast so teuer wie On-Demand weil man für Peak (7) provisionieren muss, aber die meisten Slots deutlich weniger brauchen. Spot gewinnt — wenn man die Interruption-Risk akzeptiert.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P7: CONTAINER PRICING ==================== -->
+  <div id="tab-p7" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Container:</strong> $1/vCPU-h + $0.45/GB-h</div>
+      <div class="pm"><strong>Max vCPU:</strong> 10</div>
+      <div class="pm"><strong>Scaling:</strong> perfekt mit vCPUs</div>
+    </div>
+
+    <div class="ib">Algorithmen skalieren perfekt mit vCPUs → mehr vCPU = weniger Laufzeit, aber Memory läuft immer mit</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Algorithm A</div>
+        <div class="tc">$5.225</div>
+        <div class="nt">5 CPU-h, 1 GB</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) Algorithm B</div>
+        <div class="tc">$0.175</div>
+        <div class="nt">0.1 CPU-h, 10 GB</div>
+      </div>
+    </div>
+
+    <!-- Algorithm A -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Algorithm A (5 CPU-h, 1 GB)</div><div class="sv">$5.225</div></div>
+      <div class="li"><div class="lab">Strategy</div><div class="frm">max vCPU = 10, but only 1 GB mem needed</div><div class="amt">use 10 vCPU</div></div>
+      <div class="li"><div class="lab">Wall-clock Time</div><div class="frm">5 CPU-h / 10 vCPU</div><div class="amt">0.5 h</div></div>
+      <div class="li sec"><div class="lab">Costs:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">vCPU Cost</div><div class="frm">$1/vCPU-h × 5 CPU-h</div><div class="amt">$5.00</div></div>
+      <div class="li"><div class="lab">Memory Cost</div><div class="frm">$0.45/GB-h × 1 GB × 0.5h</div><div class="amt">$0.225</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$5.00 + $0.225</div><div class="amt blue">$5.225</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Trick:</strong> CPU-Kosten sind fix (5 CPU-h egal wie viele vCPUs). Aber Memory wird pro <em>Wallclock-Zeit</em> bezahlt — also mehr vCPUs → kürzere Laufzeit → weniger Memory-Kosten. Max vCPUs minimiert die Gesamt-Kosten.</div>
+
+    <div class="sp"></div>
+
+    <!-- Algorithm B -->
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">b) Algorithm B (0.1 CPU-h, 10 GB)</div><div class="sv">$0.175</div></div>
+      <div class="li"><div class="lab">Min vCPU for memory</div><div class="frm">10 GB mem → need ≥6 vCPU (min for 10GB)</div><div class="amt">6 vCPU</div></div>
+      <div class="li"><div class="lab">Wall-clock Time</div><div class="frm">0.1 CPU-h / 6 vCPU</div><div class="amt">0.01667 h</div></div>
+      <div class="li sec"><div class="lab">Costs:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">vCPU Cost</div><div class="frm">$1/vCPU-h × 0.1 CPU-h</div><div class="amt">$0.10</div></div>
+      <div class="li"><div class="lab">Memory Cost</div><div class="frm">$0.45 × 10 GB × 0.01667h</div><div class="amt">$0.075</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$0.10 + $0.075</div><div class="amt purple">$0.175</div></div>
+    </div>
+
+    <div class="hb pu"><strong>Beachte:</strong> Hier braucht Algo B 10 GB Memory → mindestens 6 vCPUs (weil min Memory bei 6 vCPU = 1 GB, das reicht? Nein: Memory-Minimum ist 1 GB, Maximum 15 GB — also 10 GB passt auf jede vCPU-Konfiguration ≥ min). Der Trick: vCPU-Kosten sind fix, Memory minimieren durch max parallelism.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P8: TUMSTORE ARCHITECTURE ==================== -->
+  <div id="tab-p8" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>FaaS:</strong> $0.10/req + $0.05/GB-s, 2GB config</div>
+      <div class="pm"><strong>Object Store:</strong> PUT $0.05, GET $0.01, $2/GB/day</div>
+      <div class="pm"><strong>Compress:</strong> 50 MB/s, Decompress: 200 MB/s</div>
+      <div class="pm"><strong>Billing:</strong> per second begun, 1st second free</div>
+    </div>
+    <div class="ib">TUMStore: Upload → Store uncompressed → Trigger compression → Replace with compressed version</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) StoreObject (100MB)</div>
+        <div class="tc">$0.41</div>
+        <div class="nt">Upload + Compression</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">b) GetObject</div>
+        <div class="tc">$0.12</div>
+        <div class="nt">Download + Decompress</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">c) Daily Cost</div>
+        <div class="tc">$518,600</div>
+        <div class="nt">20 reads + 10 writes per sec</div>
+      </div>
+    </div>
+
+    <!-- StoreObject -->
+    <div class="subh">a) StoreObject — 100 MB file → 20 MB compressed</div>
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Step 1: Initial Upload (uncompressed)</div><div class="sv">$0.15</div></div>
+      <div class="li"><div class="lab">PUT to Object Store</div><div class="frm">store 100 MB</div><div class="amt">$0.05</div></div>
+      <div class="li"><div class="lab">FaaS Invocation</div><div class="frm">(upload lambda, 0s runtime)</div><div class="amt">$0.10</div></div>
+      <div class="tr"><div class="lab">Upload Subtotal</div><div class="frm"></div><div class="amt blue">$0.15</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Step 2: Compression Lambda</div><div class="sv">$0.26</div></div>
+      <div class="li"><div class="lab">GET original</div><div class="frm">read 100 MB from Object Store</div><div class="amt">$0.01</div></div>
+      <div class="li"><div class="lab">PUT compressed</div><div class="frm">store 20 MB compressed</div><div class="amt">$0.05</div></div>
+      <div class="li"><div class="lab">FaaS Invocation</div><div class="frm"></div><div class="amt">$0.10</div></div>
+      <div class="li"><div class="lab">Compression Time</div><div class="frm">100 MB / 50 MB/s</div><div class="amt">2 seconds</div></div>
+      <div class="li"><div class="lab">FaaS Duration</div><div class="frm">max(0, 2s − 1s free) × 2 GB × $0.05</div><div class="amt">$0.10</div></div>
+      <div class="tr"><div class="lab">Compression Subtotal</div><div class="frm">$0.01 + $0.05 + $0.10 + $0.10</div><div class="amt blue">$0.26</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">StoreObject Total</div><div class="sv">$0.41</div></div>
+      <div class="li"><div class="lab">Upload</div><div class="frm"></div><div class="amt">$0.15</div></div>
+      <div class="li"><div class="lab">Compression</div><div class="frm"></div><div class="amt">$0.26</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$0.15 + $0.26</div><div class="amt red">$0.41</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- GetObject -->
+    <div class="subh">b) GetObject — decompress & return 100 MB</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">GetObject</div><div class="sv">$0.12</div></div>
+      <div class="li"><div class="lab">GET from Object Store</div><div class="frm">read 20 MB compressed</div><div class="amt">$0.01</div></div>
+      <div class="li"><div class="lab">FaaS Invocation</div><div class="frm"></div><div class="amt">$0.10</div></div>
+      <div class="li"><div class="lab">Decompress Time</div><div class="frm">100 MB / 200 MB/s = 0.5s</div><div class="amt">0.5 s</div></div>
+      <div class="li"><div class="lab">FaaS Duration</div><div class="frm">max(0, 0.5s − 1s free) = 0s</div><div class="amt">$0.00</div></div>
+      <div class="li"><div class="lab">Network Egress</div><div class="frm">100 MB / 1024 × $0.10/GB</div><div class="amt">$0.01</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$0.01 + $0.10 + $0 + $0.01</div><div class="amt green">$0.12</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Key Detail:</strong> Decompression (0.5s) fällt unter die 1s Freibetrag der FaaS → keine Duration-Kosten! Das macht GET deutlich billiger als PUT.</div>
+
+    <div class="sp"></div>
+
+    <!-- Daily Cost -->
+    <div class="subh">c) Daily Cost (20 reads/s + 10 writes/s, 100 GB storage)</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Daily Operating Cost</div><div class="sv">$518,600</div></div>
+      <div class="li"><div class="lab">Cost per second</div><div class="frm">20 × $0.15 + 10 × $0.30</div><div class="amt">$6.00/s</div></div>
+      <div class="li"><div class="lab">Request Cost per Day</div><div class="frm">$6.00 × 3600 × 24</div><div class="amt">$518,400</div></div>
+      <div class="li"><div class="lab">Storage Cost per Day</div><div class="frm">100 GB × $2/GB/day</div><div class="amt">$200</div></div>
+      <div class="tr"><div class="lab">Total per Day</div><div class="frm">$518,400 + $200</div><div class="amt orange">$518,600</div></div>
+    </div>
+
+    <div class="hb rd"><strong>Absurd teuer!</strong> $518K pro Tag durch FaaS per-request Kosten. Deshalb fragt d) auch nach Verbesserung: FaaS durch EC2 ersetzen eliminiert die $0.10/invocation. CDN kann die Egress-Kosten senken.</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

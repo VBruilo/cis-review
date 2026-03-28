@@ -198,13 +198,22 @@
     </div>
 
     <div class="nav-section">
-      <div class="nav-section-title">Klausur 2026</div>
+      <div class="nav-section-title">Klausuren</div>
 
       <div class="nav-item" onclick="navigate('pages/endterm.html','CIS 2026 Endterm','Klausur-Aufschlüsselung',this)">
-        <div class="nav-icon" style="background:#4f46e5">📝</div>
+        <div class="nav-icon" style="background:#4f46e5">26</div>
         <div class="nav-label">
           <div class="title">Endterm 2026</div>
-          <div class="desc">Alle Rechenaufgaben</div>
+          <div class="desc">TCO, Serverless, LLM, OLTP, Storage</div>
+        </div>
+        <span class="nav-badge">5 Tabs</span>
+      </div>
+
+      <div class="nav-item" onclick="navigate('pages/endterm23.html','CIS 2023 Endterm','Klausur-Aufschlüsselung',this)">
+        <div class="nav-icon" style="background:#6366f1">23</div>
+        <div class="nav-label">
+          <div class="title">Endterm 2023</div>
+          <div class="desc">Amdahl, ML, Workload, TUMStore</div>
         </div>
         <span class="nav-badge">5 Tabs</span>
       </div>
@@ -258,9 +267,14 @@
         <div class="welcome-card" onclick="document.querySelectorAll('.nav-item')[7].click()">
           <div class="wc-icon">📝</div>
           <div class="wc-title">Endterm 2026</div>
-          <div class="wc-desc">Alle Klausur-Rechenaufgaben aufgeschlüsselt</div>
+          <div class="wc-desc">TCO, Serverless, LLM, OLTP, Object Store</div>
         </div>
         <div class="welcome-card" onclick="document.querySelectorAll('.nav-item')[8].click()">
+          <div class="wc-icon">📋</div>
+          <div class="wc-title">Endterm 2023</div>
+          <div class="wc-desc">Amdahl, ML Training, Workload Cost, TUMStore</div>
+        </div>
+        <div class="welcome-card" onclick="document.querySelectorAll('.nav-item')[9].click()">
           <div class="wc-icon">🗺️</div>
           <div class="wc-title">Klausur-Mapping</div>
           <div class="wc-desc">Welche Übung half bei welcher Klausuraufgabe?</div>
@@ -268,7 +282,7 @@
       </div>
 
       <div class="welcome-footer">
-        Prof. Dr. Viktor Leis · CIS · TU München · 6 Exercises + Endterm + Mapping
+        Prof. Dr. Viktor Leis · CIS · TU München · 6 Exercises + 2 Klausuren + Mapping
       </div>
     </div>
   </div>
