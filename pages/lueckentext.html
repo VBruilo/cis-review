@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS — Fill in the Gaps · Exam Prep</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--card-border:#e5e5e5;--section-bg:#faf8f5;
+    --text:#1a1a1a;--muted:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#f59e0b;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;
+    --hl-yellow:#fef9c3;--hl-blue:#eff6ff;--hl-green:#f0fdf4;--hl-red:#fef2f2;--hl-purple:#f5f3ff;--hl-orange:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+  .container{max-width:960px;margin:0 auto}
+  .header h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .header .subtitle{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 18px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}
+  .tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+
+  .content-card{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+
+  /* Bars */
+  .params-bar{background:var(--hl-yellow);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+  .param{font-size:13px;color:var(--muted)}.param strong{color:var(--text);font-weight:700}
+  .info-banner{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--card-border)}
+
+  /* Sections */
+  .detail-section{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--card-border)}
+  .ds-blue{border-left:4px solid var(--blue)}
+  .ds-purple{border-left:4px solid var(--purple)}
+  .ds-orange{border-left:4px solid var(--orange)}
+  .ds-teal{border-left:4px solid var(--teal)}
+  .ds-green{border-left:4px solid var(--green)}
+  .ds-red{border-left:4px solid var(--red)}
+  .ds-pink{border-left:4px solid var(--pink)}
+
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--section-bg);border-bottom:1px solid var(--card-border)}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:#b45309}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}
+
+  .spacer{height:8px}.bpad{padding-bottom:24px}
+
+  /* highlight box */
+  .hbox{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hbox.blue-bg{background:var(--hl-blue);color:#1e40af}
+  .hbox.purple-bg{background:var(--hl-purple);color:#5b21b6}
+  .hbox.green-bg{background:var(--hl-green);color:#166534}
+  .hbox.red-bg{background:var(--hl-red);color:#991b1b}
+  .hbox.orange-bg{background:var(--hl-orange);color:#92400e}
+  .hbox.yellow-bg{background:var(--hl-yellow);color:#92400e}
+
+  .sub-header{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--muted)}
+  .hidden{display:none}
+
+  /* ===== GAP-FILL STYLES ===== */
+  .gap-exercise{padding:20px 24px}
+  .gap-instructions{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+
+  .word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:14px 18px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px}
+  .word-bank .word-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;width:100%;margin-bottom:4px}
+  .word-chip{padding:6px 14px;border-radius:6px;border:1.5px solid #d0d0d0;background:#fff;font-size:13px;font-weight:600;cursor:grab;user-select:none;transition:.15s;font-family:var(--sans)}
+  .word-chip:hover{border-color:var(--blue);background:var(--hl-blue);color:var(--blue)}
+  .word-chip.used{opacity:.35;pointer-events:none;text-decoration:line-through}
+  .word-chip.distractor{color:var(--muted)}
+
+  .gap-text{font-size:15px;line-height:2.2;color:var(--text);padding:0 4px}
+  .gap-text .gap-slot{
+    display:inline-block;min-width:140px;border-bottom:2.5px dashed #ccc;
+    text-align:center;padding:2px 8px;margin:0 2px;cursor:pointer;
+    font-weight:700;color:var(--blue);font-size:14px;transition:.15s;
+    border-radius:4px;vertical-align:baseline;position:relative;
+  }
+  .gap-slot:hover{background:var(--hl-blue)}
+  .gap-slot.correct{background:#dcfce7;border-bottom-color:var(--green);color:var(--green)}
+  .gap-slot.wrong{background:#fef2f2;border-bottom-color:var(--red);color:var(--red);animation:shake .35s}
+  .gap-slot.empty-slot{color:transparent}
+  .gap-slot.empty-slot::after{content:attr(data-index);color:#bbb;font-weight:600;font-size:12px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+  .gap-controls{display:flex;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid #eee}
+  .gap-btn{padding:8px 18px;border-radius:8px;border:1.5px solid var(--card-border);background:#fff;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+  .gap-btn:hover{border-color:#999}
+  .gap-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .gap-btn.primary:hover{background:#1d4ed8}
+  .gap-btn.success{background:var(--green);color:#fff;border-color:var(--green)}
+
+  .score-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;margin-left:12px}
+  .score-badge.perfect{background:#dcfce7;color:#15803d}
+  .score-badge.partial{background:var(--hl-yellow);color:#92400e}
+  .score-badge.bad{background:#fef2f2;color:#991b1b}
+
+  /* CODE EXERCISE */
+  .code-block{
+    font-family:var(--mono);font-size:13px;line-height:2;
+    background:#1e1e2e;color:#cdd6f4;padding:20px 24px;border-radius:10px;
+    overflow-x:auto;white-space:pre-wrap;margin:0 0 8px;
+  }
+  .code-block .gap-slot{
+    background:#313244;border:1.5px dashed #585b70;border-bottom:none;
+    color:#89b4fa;min-width:120px;font-family:var(--mono);font-size:13px;
+    padding:1px 8px;border-radius:4px;
+  }
+  .code-block .gap-slot:hover{background:#45475a}
+  .code-block .gap-slot.correct{background:#1e3a2a;border-color:#a6e3a1;color:#a6e3a1}
+  .code-block .gap-slot.wrong{background:#3a1e1e;border-color:#f38ba8;color:#f38ba8}
+  .code-block .gap-slot.empty-slot::after{color:#585b70}
+  .code-block .line-num{color:#585b70;user-select:none;display:inline-block;width:28px;text-align:right;margin-right:16px}
+  .code-block .kw{color:#cba6f7}.code-block .str{color:#a6e3a1}.code-block .fn{color:#89b4fa}
+  .code-block .cm{color:#6c7086;font-style:italic}.code-block .op{color:#89dceb}.code-block .var{color:#fab387}
+
+  .code-word-bank{background:#1e1e2e;border-color:#313244}
+  .code-word-bank .word-label{color:#585b70}
+  .code-word-bank .word-chip{background:#313244;border-color:#45475a;color:#cdd6f4;font-family:var(--mono);font-size:12px}
+  .code-word-bank .word-chip:hover{border-color:#89b4fa;background:#45475a;color:#89b4fa}
+  .code-word-bank .word-chip.used{opacity:.3}
+
+  @media(max-width:700px){
+    .params-bar{flex-direction:column;gap:6px}
+    .gap-text{font-size:14px}
+    .code-block{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Fill in the Gaps — Exam Prep</h1>
+    <div class="subtitle">CIS · Lückentexte zu Terraform, Regions & AZs, Lambda, Kubernetes, Aurora, Boto3-Code &amp; Terraform-Code</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('terraform')">Terraform</button>
+    <button class="tab" onclick="showTab('regions')">Regions & AZs</button>
+    <button class="tab" onclick="showTab('lambda')">Lambda / FaaS</button>
+    <button class="tab" onclick="showTab('k8s')">Kubernetes</button>
+    <button class="tab" onclick="showTab('aurora')">Aurora</button>
+    <button class="tab" onclick="showTab('boto3')">Boto3 Code</button>
+    <button class="tab" onclick="showTab('tfcode')">Terraform Code</button>
+  </div>
+
+  <!-- ===================== TAB 1: TERRAFORM ===================== -->
+  <div id="tab-terraform" class="content-card">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS 25 Endterm, Problem 2a</div>
+      <div class="param"><strong>Credits:</strong> 4</div>
+      <div class="param"><strong>Type:</strong> Fill in the Gaps</div>
+    </div>
+    <div class="gap-exercise" id="ex-terraform">
+      <div class="gap-instructions">Fill in the blanks by clicking a gap, then clicking a word from the word bank. Click a filled gap to clear it.</div>
+
+      <div class="word-bank">
+        <div class="word-label">Word Bank (5 correct + 9 distractors)</div>
+      </div>
+
+      <div class="gap-text"></div>
+
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('terraform')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('terraform')">Reset</button>
+        <span class="score-badge hidden" id="score-terraform"></span>
+      </div>
+    </div>
+    <div class="hbox blue-bg" style="margin-bottom:20px">
+      <strong>Tip:</strong> Terraform's state file (<code>.tfstate</code>) is the critical link between your config and reality. Without it, Terraform cannot compute diffs for incremental updates.
+    </div>
+  </div>
+
+  <!-- ===================== TAB 2: REGIONS ===================== -->
+  <div id="tab-regions" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS 25 Endterm, Problem 2b</div>
+      <div class="param"><strong>Credits:</strong> 4</div>
+      <div class="param"><strong>Type:</strong> Fill in the Gaps</div>
+    </div>
+    <div class="gap-exercise" id="ex-regions">
+      <div class="gap-instructions">Fill in the blanks by clicking a gap, then clicking a word from the word bank. Click a filled gap to clear it.</div>
+      <div class="word-bank"><div class="word-label">Word Bank (5 correct + 9 distractors)</div></div>
+      <div class="gap-text"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('regions')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('regions')">Reset</button>
+        <span class="score-badge hidden" id="score-regions"></span>
+      </div>
+    </div>
+    <div class="hbox green-bg" style="margin-bottom:20px">
+      <strong>Tip:</strong> Region choice = legal + cost + latency + availability. AZ choice = fault tolerance within a region.
+    </div>
+  </div>
+
+  <!-- ===================== TAB 3: LAMBDA ===================== -->
+  <div id="tab-lambda" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Lecture 3 (AWS) + Lecture 4 (Architecture)</div>
+      <div class="param"><strong>Type:</strong> Fill in the Gaps</div>
+    </div>
+    <div class="gap-exercise" id="ex-lambda">
+      <div class="gap-instructions">Fill in the blanks by clicking a gap, then clicking a word from the word bank. Click a filled gap to clear it.</div>
+      <div class="word-bank"><div class="word-label">Word Bank (6 correct + 8 distractors)</div></div>
+      <div class="gap-text"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('lambda')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('lambda')">Reset</button>
+        <span class="score-badge hidden" id="score-lambda"></span>
+      </div>
+    </div>
+    <div class="hbox purple-bg" style="margin-bottom:20px">
+      <strong>Tip:</strong> Lambda is 2.26× more expensive than EC2 for long-running jobs. Video encoding is the classic FaaS poster child (segmenter → S3 → transcoder).
+    </div>
+  </div>
+
+  <!-- ===================== TAB 4: KUBERNETES ===================== -->
+  <div id="tab-k8s" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Lecture 5 (Automation & Orchestration)</div>
+      <div class="param"><strong>Type:</strong> Fill in the Gaps</div>
+    </div>
+    <div class="gap-exercise" id="ex-k8s">
+      <div class="gap-instructions">Fill in the blanks by clicking a gap, then clicking a word from the word bank. Click a filled gap to clear it.</div>
+      <div class="word-bank"><div class="word-label">Word Bank (6 correct + 8 distractors)</div></div>
+      <div class="gap-text"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('k8s')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('k8s')">Reset</button>
+        <span class="score-badge hidden" id="score-k8s"></span>
+      </div>
+    </div>
+    <div class="hbox orange-bg" style="margin-bottom:20px">
+      <strong>Tip:</strong> K8s continuously reconciles declared state vs. actual state. The smallest deployable unit is a Pod (not a container!). Worker node components: Kubelet + Service Proxy + Container Runtime.
+    </div>
+  </div>
+
+  <!-- ===================== TAB 5: AURORA ===================== -->
+  <div id="tab-aurora" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Lecture 6 (State Management)</div>
+      <div class="param"><strong>Type:</strong> Fill in the Gaps</div>
+    </div>
+    <div class="gap-exercise" id="ex-aurora">
+      <div class="gap-instructions">Fill in the blanks by clicking a gap, then clicking a word from the word bank. Click a filled gap to clear it.</div>
+      <div class="word-bank"><div class="word-label">Word Bank (5 correct + 7 distractors)</div></div>
+      <div class="gap-text"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('aurora')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('aurora')">Reset</button>
+        <span class="score-badge hidden" id="score-aurora"></span>
+      </div>
+    </div>
+    <div class="hbox red-bg" style="margin-bottom:20px">
+      <strong>Tip:</strong> Aurora's key innovation: the primary writes WAL entries to 6 storage nodes (in 3 AZs), not full pages. The storage layer is basically a distributed, multi-tenant, elastic, fault-tolerant disk.
+    </div>
+  </div>
+
+  <!-- ===================== TAB 6: BOTO3 CODE ===================== -->
+  <div id="tab-boto3" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Exercise 2 + CIS 23/25 Endterm</div>
+      <div class="param"><strong>Type:</strong> Code Gap-Fill (Boto3 / Lambda)</div>
+    </div>
+    <div class="info-banner">A Lambda function that copies an object between S3 buckets with a different key. Fill in the missing Boto3 API calls and parameters.</div>
+    <div class="gap-exercise" id="ex-boto3">
+      <div class="word-bank code-word-bank"><div class="word-label">Code Fragments</div></div>
+      <div class="code-block"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('boto3')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('boto3')">Reset</button>
+        <span class="score-badge hidden" id="score-boto3"></span>
+      </div>
+    </div>
+    <div class="hbox blue-bg" style="margin-bottom:20px">
+      <strong>Exam Pattern:</strong> CIS 23 Endterm (find 2 bugs) + CIS 25 Retake (describe behavior + bucket contents). Expect code-reading or code-completion with <code>get_object</code>, <code>put_object</code>, <code>delete_object</code>.
+    </div>
+  </div>
+
+  <!-- ===================== TAB 7: TERRAFORM CODE ===================== -->
+  <div id="tab-tfcode" class="content-card hidden">
+    <div class="params-bar">
+      <div class="param"><strong>Source:</strong> CIS Exercise 3 (main.tf)</div>
+      <div class="param"><strong>Type:</strong> Code Gap-Fill (Terraform HCL)</div>
+    </div>
+    <div class="info-banner">A Terraform configuration that creates an EC2 instance using a variable for the name prefix. Fill in the missing HCL keywords and references.</div>
+    <div class="gap-exercise" id="ex-tfcode">
+      <div class="word-bank code-word-bank"><div class="word-label">Code Fragments</div></div>
+      <div class="code-block"></div>
+      <div class="gap-controls">
+        <button class="gap-btn primary" onclick="checkExercise('tfcode')">Check Answers</button>
+        <button class="gap-btn" onclick="resetExercise('tfcode')">Reset</button>
+        <span class="score-badge hidden" id="score-tfcode"></span>
+      </div>
+    </div>
+    <div class="hbox green-bg" style="margin-bottom:20px">
+      <strong>Key Concepts:</strong> <code>terraform { required_providers {} }</code> block, <code>provider</code> block, <code>variable</code> block with type + default, <code>resource</code> block, and <code>${var.xxx}</code> interpolation.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// EXERCISE DATA
+// ============================================================
+const exercises = {
+  // ---------- TERRAFORM ----------
+  terraform: {
+    words: [
+      'Infrastructure-as-Code','providers','tfstate','incremental updates','resource',
+      'low-code','Control plane','provisioners','controllers','database','manifest','init','security','Infrastructure-as-a-Service'
+    ],
+    answers: ['Infrastructure-as-Code','providers','resource','tfstate','incremental updates'],
+    text: `Terraform is an open-source <0> tool that allows users to define, provision, and manage cloud and on-premises infrastructure using a declarative configuration language. It uses <1> (e.g., AWS, Azure, or Google Cloud) to interact with specific platforms and manage resources such as virtual machines, storage, and networking components. A <2> represents an infrastructure object, like an EC2 instance or an S3 bucket, which Terraform creates and manages based on the defined configuration. Terraform maintains a <3> file to track the current condition of the infrastructure, enabling it to determine changes needed to reach the desired configuration. This file is crucial for <4> and ensuring consistency between the defined infrastructure and the deployed resources.`
+  },
+
+  // ---------- REGIONS ----------
+  regions: {
+    words: [
+      'data centers','fault tolerance','legal considerations','egress cost','latency','availability',
+      'racks','partitioning','peering agreements','observability','hypervisors','bandwidth','security','grey failures'
+    ],
+    answers: ['data centers','fault tolerance','legal considerations','latency','availability'],
+    text: `AWS regions are geographically distinct locations, each containing multiple Availability Zones (AZs). AZs are physically separate <0> within a region, designed with independent power, cooling, and networking to enhance <1>. When choosing a region and AZ, several factors must be considered: <2> may mandate data stored in specific regions, while network egress costs vary between regions and can significantly impact expenses. Additionally, selecting a region close to end users reduces <3>, while spreading resources across multiple AZs within the same region increases <4>, as failures in one AZ do not impact others.`
+  },
+
+  // ---------- LAMBDA ----------
+  lambda: {
+    words: [
+      'serverless','stateless','15 minutes','S3','automatic scaling','short invocations',
+      'stateful','30 minutes','EBS','manual scaling','long-running','containers','EC2','DynamoDB'
+    ],
+    answers: ['serverless','automatic scaling','short invocations','stateless','S3','15 minutes'],
+    text: `AWS Lambda is a Function-as-a-Service (FaaS) platform, often called <0>. Lambda provides <1>, meaning code is automatically assigned to compute hardware and scales with demand. It is intended for <2> and is not suitable for long-running services. Lambda works best for <3> tasks, where complex jobs are broken into a graph of computations and large state is passed through a storage service such as <4>. A major limitation is that individual Lambda invocations have a maximum duration of <5>.`
+  },
+
+  // ---------- KUBERNETES ----------
+  k8s: {
+    words: [
+      'Pod','containers','declared state','Kubelet','bin packing','secrets',
+      'Deployment','virtual machines','desired image','Scheduler','round robin','passwords','Node','Service Mesh'
+    ],
+    answers: ['containers','declared state','Pod','Kubelet','bin packing','secrets'],
+    text: `Kubernetes (K8s) is an open-source platform for managing containerized workloads. It orchestrates <0> by continuously reconciling <1> with actual state. The smallest deployable unit in Kubernetes is called a <2>. On each worker node, the <3> component uses container software to run and monitor pods and provides the interface between the node and the control plane on the master node. Kubernetes assigns containers to nodes to optimize the use of nodes, a process known as <4>. It also manages configurations and <5>, including passwords, authentication tokens, and encryption keys.`
+  },
+
+  // ---------- AURORA ----------
+  aurora: {
+    words: [
+      'WAL entries','6 storage nodes','disaggregates','multi-tenant','S3',
+      'data pages','3 storage nodes','integrates','single-tenant','EBS','DynamoDB','EC2'
+    ],
+    answers: ['disaggregates','WAL entries','6 storage nodes','multi-tenant','S3'],
+    text: `Amazon Aurora is the dominant cloud-native OLTP database system. It <0> storage and compute into separate layers. The primary compute node does not write changed pages to disk; instead it writes <1> to <2> spread across different Availability Zones. The storage layer is essentially a distributed, <3>, elastic, fault-tolerant disk. Backups and log archives are stored on <4>.`
+  },
+
+  // ---------- BOTO3 CODE ----------
+  boto3: {
+    isCode: true,
+    words: [
+      "client('s3')", "get_object", "put_object", "Bucket", "Key", "Body",
+      "resource('s3')", "read_object", "upload_object", "Path", "Name", "Content", "bucket_name", "delete_object"
+    ],
+    answers: ["client('s3')", "get_object", "Bucket", "put_object", "Key", "Body"],
+    codeLines: [
+      {type:'line', num:1,  parts:[{t:'kw',v:'import'},{t:'t',v:' boto3'}]},
+      {type:'line', num:2,  parts:[]},
+      {type:'line', num:3,  parts:[{t:'t',v:'s3 = boto3.'},{t:'gap',i:0}]},
+      {type:'line', num:4,  parts:[]},
+      {type:'line', num:5,  parts:[{t:'kw',v:'def'},{t:'t',v:' '},{t:'fn',v:'lambda_handler'},{t:'t',v:'(event, context):'}]},
+      {type:'line', num:6,  parts:[{t:'t',v:'    src_bucket = '},{t:'str',v:'"source-bucket"'}]},
+      {type:'line', num:7,  parts:[{t:'t',v:'    dst_bucket = '},{t:'str',v:'"dest-bucket"'}]},
+      {type:'line', num:8,  parts:[{t:'t',v:'    key = '},{t:'str',v:'"data/input.csv"'}]},
+      {type:'line', num:9,  parts:[]},
+      {type:'line', num:10, parts:[{t:'t',v:'    '},{t:'cm',v:'# Read object from source bucket'}]},
+      {type:'line', num:11, parts:[{t:'t',v:'    response = s3.'},{t:'gap',i:1},{t:'t',v:'('}]},
+      {type:'line', num:12, parts:[{t:'t',v:'        '},{t:'gap',i:2},{t:'t',v:' = src_bucket,'}]},
+      {type:'line', num:13, parts:[{t:'t',v:'        Key = key'}]},
+      {type:'line', num:14, parts:[{t:'t',v:'    )'}]},
+      {type:'line', num:15, parts:[]},
+      {type:'line', num:16, parts:[{t:'t',v:'    '},{t:'cm',v:'# Write object to destination bucket'}]},
+      {type:'line', num:17, parts:[{t:'t',v:'    s3.'},{t:'gap',i:3},{t:'t',v:'('}]},
+      {type:'line', num:18, parts:[{t:'t',v:'        Bucket = dst_bucket,'}]},
+      {type:'line', num:19, parts:[{t:'t',v:'        '},{t:'gap',i:4},{t:'t',v:' = '},{t:'str',v:'"archive/"'},{t:'t',v:' + key,'}]},
+      {type:'line', num:20, parts:[{t:'t',v:'        '},{t:'gap',i:5},{t:'t',v:' = response['},{t:'str',v:"'Body'"},{t:'t',v:'].read()'}]},
+      {type:'line', num:21, parts:[{t:'t',v:'    )'}]},
+    ]
+  },
+
+  // ---------- TERRAFORM CODE ----------
+  tfcode: {
+    isCode: true,
+    words: [
+      'terraform','provider','variable','resource','aws_instance','${var.prefix}',
+      'module','output','data','aws_ec2','${local.prefix}','${var.name}','required_providers','default'
+    ],
+    answers: ['terraform','provider','variable','default','resource','${var.prefix}'],
+    codeLines: [
+      {type:'line', num:1,  parts:[{t:'gap',i:0},{t:'t',v:' {'}]},
+      {type:'line', num:2,  parts:[{t:'t',v:'  required_providers {'}]},
+      {type:'line', num:3,  parts:[{t:'t',v:'    aws = {'}]},
+      {type:'line', num:4,  parts:[{t:'t',v:'      source  = '},{t:'str',v:'"hashicorp/aws"'}]},
+      {type:'line', num:5,  parts:[{t:'t',v:'      version = '},{t:'str',v:'"~> 6.0"'}]},
+      {type:'line', num:6,  parts:[{t:'t',v:'    }'}]},
+      {type:'line', num:7,  parts:[{t:'t',v:'  }'}]},
+      {type:'line', num:8,  parts:[{t:'t',v:'}'}]},
+      {type:'line', num:9,  parts:[]},
+      {type:'line', num:10, parts:[{t:'gap',i:1},{t:'t',v:' '},{t:'str',v:'"aws"'},{t:'t',v:' {'}]},
+      {type:'line', num:11, parts:[{t:'t',v:'  region = '},{t:'str',v:'"us-east-1"'}]},
+      {type:'line', num:12, parts:[{t:'t',v:'}'}]},
+      {type:'line', num:13, parts:[]},
+      {type:'line', num:14, parts:[{t:'gap',i:2},{t:'t',v:' '},{t:'str',v:'"prefix"'},{t:'t',v:' {'}]},
+      {type:'line', num:15, parts:[{t:'t',v:'  description = '},{t:'str',v:'"Name prefix for demo instance"'}]},
+      {type:'line', num:16, parts:[{t:'t',v:'  type        = string'}]},
+      {type:'line', num:17, parts:[{t:'t',v:'  '},{t:'gap',i:3},{t:'t',v:'     = '},{t:'str',v:'"cis"'}]},
+      {type:'line', num:18, parts:[{t:'t',v:'}'}]},
+      {type:'line', num:19, parts:[]},
+      {type:'line', num:20, parts:[{t:'gap',i:4},{t:'t',v:' '},{t:'str',v:'"aws_instance"'},{t:'t',v:' '},{t:'str',v:'"demo"'},{t:'t',v:' {'}]},
+      {type:'line', num:21, parts:[{t:'t',v:'  instance_type = '},{t:'str',v:'"t3.small"'}]},
+      {type:'line', num:22, parts:[{t:'t',v:'  ami           = '},{t:'str',v:'"ami-07ff62358b87c7116"'}]},
+      {type:'line', num:23, parts:[{t:'t',v:'  tags = {'}]},
+      {type:'line', num:24, parts:[{t:'t',v:'    Name = '},{t:'str',v:'"'},{t:'gap',i:5},{t:'str',v:'-instance"'}]},
+      {type:'line', num:25, parts:[{t:'t',v:'  }'}]},
+      {type:'line', num:26, parts:[{t:'t',v:'}'}]},
+    ]
+  }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+const state = {};
+let activeSlot = null;
+
+function initExercise(id) {
+  const ex = exercises[id];
+  const el = document.getElementById('ex-' + id);
+  const numGaps = ex.answers.length;
+
+  state[id] = { filled: new Array(numGaps).fill(null), checked: false };
+
+  // Shuffle words
+  const shuffled = [...ex.words].sort(() => Math.random() - 0.5);
+
+  // Render word bank
+  const bank = el.querySelector('.word-bank');
+  bank.innerHTML = '<div class="word-label">Word Bank (' + numGaps + ' correct + ' + (ex.words.length - numGaps) + ' distractors)</div>';
+  shuffled.forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    chip.dataset.word = w;
+    chip.onclick = () => pickWord(id, w);
+    bank.appendChild(chip);
+  });
+
+  // Render text or code
+  if (ex.isCode) {
+    renderCode(id, el);
+  } else {
+    renderText(id, el);
+  }
+}
+
+function renderText(id, el) {
+  const ex = exercises[id];
+  const container = el.querySelector('.gap-text');
+  // Split text by gap markers <N>
+  let html = ex.text.replace(/<(\d+)>/g, (_, idx) => {
+    return `<span class="gap-slot empty-slot" data-ex="${id}" data-gap="${idx}" data-index="${parseInt(idx)+1}" onclick="clickSlot('${id}',${idx})">&nbsp;</span>`;
+  });
+  container.innerHTML = html;
+}
+
+function renderCode(id, el) {
+  const ex = exercises[id];
+  const container = el.querySelector('.code-block');
+  let html = '';
+  ex.codeLines.forEach(line => {
+    if (line.parts.length === 0) {
+      html += '\n';
+      return;
+    }
+    html += `<span class="line-num">${line.num}</span>`;
+    line.parts.forEach(p => {
+      if (p.t === 'gap') {
+        html += `<span class="gap-slot empty-slot" data-ex="${id}" data-gap="${p.i}" data-index="${p.i+1}" onclick="clickSlot('${id}',${p.i})">&nbsp;</span>`;
+      } else if (p.t === 'kw') {
+        html += `<span class="kw">${esc(p.v)}</span>`;
+      } else if (p.t === 'str') {
+        html += `<span class="str">${esc(p.v)}</span>`;
+      } else if (p.t === 'fn') {
+        html += `<span class="fn">${esc(p.v)}</span>`;
+      } else if (p.t === 'cm') {
+        html += `<span class="cm">${esc(p.v)}</span>`;
+      } else if (p.t === 'op') {
+        html += `<span class="op">${esc(p.v)}</span>`;
+      } else if (p.t === 'var') {
+        html += `<span class="var">${esc(p.v)}</span>`;
+      } else {
+        html += esc(p.v);
+      }
+    });
+    html += '\n';
+  });
+  container.innerHTML = html;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ============================================================
+// INTERACTION
+// ============================================================
+function clickSlot(exId, gapIdx) {
+  const s = state[exId];
+  if (s.checked) return;
+
+  // If slot has a word, clear it
+  if (s.filled[gapIdx] !== null) {
+    const word = s.filled[gapIdx];
+    s.filled[gapIdx] = null;
+    updateSlot(exId, gapIdx);
+    updateChips(exId);
+    activeSlot = null;
+    return;
+  }
+
+  // Highlight this slot as active
+  document.querySelectorAll('.gap-slot').forEach(el => el.style.outline = '');
+  const slot = getSlotEl(exId, gapIdx);
+  if (slot) slot.style.outline = '2px solid var(--blue)';
+  activeSlot = { exId, gapIdx };
+}
+
+function pickWord(exId, word) {
+  const s = state[exId];
+  if (s.checked) return;
+  if (!activeSlot || activeSlot.exId !== exId) {
+    // Find first empty slot
+    const emptyIdx = s.filled.indexOf(null);
+    if (emptyIdx === -1) return;
+    activeSlot = { exId, gapIdx: emptyIdx };
+  }
+  if (s.filled[activeSlot.gapIdx] !== null) return; // slot full
+
+  s.filled[activeSlot.gapIdx] = word;
+  updateSlot(exId, activeSlot.gapIdx);
+  updateChips(exId);
+
+  // Move to next empty slot
+  document.querySelectorAll('.gap-slot').forEach(el => el.style.outline = '');
+  const nextEmpty = s.filled.indexOf(null);
+  if (nextEmpty !== -1) {
+    activeSlot = { exId, gapIdx: nextEmpty };
+    const slot = getSlotEl(exId, nextEmpty);
+    if (slot) slot.style.outline = '2px solid var(--blue)';
+  } else {
+    activeSlot = null;
+  }
+}
+
+function getSlotEl(exId, gapIdx) {
+  return document.querySelector(`.gap-slot[data-ex="${exId}"][data-gap="${gapIdx}"]`);
+}
+
+function updateSlot(exId, gapIdx) {
+  const s = state[exId];
+  const slot = getSlotEl(exId, gapIdx);
+  if (!slot) return;
+  const word = s.filled[gapIdx];
+  if (word === null) {
+    slot.textContent = '\u00A0';
+    slot.className = 'gap-slot empty-slot';
+  } else {
+    slot.textContent = word;
+    slot.className = 'gap-slot';
+  }
+}
+
+function updateChips(exId) {
+  const s = state[exId];
+  const el = document.getElementById('ex-' + exId);
+  el.querySelectorAll('.word-chip').forEach(chip => {
+    const w = chip.dataset.word;
+    chip.classList.toggle('used', s.filled.includes(w));
+  });
+}
+
+function checkExercise(exId) {
+  const ex = exercises[exId];
+  const s = state[exId];
+  s.checked = true;
+  let correct = 0;
+
+  ex.answers.forEach((ans, i) => {
+    const slot = getSlotEl(exId, i);
+    if (!slot) return;
+    if (s.filled[i] === ans) {
+      slot.classList.add('correct');
+      correct++;
+    } else {
+      slot.classList.add('wrong');
+      // Show correct answer below
+      setTimeout(() => {
+        if (s.filled[i] !== ans) {
+          slot.title = 'Correct: ' + ans;
+        }
+      }, 400);
+    }
+  });
+
+  const badge = document.getElementById('score-' + exId);
+  badge.classList.remove('hidden');
+  badge.textContent = correct + '/' + ex.answers.length;
+  if (correct === ex.answers.length) {
+    badge.className = 'score-badge perfect';
+  } else if (correct >= ex.answers.length / 2) {
+    badge.className = 'score-badge partial';
+  } else {
+    badge.className = 'score-badge bad';
+  }
+
+  // Show correct answers for wrong ones after 1s
+  if (correct < ex.answers.length) {
+    setTimeout(() => {
+      ex.answers.forEach((ans, i) => {
+        if (s.filled[i] !== ans) {
+          const slot = getSlotEl(exId, i);
+          if (slot) {
+            slot.textContent = ans;
+            slot.classList.remove('wrong');
+            slot.classList.add('correct');
+            slot.style.opacity = '.7';
+          }
+        }
+      });
+    }, 1200);
+  }
+}
+
+function resetExercise(exId) {
+  const badge = document.getElementById('score-' + exId);
+  badge.classList.add('hidden');
+  activeSlot = null;
+  document.querySelectorAll('.gap-slot').forEach(el => el.style.outline = '');
+  initExercise(exId);
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function showTab(name) {
+  document.querySelectorAll('[id^="tab-"]').forEach(e => e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+Object.keys(exercises).forEach(id => initExercise(id));
+</script>
+</body>
+</html>
