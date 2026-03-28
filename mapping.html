@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS 2026 Endterm — Exercise Mapping</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:1000px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:20px}
+
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4);margin-bottom:20px}
+
+  /* Overview bar */
+  .overview-bar{background:linear-gradient(135deg,#1e293b,#334155);padding:20px 28px;color:#fff}
+  .overview-bar h2{font-size:20px;font-weight:900;margin-bottom:12px}
+  .stat-row{display:flex;gap:20px;flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,0.08);border-radius:8px;padding:12px 18px;min-width:140px}
+  .stat .sv{font-size:22px;font-weight:900;color:#60a5fa}
+  .stat .sl{font-size:12px;color:#94a3b8;margin-top:2px}
+
+  /* Problem card */
+  .problem{margin:16px 24px;border-radius:12px;overflow:hidden;border:1.5px solid var(--cb)}
+  .problem-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;cursor:pointer;transition:background .2s;flex-wrap:wrap;gap:8px}
+  .problem-header:hover{background:#f8f8f8}
+  .problem-header .left{display:flex;align-items:center;gap:12px}
+  .problem-num{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;flex-shrink:0}
+  .problem-info h3{font-size:16px;font-weight:700}
+  .problem-info .credits{font-size:12px;color:var(--m);margin-top:2px}
+  .problem-tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap}
+  .tag.calc{background:#dbeafe;color:#1d4ed8}
+  .tag.theory{background:#f3e8ff;color:#7c3aed}
+  .tag.mixed{background:#fef3c7;color:#92400e}
+
+  .problem-body{display:none;padding:0 20px 20px;border-top:1px solid #f0f0f0}
+  .problem.open .problem-body{display:block}
+  .problem.open .problem-header{background:#fafafa}
+
+  /* Sub-problem */
+  .sub{margin-top:16px;padding:14px 16px;border-radius:8px;border:1px solid #e8e8e8;background:#fff}
+  .sub-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+  .sub-label{font-weight:700;font-size:14px;color:var(--t)}
+  .sub-credits{font-family:var(--mono);font-size:12px;color:var(--m)}
+  .sub-type{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+  .sub-type.calc-type{background:#dcfce7;color:#166534}
+  .sub-type.theory-type{background:#f3e8ff;color:#7c3aed}
+
+  .sub-desc{font-size:13px;color:var(--m);margin-bottom:10px;line-height:1.5}
+
+  /* Mapping arrow */
+  .mapping{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;margin-top:8px;font-size:13px}
+  .mapping.strong{background:#dbeafe;border:1px solid #93c5fd}
+  .mapping.partial{background:#fef9c3;border:1px solid #fde68a}
+  .mapping.new{background:#fef2f2;border:1px solid #fecaca}
+  .mapping-icon{font-size:18px;flex-shrink:0}
+  .mapping-text{flex:1}
+  .mapping-text strong{color:var(--t)}
+  .mapping-text .ex-name{font-family:var(--mono);font-size:12px;background:#f1f5f9;padding:2px 6px;border-radius:3px;margin:0 2px}
+
+  .strength-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 6px;border-radius:3px;flex-shrink:0}
+  .strength-label.exact{background:#dcfce7;color:#166534}
+  .strength-label.similar{background:#dbeafe;color:#1d4ed8}
+  .strength-label.concept{background:#fef3c7;color:#92400e}
+  .strength-label.new-topic{background:#fef2f2;color:#991b1b}
+
+  /* Solution hint */
+  .sol-hint{margin-top:10px;padding:10px 14px;background:#f8f7f4;border-radius:6px;border:1px solid #e8e4d8;font-family:var(--mono);font-size:12px;color:#555;line-height:1.6}
+
+  /* Legend */
+  .legend{padding:16px 24px;display:flex;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--cb);background:#fafafa}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--m)}
+  .legend-dot{width:12px;height:12px;border-radius:3px}
+
+  /* Coverage meter */
+  .coverage{margin:16px 24px;padding:16px 20px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0}
+  .coverage h3{font-size:15px;font-weight:700;color:#166534;margin-bottom:10px}
+  .meter-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:13px}
+  .meter-label{width:200px;font-weight:600}
+  .meter-bar{flex:1;height:20px;background:#e5e7eb;border-radius:4px;overflow:hidden;position:relative}
+  .meter-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff}
+  .meter-fill.high{background:linear-gradient(90deg,#22c55e,#16a34a)}
+  .meter-fill.mid{background:linear-gradient(90deg,#f59e0b,#d97706)}
+  .meter-fill.low{background:linear-gradient(90deg,#ef4444,#dc2626)}
+
+  .bp{padding-bottom:20px}
+  .chevron{transition:transform .2s;font-size:18px;color:#999}
+  .problem.open .chevron{transform:rotate(180deg)}
+
+  @media(max-width:700px){
+    .stat-row{flex-direction:column;gap:8px}
+    .sub-header{flex-direction:column}
+    .mapping{flex-direction:column;align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>CIS 2026 Endterm → Exercise Mapping</h1>
+    <div class="sub">Welche Klausuraufgaben kamen aus welchen Übungen? Fokus auf Rechenaufgaben.</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="cc">
+    <div class="overview-bar">
+      <h2>Klausur-Überblick</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="sv">90</div><div class="sl">Credits gesamt</div></div>
+        <div class="stat"><div class="sv">7</div><div class="sl">Aufgaben</div></div>
+        <div class="stat"><div class="sv">~55</div><div class="sl">Credits Rechenaufgaben</div></div>
+        <div class="stat"><div class="sv">~35</div><div class="sl">Credits Theorie/MC</div></div>
+        <div class="stat"><div class="sv" style="color:#4ade80">85%+</div><div class="sl">durch Übungen abgedeckt</div></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#dcfce7"></div> Exakt gleicher Aufgabentyp</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dbeafe"></div> Gleiche Rechenmethodik</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fef3c7"></div> Konzeptionell verwandt</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fef2f2"></div> Neues Thema</div>
+    </div>
+
+    <!-- Coverage meters -->
+    <div class="coverage">
+      <h3>Abdeckung durch Übungen (Rechenaufgaben)</h3>
+      <div class="meter-row">
+        <div class="meter-label">P3: Data Center TCO</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:95%">95%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P4d: Serverless Kosten</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:90%">90%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P4e: Lambda vs EC2 Range</div>
+        <div class="meter-bar"><div class="meter-fill mid" style="width:70%">70%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P5: LLM Inference</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:95%">95%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P6d: OLTP SaaS Tiers</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:90%">90%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P6e: Self-Hosted DB</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:85%">85%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P7a-c: Object Store</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:95%">95%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P7d: Durability</div>
+        <div class="meter-bar"><div class="meter-fill high" style="width:95%">95%</div></div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-label">P7e-f: Network Cost</div>
+        <div class="meter-bar"><div class="meter-fill mid" style="width:60%">60%</div></div>
+      </div>
+    </div>
+
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== PROBLEM 3 ========== -->
+  <div class="cc">
+    <div class="problem open" onclick="this.classList.toggle('open')">
+      <div class="problem-header">
+        <div class="left">
+          <div class="problem-num" style="background:var(--blue)">P3</div>
+          <div class="problem-info">
+            <h3>TUMCloud Data Center</h3>
+            <div class="credits">11 Credits · PUE, Breakeven-Preis pro Server</div>
+          </div>
+        </div>
+        <div class="problem-tags">
+          <span class="tag calc">Rechnung</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="problem-body">
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">a) PUE berechnen</div>
+            <div class="sub-credits">Punkte variabel</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">Total DC Energy / IT Energy → Lighting (2MW) + Heating (10MW) + IT (4MW) = 16MW / 4MW = <strong>PUE 4.0</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 4</strong> — OPEX Tab: PUE-Rechnung identisch aufgebaut. In Ex4 war PUE = 1.5, hier muss man die Formel <span class="ex-name">PUE = Total / IT</span> selbst anwenden mit anderen Werten.</div>
+          </div>
+          <div class="sol-hint">Ex4: PUE = Total DC Electricity / IT Electricity → TE = IT Energy × PUE</div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">c) Minimaler monatlicher Server-Preis (Breakeven)</div>
+            <div class="sub-credits">~5 Credits</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">CAPEX (Server + DC-Bau amortisiert) + OPEX (Misc + Server-Strom + DC-Strom) = <strong>€459.75/server/month</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 4</strong> — Die <em>identische</em> TCO-Rechnung. CAPEX Tab (Hardware amortisiert + Building amortisiert) und OPEX Tab (Staff + Energy×PUE + Maintenance). Nur die konkreten Zahlen unterscheiden sich.</div>
+          </div>
+          <div class="sol-hint">Ex4 Ergebnis: €638.65/server/mo (CAPEX €448.13 + OPEX €190.53)
+Klausur: €459.75 (CAPEX €118.75 + OPEX €341)</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PROBLEM 4 ========== -->
+  <div class="cc">
+    <div class="problem" onclick="this.classList.toggle('open')">
+      <div class="problem-header">
+        <div class="left">
+          <div class="problem-num" style="background:var(--orange)">P4</div>
+          <div class="problem-info">
+            <h3>Instance Selection</h3>
+            <div class="credits">18 Credits · Burstable, Serverless, Lambda vs EC2</div>
+          </div>
+        </div>
+        <div class="problem-tags">
+          <span class="tag mixed">Misch</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="problem-body">
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">a) Burstable Breakeven-Utilization</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">c8.large (€1.00/h) vs t3.large (€0.3125 base + €0.50/vCPU-h burst). Breakeven: base 20% = 0.4 vCPU frei → bis 1.4 vCPU (70%) ist t3 günstiger.</div>
+          <div class="mapping partial">
+            <span class="strength-label concept">Konzept</span>
+            <div class="mapping-text"><strong>Exercise 2</strong> — Pricing Models (On-Demand vs Reserved). Das Konzept "wann lohnt sich Modell A vs B" ist identisch, aber Burstable-Breakeven war keine eigene Übungsaufgabe. Die Vorlesung behandelt es ausführlich.</div>
+          </div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">d) Serverless-Kosten für Config B</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">C_invoke + C_duration = €0.01 + (0.768 GB × 8s × €0.005/GB-s) ≈ €0.01 + €0.03 = <strong>€0.04</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Netflix Transcoding Exercise</strong> — Lambda Duration Cost identische Formel: <span class="ex-name">runtime × GB × $/GB-s + invocation</span>. Auch <strong>Exercise 5/6</strong> (Lambda Pricing, Fargate vs Lambda) übt genau dieses Muster.</div>
+          </div>
+          <div class="sol-hint">Netflix Ex: Lambda Duration = 349.57s × 8GB × $0.00001067 = $0.02983
+Klausur: 8s × 0.768GB × €0.005 = €0.03 + €0.01 invoke = €0.04</div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">e) EC2 vs Lambda — Throughput-Range</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">c8.large ist billiger wenn: Anzahl Jobs ≥ breakeven (€1.00/h ÷ €0.04/job) = 25/h UND ≤ Kapazität (3600/5s = 720/h). → Range <strong>[25; 720]</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label similar">Ähnlich</span>
+            <div class="mapping-text"><strong>Netflix Transcoding</strong> — Der Lambda vs EC2 Vergleich ist strukturell identisch (Kosten pro Job vs. Fixkosten pro Stunde). Auch <strong>Exercise 5</strong> (Lambda vs Fargate Breakeven) trainiert das gleiche Konzept.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PROBLEM 5 ========== -->
+  <div class="cc">
+    <div class="problem" onclick="this.classList.toggle('open')">
+      <div class="problem-header">
+        <div class="left">
+          <div class="problem-num" style="background:var(--purple)">P5</div>
+          <div class="problem-info">
+            <h3>LLM — TUMuchHelp Chatbot</h3>
+            <div class="credits">7 Credits · API Pricing, FLOP/s, Instance Selection</div>
+          </div>
+        </div>
+        <div class="problem-tags">
+          <span class="tag calc">Rechnung</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="problem-body">
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">b) API-Kosten berechnen</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">100 req/h × 720h × (500 input + 100 output) tokens → 36M input + 7.2M output × Pricing Sheet rates = <strong>$216/mo</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 8</strong> — Cost Comparison Tab: Bedrock On-Demand Rechnung ist identisch — Tokens/Monat × Input/Output-Rate. Nur das Pricing Sheet und die Token-Mengen unterscheiden sich.</div>
+          </div>
+          <div class="sol-hint">Ex8: 1.8B input × $0.72/M + 900M output × $0.72/M = $1,944
+Klausur: 36M × €0.003/K + 7.2M × €0.015/K = €108 + €108 = €216</div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">c) Most cost-effective Instance wählen</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">1. Compute: 600 tokens × 100 req × 4×10⁹ FLOP / 3600 = 6.67×10¹⁰ FLOP/s → braucht GPU.<br>2. RAM: 8B × 2 Bytes = 14.9 GB → braucht ≥16 GB VRAM.<br>→ <strong>g8.2xlarge</strong> (GUM200: 3.12×10¹¹ FLOP/s, 40 GB VRAM)</div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 8</strong> — Deployment Dashboard: Memory Requirements (Model Size = params × precision) und Throughput Analysis (FLOPs per token → required FLOP/s). Identische Methodik.</div>
+          </div>
+          <div class="sol-hint">Ex8: 70B × 1 byte (FP8) = 70 GB Model, 2×70B FLOP/token → FLOP/s check
+Klausur: 8B × 2 bytes = 16 GB, 4×10⁹ FLOP/token × throughput → FLOP/s check</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PROBLEM 6 ========== -->
+  <div class="cc">
+    <div class="problem" onclick="this.classList.toggle('open')">
+      <div class="problem-header">
+        <div class="left">
+          <div class="problem-num" style="background:var(--teal)">P6</div>
+          <div class="problem-info">
+            <h3>OLTP Database Systems</h3>
+            <div class="credits">16 Credits · SaaS Tiers, Self-Hosted mit RBS</div>
+          </div>
+        </div>
+        <div class="problem-tags">
+          <span class="tag mixed">Misch</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="problem-body">
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">d) OLTP SaaS — Standard vs IO-Optimized</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">Standard: Storage + Compute + IO = $3,072 + $360 + $2.40 = <strong>$3,434</strong><br>IO-Opt: $4,608 + $540 + $0 = <strong>$5,148</strong> → Standard gewinnt</div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 12</strong> — Aurora Tab: Identisches Schema — Standard (Storage + Compute + $/IO) vs IO-Optimized (höherer Storage/Compute, keine IO-Kosten). In Ex12 gewann IO-Opt bei 52K IOPS, hier gewinnt Standard bei nur 400 IOPS/Tag.</div>
+          </div>
+          <div class="sol-hint">Ex12: Aurora Standard $27,807 vs IO-Opt $1,202 (52K IOPS → IO-Opt gewinnt)
+Klausur: Standard $3,434 vs IO-Opt $5,148 (400 IOPS → Standard gewinnt)
+KEY INSIGHT: Bei wenigen IOPS → Standard; bei vielen IOPS → IO-Optimized!</div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">e) Self-Hosted: Instance + Remote Block Storage</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">RBS: 20 TB × $0.10/GB + 400 IOPS × $0.36 = $2,048 + $144. Instance: 8 vCPU → r8.2xlarge ($0.3125/h × 720 = $2,880). Total: <strong>$5,072</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 12</strong> — EBS Tab: Identische Struktur. gp3/io2 Storage + provisioned IOPS + Instance. Hier mit TUMCloud Pricing Sheet statt AWS, aber die Methodik ist 1:1.</div>
+          </div>
+          <div class="sol-hint">Ex12: gp3 = $338 EBS + $525 instance = $863 total
+Klausur: RBS = $2,192 + r8.2xlarge $2,880 = $5,072</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PROBLEM 7 ========== -->
+  <div class="cc">
+    <div class="problem" onclick="this.classList.toggle('open')">
+      <div class="problem-header">
+        <div class="left">
+          <div class="problem-num" style="background:var(--red)">P7</div>
+          <div class="problem-info">
+            <h3>Storage Application (Video Campaign)</h3>
+            <div class="credits">12 Credits · Object Store, Durability, Network</div>
+          </div>
+        </div>
+        <div class="problem-tags">
+          <span class="tag calc">Rechnung</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="problem-body">
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">a–c) Storage, PUT, GET Kosten (Standard + Express)</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">Standard: Storage $625 + PUT $1,000 + GET $40 = $1,665<br>Express: Storage $3,125 + PUT $8,312.50 + GET $118.13 = $11,555.63</div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 4</strong> (Object Store Tabs), <strong>Exercise 7</strong>, <strong>Exercise 11</strong> (S3 vs S3 Express) — Alle drei üben exakt dieses Muster: Storage-Kosten (GB × Preis) + Request-Kosten (Anzahl/1000 × Preis) + bei Express: Data Transfer (GB × Preis). Wurde in 3 Übungen wiederholt!</div>
+          </div>
+          <div class="sol-hint">Formeln identisch in allen Übungen:
+Storage = size_GB × $/GB/month
+Requests = count / 1000 × $/1000req
+Express Data = size_GB × $/GB (zusätzlich!)</div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">d) Durability — Wahrscheinlichkeit Objektverlust</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">p = 10⁻⁶ pro Objekt. P(≥1 Verlust) = 1 − (1 − 10⁻⁶)^200,000 = <strong>18.13%</strong></div>
+          <div class="mapping strong">
+            <span class="strength-label exact">Exakt</span>
+            <div class="mapping-text"><strong>Exercise 11</strong> — Durability Tab: Exakt die gleiche Formel <span class="ex-name">P(loss) = 1 − (1−p)^n</span>. In Ex11 mit AFR und HDDs, hier mit Objekt-Durability. Selbe Mathematik, anderer Kontext.</div>
+          </div>
+          <div class="sol-hint">Ex11: P(loss,1yr) = 1 − (1 − 0.003504)^142 = 39.3%
+Klausur: P(loss) = 1 − (1 − 10⁻⁶)^200000 = 18.13%</div>
+        </div>
+
+        <div class="sub">
+          <div class="sub-header">
+            <div class="sub-label">e–f) Network Kosten (Same Region + Cross-Region Fehler)</div>
+          </div>
+          <span class="sub-type calc-type">Rechnung</span>
+          <div class="sub-desc">e) Nur VM→Internet: 100K × 16MB / 1024 × $0.50 = <strong>$781.25</strong><br>f) + Cross-Region: zusätzlich OUT + IN Region = <strong>$1,718.75</strong></div>
+          <div class="mapping partial">
+            <span class="strength-label concept">Konzept</span>
+            <div class="mapping-text">Kein direktes Übungsäquivalent mit Netzwerkkosten-Berechnung. Das Pricing Sheet (Network Charges) muss man kennen. <strong>Exercise 12</strong> (HADR) behandelt Inter-AZ Kosten, aber inter-Region + Internet Egress war neu in der Klausur.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="cc">
+    <div style="padding:24px">
+      <h2 style="font-size:20px;font-weight:900;margin-bottom:16px">Zusammenfassung: Was lernen wir daraus?</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px">
+          <div style="font-weight:700;color:#166534;margin-bottom:8px;font-size:15px">🎯 Highest-Value Exercises</div>
+          <div style="font-size:13px;color:#166534;line-height:1.8">
+            <strong>Exercise 4</strong> → P3 (TCO) + P7a-c (Object Store) = ~17 Credits<br>
+            <strong>Exercise 12</strong> → P6d-e (OLTP + RBS) = ~12 Credits<br>
+            <strong>Exercise 8</strong> → P5 (LLM) = 7 Credits<br>
+            <strong>Exercise 11</strong> → P7d (Durability) + P7a-c = ~8 Credits<br>
+            <strong>Netflix Transcoding</strong> → P4d-e (Serverless) = ~7 Credits
+          </div>
+        </div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px">
+          <div style="font-weight:700;color:#1d4ed8;margin-bottom:8px;font-size:15px">📊 Wiederkehrende Muster</div>
+          <div style="font-size:13px;color:#1d4ed8;line-height:1.8">
+            <strong>TCO = CAPEX + OPEX</strong> (Amortisierung!)<br>
+            <strong>Standard vs IO-Opt</strong> (wenig IO → Standard!)<br>
+            <strong>S3 vs S3 Express</strong> (Express nur bei IO-heavy)<br>
+            <strong>Lambda: invoke + GB×s×rate</strong><br>
+            <strong>Durability: 1−(1−p)^n</strong><br>
+            <strong>LLM: params×bytes = VRAM, FLOP/token</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:16px">
+        <div style="font-weight:700;color:#92400e;margin-bottom:8px;font-size:15px">⚠️ Was war NEU / nicht direkt in Übungen?</div>
+        <div style="font-size:13px;color:#92400e;line-height:1.8">
+          <strong>P4a</strong> Burstable Breakeven — Konzept aus Vorlesung, keine Übungsrechnung dazu<br>
+          <strong>P7e-f</strong> Network Kosten (Internet Egress + Cross-Region) — Pricing Sheet lesen können, keine Übung dazu<br>
+          <strong>P4e</strong> Throughput-Range [min; max] — Logik aus Netflix/Ex5 ableitbar, aber der Doppel-Bound war neu
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Start with only P3 open
+</script>
+</body>
+</html>

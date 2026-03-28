@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 4 — TCO &amp; Object Store Comparison</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--amber:#b45309;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}.sr.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}.ds.am{border-left:4px solid var(--amber)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}.st.amber{color:var(--amber)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}.tr .amt.amber{color:var(--amber)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){
+    .sr.c2,.sr.c3,.sr.c4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:155px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>TCO Calculation &amp; Object Store Comparison</h1>
+    <div class="sub">Exercise 4 · On-Premise Data Center TCO + S3 Standard vs S3 Express vs Hetzner</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('tco')">TCO Overview</button>
+    <button class="tab" onclick="showTab('capex')">CAPEX Details</button>
+    <button class="tab" onclick="showTab('opex')">OPEX Details</button>
+    <button class="tab" onclick="showTab('s1')">Object Store — 20 TB</button>
+    <button class="tab" onclick="showTab('s2')">Object Store — 5 TB</button>
+  </div>
+
+  <!-- ========== TCO OVERVIEW ========== -->
+  <div id="tab-tco" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Servers:</strong> 4,000</div>
+      <div class="pm"><strong>Servers/Rack:</strong> 42</div>
+      <div class="pm"><strong>Data Center:</strong> 3 MW</div>
+      <div class="pm"><strong>Server Lifetime:</strong> 3 years</div>
+      <div class="pm"><strong>Building Lifetime:</strong> 10 years</div>
+    </div>
+
+    <div class="sr c4">
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">Total Cost/Server/Month</div>
+        <div class="tc">€638.65</div>
+        <div class="nt">CAPEX + OPEX</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">CAPEX Portion</div>
+        <div class="tc">€448.13</div>
+        <div class="nt">per server / month</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">OPEX Portion</div>
+        <div class="tc">€190.53</div>
+        <div class="nt">per server / month</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--m)">Number of Servers</div>
+        <div class="tc">4,000</div>
+        <div class="nt">in the data center</div>
+      </div>
+    </div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Total On-Premise Cost</div><div class="sv">€638.65/server/month</div></div>
+      <div class="li"><div class="lab">CAPEX (Hardware + Building)</div><div class="frm">€354.38 + €93.75</div><div class="amt">€448.13</div></div>
+      <div class="li"><div class="lab">OPEX (Staff + Energy + Maint.)</div><div class="frm">€13.89 + €116.64 + €60.00</div><div class="amt">€190.53</div></div>
+      <div class="tr"><div class="lab">Total per Server/Month</div><div class="frm">€448.13 + €190.53</div><div class="amt red">€638.65</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Cost Split:</strong> CAPEX is 70% of total cost — dominated by server hardware (€354/mo). Among OPEX, energy (€117/mo including PUE) is the biggest factor, followed by data center maintenance (€60) and staffing (€14).</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== CAPEX DETAILS ========== -->
+  <div id="tab-capex" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Tag:</strong> one-time, amortized monthly</div>
+      <div class="pm"><strong>Server Lifetime:</strong> 3 years</div>
+      <div class="pm"><strong>Building Lifetime:</strong> 10 years</div>
+    </div>
+    <div class="ib">Capital expenses: server hardware + data center construction, amortized over lifetime</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">Hardware/Month</div>
+        <div class="tc">€354.38</div>
+        <div class="nt">server + rack + other HW</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">Construction/Month</div>
+        <div class="tc">€93.75</div>
+        <div class="nt">building amortized 10 years</div>
+      </div>
+    </div>
+
+    <!-- Server Hardware -->
+    <div class="subh">Server Hardware</div>
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Monthly Cost per Server (Hardware)</div><div class="sv">€354.38</div></div>
+      <div class="li"><div class="lab">Lifetime</div><div class="frm">given</div><div class="amt">3 years</div></div>
+      <div class="li"><div class="lab">Cost of Server (50% label)</div><div class="frm">given / 2</div><div class="amt">€12,602.75</div></div>
+      <div class="li"><div class="lab">Cost of Rack</div><div class="frm">given</div><div class="amt">€1,500</div></div>
+      <div class="li"><div class="lab">Servers per Rack</div><div class="frm">given</div><div class="amt">42</div></div>
+      <div class="li"><div class="lab">Other Hardware</div><div class="frm">given</div><div class="amt">€5,000</div></div>
+      <div class="li sec"><div class="lab">Amortized Monthly:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Cost Server [€/month]</div><div class="frm">€12,602.75 / (3 × 12)</div><div class="amt">€350.08</div></div>
+      <div class="li"><div class="lab">Cost Other HW [€/month]</div><div class="frm">(rack + other) / (servers × lifetime × 12)</div><div class="amt">€4.30</div></div>
+      <div class="tr"><div class="lab">Monthly Hardware Total</div><div class="frm">€350.08 + €4.30</div><div class="amt blue">€354.38</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Other HW Formula</div>
+      (rack_cost / servers_per_rack + other_hw) / (lifetime × 12)<br>
+      (€1,500 / 42 + €5,000) / (3 × 12) = €4.30
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Data Center Construction -->
+    <div class="subh">Data Center Construction</div>
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">Construction Cost per Server/Month</div><div class="sv">€93.75</div></div>
+      <div class="li"><div class="lab">Lifetime</div><div class="frm">given</div><div class="amt">10 years</div></div>
+      <div class="li"><div class="lab">Data Center Size</div><div class="frm">given</div><div class="amt">3 MW</div></div>
+      <div class="li"><div class="lab">Construction Cost</div><div class="frm">given</div><div class="amt">€15/W</div></div>
+      <div class="li"><div class="lab">Total Construction</div><div class="frm">3 MW × 1,000,000 × €15</div><div class="amt">€45,000,000</div></div>
+      <div class="li"><div class="lab">Per Server</div><div class="frm">€45M / 4,000</div><div class="amt">€11,250</div></div>
+      <div class="tr"><div class="lab">Per Server/Month</div><div class="frm">€11,250 / (10 × 12)</div><div class="amt purple">€93.75</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Aggregated CAPEX</div><div class="sv">€448.13/server/month</div></div>
+      <div class="li"><div class="lab">Hardware</div><div class="frm"></div><div class="amt">€354.38</div></div>
+      <div class="li"><div class="lab">Construction</div><div class="frm"></div><div class="amt">€93.75</div></div>
+      <div class="tr"><div class="lab">Total CAPEX</div><div class="frm">€354.38 + €93.75</div><div class="amt red">€448.13</div></div>
+    </div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== OPEX DETAILS ========== -->
+  <div id="tab-opex" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Tag:</strong> recurring monthly</div>
+      <div class="pm"><strong>PUE:</strong> 1.5</div>
+      <div class="pm"><strong>Electricity:</strong> €0.20/kWh</div>
+      <div class="pm"><strong>Admin Salary:</strong> €70,000/yr</div>
+    </div>
+    <div class="ib">Operational expenses: staff, energy (server + PUE overhead), data center maintenance</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">Staff</div>
+        <div class="tc">€13.89</div>
+        <div class="nt">per server / month</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">Energy (with PUE)</div>
+        <div class="tc">€116.64</div>
+        <div class="nt">per server / month</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--slate)">Maintenance</div>
+        <div class="tc">€60.00</div>
+        <div class="nt">per server / month</div>
+      </div>
+    </div>
+
+    <!-- Staff -->
+    <div class="subh">Staff Cost</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Staff Cost per Server/Month</div><div class="sv">€13.89</div></div>
+      <div class="li"><div class="lab">Sysadmin Salary</div><div class="frm">given</div><div class="amt">€70,000/yr</div></div>
+      <div class="li"><div class="lab">Sysadmin Salary/Month</div><div class="frm">70,000 / 12</div><div class="amt">€5,833.33</div></div>
+      <div class="li"><div class="lab">Racks per Admin</div><div class="frm">given</div><div class="amt">10 racks</div></div>
+      <div class="li"><div class="lab">Staff Cost per Rack/Month</div><div class="frm">€5,833.33 / 10</div><div class="amt">€583.33</div></div>
+      <div class="tr"><div class="lab">Staff Cost per Server/Month</div><div class="frm">€583.33 / 42 servers_per_rack</div><div class="amt green">€13.89</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Energy -->
+    <div class="subh">Energy — Server Power</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Server Energy Cost</div><div class="sv">€77.76/server/month</div></div>
+      <div class="li"><div class="lab">Power per Socket</div><div class="frm">given</div><div class="amt">360 W</div></div>
+      <div class="li"><div class="lab">Number of Sockets</div><div class="frm">given</div><div class="amt">2</div></div>
+      <div class="li"><div class="lab">Total Power Consumption</div><div class="frm">360 × 2</div><div class="amt">720 W</div></div>
+      <div class="li"><div class="lab">Avg. Power Draw</div><div class="frm">given</div><div class="amt">75%</div></div>
+      <div class="li"><div class="lab">Power Draw per Hour</div><div class="frm">720 W × 0.75 / 1000</div><div class="amt">0.54 kWh</div></div>
+      <div class="li"><div class="lab">Power Draw per Month</div><div class="frm">0.54 kWh × 24h × 30d</div><div class="amt">388.8 kWh</div></div>
+      <div class="li"><div class="lab">Electricity Price</div><div class="frm">given</div><div class="amt">€0.20/kWh</div></div>
+      <div class="tr"><div class="lab">Server Energy Cost/Month</div><div class="frm">388.8 × €0.20</div><div class="amt orange">€77.76</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">Energy — PUE Overhead</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Total DC Energy per Server/Month</div><div class="sv">€116.64</div></div>
+      <div class="li"><div class="lab">PUE</div><div class="frm">Total DC Energy / IT Energy</div><div class="amt">1.5</div></div>
+      <div class="tr"><div class="lab">Total Energy (with PUE)</div><div class="frm">€77.76 × 1.5</div><div class="amt orange">€116.64</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">PUE Formula</div>
+      PUE = Total DC Electricity / IT Electricity &nbsp;→&nbsp; Total Energy = IT Energy × PUE
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Maintenance -->
+    <div class="subh">Maintenance (DC OPEX excl. Electricity)</div>
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">DC OPEX per Server/Month</div><div class="sv">€60.00</div></div>
+      <div class="li"><div class="lab">DC OPEX w/o Electricity</div><div class="frm">given</div><div class="amt">€0.08/W</div></div>
+      <div class="li"><div class="lab">Total DC OPEX</div><div class="frm">3 MW × 1,000,000 × €0.08</div><div class="amt">€240,000/mo</div></div>
+      <div class="tr"><div class="lab">Per Server</div><div class="frm">€240,000 / 4,000 servers</div><div class="amt slate">€60.00</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Aggregated OPEX</div><div class="sv">€190.53/server/month</div></div>
+      <div class="li"><div class="lab">Staff</div><div class="frm"></div><div class="amt">€13.89</div></div>
+      <div class="li"><div class="lab">Energy (incl. PUE)</div><div class="frm"></div><div class="amt">€116.64</div></div>
+      <div class="li"><div class="lab">Maintenance</div><div class="frm"></div><div class="amt">€60.00</div></div>
+      <div class="tr"><div class="lab">Total OPEX</div><div class="frm">€13.89 + €116.64 + €60.00</div><div class="amt red">€190.53</div></div>
+    </div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== OBJECT STORE — 20 TB ========== -->
+  <div id="tab-s1" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Storage:</strong> 20 TB/month</div>
+      <div class="pm"><strong>GET:</strong> 4,000 req/h · avg 8 MB</div>
+      <div class="pm"><strong>PUT:</strong> 1,000 req/h · avg 32 MB</div>
+      <div class="pm"><strong>Hours/month:</strong> 720</div>
+    </div>
+    <div class="ib">⚠ Requests come from within cloud provider infra → no egress charges</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">S3 Standard</div>
+        <div class="tc">$475.79</div>
+        <div class="nt">storage dominates</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">S3 Express One Zone</div>
+        <div class="tc">$3,488.00</div>
+        <div class="nt">7× storage premium kills it</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--teal)">Hetzner <span class="badge green">Cheapest</span></div>
+        <div class="tc">$97.49</div>
+        <div class="nt">flat model + free requests</div>
+      </div>
+    </div>
+
+    <!-- S3 Standard -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">S3 Standard</div><div class="sv">$475.79</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">20 TB × 1024 GB/TB × $0.023/GB</div><div class="amt">$471.04</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">4000/h × 720h × ($0.0004/1000)</div><div class="amt">$1.15</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">1000/h × 720h × ($0.005/1000)</div><div class="amt">$3.60</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt blue">$475.79</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- S3 Express -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">S3 Express One Zone</div><div class="sv">$3,488.00</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">20 TB × 1024 GB/TB × $0.16/GB</div><div class="amt">$3,276.80</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">4000/h × 720h × ($0.0002/1000)</div><div class="amt">$0.58</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">1000/h × 720h × ($0.0025/1000)</div><div class="amt">$1.80</div></div>
+      <div class="li"><div class="lab">GET data transfer</div><div class="frm">4000×720×7.5 MB/1024 = 21,094 GB × $0.0015</div><div class="amt">$31.64</div></div>
+      <div class="li"><div class="lab">PUT data transfer</div><div class="frm">1000×720×31.5 MB/1024 = 22,148 GB × $0.008</div><div class="amt">$177.19</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt orange">$3,488.00</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Hetzner -->
+    <div class="ds tl">
+      <div class="sh"><div class="st teal">Hetzner Object Storage</div><div class="sv">$97.49</div></div>
+      <div class="li"><div class="lab">Base fee</div><div class="frm">$0.0081/h × 720h</div><div class="amt">$5.83</div></div>
+      <div class="li"><div class="lab">Free quota</div><div class="frm">1 TB free storage per month</div><div class="amt">−$0</div></div>
+      <div class="li"><div class="lab">Paid storage</div><div class="frm">(20−1) TB × 720h × $0.0067/TB-h</div><div class="amt">$91.66</div></div>
+      <div class="li"><div class="lab">API requests</div><div class="frm">No charge for GET/PUT</div><div class="amt">$0.00</div></div>
+      <div class="li"><div class="lab">Egress</div><div class="frm">Within provider → no charge</div><div class="amt">$0.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt teal">$97.49</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Result:</strong> Hetzner is 4.9× cheaper than S3 Standard and 35.8× cheaper than S3 Express. Storage cost dominates all three — request costs are marginal at this workload.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== OBJECT STORE — 5 TB ========== -->
+  <div id="tab-s2" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Storage:</strong> 5 TB/month</div>
+      <div class="pm"><strong>GET:</strong> 20,000 req/h · avg 16 KB</div>
+      <div class="pm"><strong>PUT:</strong> 500 req/h · avg 2 MB</div>
+      <div class="pm"><strong>Hours/month:</strong> 720</div>
+    </div>
+    <div class="ib">Scenario 2: Smaller storage, much higher GET rate, much smaller object sizes</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">S3 Standard</div>
+        <div class="tc">$125.32</div>
+        <div class="nt">still cheapest AWS option</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">S3 Express One Zone</div>
+        <div class="tc">$827.20</div>
+        <div class="nt">storage premium still dominates</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--teal)">Hetzner <span class="badge green">Cheapest</span></div>
+        <div class="tc">$24.12</div>
+        <div class="nt">flat pricing wins again</div>
+      </div>
+    </div>
+
+    <!-- S3 Standard -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">S3 Standard</div><div class="sv">$125.32</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">5 TB × 1024 GB/TB × $0.023/GB</div><div class="amt">$117.76</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">20,000/h × 720h × ($0.0004/1000)</div><div class="amt">$5.76</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">500/h × 720h × ($0.005/1000)</div><div class="amt">$1.80</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt blue">$125.32</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- S3 Express -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">S3 Express One Zone</div><div class="sv">$827.20</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">5 TB × 1024 GB/TB × $0.16/GB</div><div class="amt">$819.20</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">20,000/h × 720h × ($0.0002/1000)</div><div class="amt">$2.88</div></div>
+      <div class="li"><div class="lab">GET data transfer</div><div class="frm">small objects, net negative → capped at 0</div><div class="amt">$0.00</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">500/h × 720h × ($0.0025/1000)</div><div class="amt">$0.90</div></div>
+      <div class="li"><div class="lab">PUT data transfer</div><div class="frm">500×720×1.5 MB/1024 = 527 GB × $0.008</div><div class="amt">$4.22</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt orange">$827.20</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Hetzner -->
+    <div class="ds tl">
+      <div class="sh"><div class="st teal">Hetzner Object Storage</div><div class="sv">$24.12</div></div>
+      <div class="li"><div class="lab">Base fee</div><div class="frm">$0.0081/h × 720h</div><div class="amt">$5.83</div></div>
+      <div class="li"><div class="lab">Free quota</div><div class="frm">1 TB free storage</div><div class="amt">−$0</div></div>
+      <div class="li"><div class="lab">Paid storage</div><div class="frm">(5−1) TB × 720h × $0.0067/TB-h</div><div class="amt">$19.30</div></div>
+      <div class="li"><div class="lab">API requests</div><div class="frm">No charge</div><div class="amt">$0.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt teal">$24.12</div></div>
+    </div>
+
+    <div class="hb or"><strong>Scenario 2 Insight:</strong> Even with 5× more GET requests (20K/h vs 4K/h), request costs barely matter — they're $5.76 for S3 Standard vs $117.76 for storage. The ratio stays similar: Hetzner is ~5× cheaper than S3 Standard. S3 Express never makes sense for storage-heavy workloads.</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

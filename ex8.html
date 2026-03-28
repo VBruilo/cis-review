@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 8 — LLM Training, Inference &amp; Deployment</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--card-border:#e5e5e5;--section-bg:#faf8f5;
+    --text:#1a1a1a;--muted:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#f59e0b;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;
+    --hl-yellow:#fef9c3;--hl-blue:#eff6ff;--hl-green:#f0fdf4;--hl-red:#fef2f2;--hl-purple:#f5f3ff;--hl-orange:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+  .container{max-width:960px;margin:0 auto}
+  .header h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .header .subtitle{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 18px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}
+  .tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+
+  .content-card{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+
+  /* Bars */
+  .params-bar{background:var(--hl-yellow);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .param{font-size:13px;color:var(--muted)}.param strong{color:var(--text);font-weight:700}
+  .info-banner{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--card-border)}
+
+  /* Summary row */
+  .summary-row{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--card-border)}
+  .summary-row.cols-2{grid-template-columns:1fr 1fr}
+  .summary-row.cols-3{grid-template-columns:1fr 1fr 1fr}
+  .summary-row.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .summary-card{border:1.5px solid var(--card-border);border-radius:10px;padding:16px;position:relative}
+  .summary-card .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .summary-card .tc{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .summary-card .note{font-size:12px;color:var(--muted)}
+  .cheapest{display:inline-block;background:#dcfce7;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+
+  /* Sections */
+  .detail-section{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--card-border)}
+  .ds-blue{border-left:4px solid var(--blue)}
+  .ds-purple{border-left:4px solid var(--purple)}
+  .ds-orange{border-left:4px solid var(--orange)}
+  .ds-teal{border-left:4px solid var(--teal)}
+  .ds-green{border-left:4px solid var(--green)}
+  .ds-red{border-left:4px solid var(--red)}
+  .ds-pink{border-left:4px solid var(--pink)}
+
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--section-bg);border-bottom:1px solid var(--card-border)}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:#b45309}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+
+  .li{display:grid;grid-template-columns:200px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .form{font-family:var(--mono);font-size:12.5px;color:var(--muted);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+
+  .tr{display:grid;grid-template-columns:200px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--card-border)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:#b45309}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}
+
+  .spacer{height:8px}.bpad{padding-bottom:24px}
+
+  /* highlight box */
+  .hbox{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hbox.blue-bg{background:var(--hl-blue);color:#1e40af}
+  .hbox.purple-bg{background:var(--hl-purple);color:#5b21b6}
+  .hbox.green-bg{background:var(--hl-green);color:#166534}
+  .hbox.red-bg{background:var(--hl-red);color:#991b1b}
+  .hbox.orange-bg{background:var(--hl-orange);color:#92400e}
+
+  /* sub-header */
+  .sub-header{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--muted)}
+
+  /* formula callout */
+  .formula-box{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .formula-box .label{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+
+  /* table */
+  .mtable{width:100%;border-collapse:collapse;font-size:13px}
+  .mtable th{background:var(--section-bg);font-weight:700;text-align:left;padding:10px 14px;border-bottom:1.5px solid var(--card-border);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .mtable td{padding:9px 14px;border-bottom:1px solid #f0f0f0;font-family:var(--mono);font-size:13px}
+  .mtable td:first-child{font-family:var(--sans);font-weight:600}
+  .mtable tr:last-child td{border-bottom:none}
+  .mtable .winner{background:#f0fdf4}
+
+  .hidden{display:none}
+
+  @media(max-width:700px){
+    .summary-row.cols-2,.summary-row.cols-3,.summary-row.cols-4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:140px 1fr auto}
+    .li .form{font-size:11px}
+    .params-bar{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>LLM Training, Inference &amp; Deployment</h1>
+    <div class="subtitle">Exercise 8 · Training Cost, KV-Cache Sizing, GPU Memory &amp; Deployment Cost Comparison</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('training')">Training Cost</button>
+    <button class="tab" onclick="showTab('kv')">KV-Cache</button>
+    <button class="tab" onclick="showTab('deploy')">Deployment Dashboard</button>
+    <button class="tab" onclick="showTab('cost')">Cost Comparison</button>
+  </div>
+
+  <!-- ===================== TAB 1: TRAINING ===================== -->
+  <div id="tab-training" class="content-card">
+
+    <div class="params-bar">
+      <div class="param"><strong>GPU Hours:</strong> 1,300,000</div>
+      <div class="param"><strong>FLOP/s per GPU (BF16):</strong> 989.4 TFLOP/s</div>
+      <div class="param"><strong>Machine:</strong> 8 × 312 TFLOP/s = 2,496 TFLOP/s</div>
+      <div class="param"><strong>Cost:</strong> $11.24/h → $0.00312/s</div>
+    </div>
+
+    <div class="summary-row cols-2">
+      <div class="summary-card">
+        <div class="pn" style="color:var(--blue)">Total Training Cost</div>
+        <div class="tc">$5,792,113</div>
+        <div class="note">~$5.8M for 1.3M GPU-hours</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--purple)">Wall-Clock Time (single machine)</div>
+        <div class="tc">~58.8 years</div>
+        <div class="note">515,313 hours on one 8-GPU node</div>
+      </div>
+    </div>
+
+    <!-- Formula 1 -->
+    <div class="sub-header">Formula 1: FLOPS from GPU Hours</div>
+    <div class="formula-box">
+      <div class="label">Core Formula</div>
+      FLOPS = GPU_Hours × 3600 s/h × FLOP/s_per_GPU
+    </div>
+
+    <div class="detail-section ds-blue">
+      <div class="sh">
+        <div class="st blue">Training Computation</div>
+        <div class="sv">4.63 × 10²⁴ FLOPs</div>
+      </div>
+      <div class="li">
+        <div class="lab">Total FLOPs</div>
+        <div class="form">1,300,000 h × 3600 s × 989.4 × 10¹² FLOP/s</div>
+        <div class="amt">4.63 × 10²⁴</div>
+      </div>
+      <div class="li">
+        <div class="lab">Time (single machine)</div>
+        <div class="form">4.63×10²⁴ / 2,496×10¹² FLOP/s</div>
+        <div class="amt">1,855,125,000 s</div>
+      </div>
+      <div class="li">
+        <div class="lab">→ in hours</div>
+        <div class="form">÷ 3600</div>
+        <div class="amt">515,313 h</div>
+      </div>
+      <div class="li">
+        <div class="lab">→ in days</div>
+        <div class="form">÷ 24</div>
+        <div class="amt">21,471 days</div>
+      </div>
+      <div class="li">
+        <div class="lab">→ in years</div>
+        <div class="form">÷ 365</div>
+        <div class="amt">58.8 years</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total Cost</div>
+        <div class="form">1,855,125,000 s × $0.00312/s</div>
+        <div class="amt blue">$5,792,113</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Formula 2 -->
+    <div class="sub-header">Formula 2: FLOPS = 6 × N × D (Chinchilla estimate)</div>
+    <div class="formula-box">
+      <div class="label">Scaling Law Formula</div>
+      FLOPS = 6 × N (params) × D (tokens)
+    </div>
+
+    <div class="detail-section ds-purple">
+      <div class="sh">
+        <div class="st purple">Chinchilla Estimate (8B model)</div>
+        <div class="sv">7.2 × 10²³ FLOPs</div>
+      </div>
+      <div class="li">
+        <div class="lab">Parameters (N)</div>
+        <div class="form">given</div>
+        <div class="amt">8 × 10⁹</div>
+      </div>
+      <div class="li">
+        <div class="lab">Training Tokens (D)</div>
+        <div class="form">given</div>
+        <div class="amt">15 × 10¹²</div>
+      </div>
+      <div class="li">
+        <div class="lab">FLOPs</div>
+        <div class="form">6 × 8×10⁹ × 15×10¹²</div>
+        <div class="amt">7.2 × 10²³</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Ratio vs. Formula 1</div>
+        <div class="form">7.2×10²³ / 4.63×10²⁴</div>
+        <div class="amt purple">≈ 15.5%</div>
+      </div>
+    </div>
+
+    <div class="hbox blue-bg">
+      <strong>Insight:</strong> The Chinchilla estimate (6ND) gives only ~15.5% of the actual GPU-hours-based FLOPs. The discrepancy comes from overhead (communication, memory ops, non-MHA compute) that the simplified formula doesn't capture.
+    </div>
+
+    <div class="bpad"></div>
+  </div>
+
+  <!-- ===================== TAB 2: KV-CACHE ===================== -->
+  <div id="tab-kv" class="content-card hidden">
+
+    <div class="params-bar">
+      <div class="param"><strong>Model:</strong> LLaMA-style 8B</div>
+      <div class="param"><strong>Layers:</strong> 32</div>
+      <div class="param"><strong>KV Heads:</strong> 8</div>
+      <div class="param"><strong>Dim per Head:</strong> 128</div>
+      <div class="param"><strong>Precision:</strong> 2 Bytes (FP16)</div>
+    </div>
+
+    <div class="info-banner">
+      KV-Cache formula: 2 × num_layers × num_kv_heads × dim_head × precision_bytes × context_length
+    </div>
+
+    <div class="summary-row cols-2">
+      <div class="summary-card">
+        <div class="pn" style="color:var(--orange)">KV-Cache (100K context)</div>
+        <div class="tc">13.1 GB</div>
+        <div class="note">per single request/batch</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--teal)">Model Size (FP16)</div>
+        <div class="tc">16 GB</div>
+        <div class="note">8B params × 2 bytes</div>
+      </div>
+    </div>
+
+    <div class="detail-section ds-orange">
+      <div class="sh">
+        <div class="st orange">KV-Cache Calculation</div>
+        <div class="sv">13.1 GB</div>
+      </div>
+      <div class="li">
+        <div class="lab">Layers</div>
+        <div class="form">given</div>
+        <div class="amt">32</div>
+      </div>
+      <div class="li">
+        <div class="lab">KV Heads</div>
+        <div class="form">given</div>
+        <div class="amt">8</div>
+      </div>
+      <div class="li">
+        <div class="lab">Dim per Head</div>
+        <div class="form">hidden_size / attn_heads = 4096 / 32</div>
+        <div class="amt">128</div>
+      </div>
+      <div class="li">
+        <div class="lab">Precision</div>
+        <div class="form">FP16</div>
+        <div class="amt">2 Bytes</div>
+      </div>
+      <div class="li">
+        <div class="lab">Context Window</div>
+        <div class="form">given</div>
+        <div class="amt">100,000</div>
+      </div>
+      <div class="tr">
+        <div class="lab">KV-Cache Size</div>
+        <div class="form">2 × 32 × 8 × 128 × 2 × 100,000</div>
+        <div class="amt orange">13.1 GB</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="detail-section ds-teal">
+      <div class="sh">
+        <div class="st teal">Model Checkpoint Size</div>
+        <div class="sv">16 GB</div>
+      </div>
+      <div class="li">
+        <div class="lab">Parameters</div>
+        <div class="form">given</div>
+        <div class="amt">8 × 10⁹</div>
+      </div>
+      <div class="li">
+        <div class="lab">Precision</div>
+        <div class="form">FP16</div>
+        <div class="amt">2 Bytes</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Model Size</div>
+        <div class="form">8×10⁹ × 2 Bytes</div>
+        <div class="amt teal">16 GB</div>
+      </div>
+    </div>
+
+    <div class="hbox orange-bg">
+      <strong>Key Insight:</strong> At 100K context length, the KV-Cache (13.1 GB) is almost as large as the model itself (16 GB). This is why long-context inference is so memory-hungry — the cache can easily exceed model size.
+    </div>
+
+    <div class="bpad"></div>
+  </div>
+
+  <!-- ===================== TAB 3: DEPLOYMENT DASHBOARD ===================== -->
+  <div id="tab-deploy" class="content-card hidden">
+
+    <div class="params-bar">
+      <div class="param"><strong>Model:</strong> LLaMA 3.1 70B</div>
+      <div class="param"><strong>Quantization:</strong> FP8</div>
+      <div class="param"><strong>GPU:</strong> 8× H100 (80 GB each)</div>
+      <div class="param"><strong>Concurrent Requests:</strong> 20</div>
+    </div>
+
+    <div class="info-banner">
+      Avg 20,000 req/day · 200 input tokens · 400 output tokens · 4,000 context length · 22 business days/month
+    </div>
+
+    <div class="summary-row cols-3">
+      <div class="summary-card">
+        <div class="pn" style="color:var(--blue)">Available VRAM</div>
+        <div class="tc">640 GB</div>
+        <div class="note">8 × H100 × 80 GB</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--red)">Needed Memory</div>
+        <div class="tc">82.5 GB</div>
+        <div class="note">70 GB model + 12.5 GB KV</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--green)">Available TFLOP/s</div>
+        <div class="tc">15,832</div>
+        <div class="note">8 × H100 × 989.5 × 2 (FP8)</div>
+      </div>
+    </div>
+
+    <!-- Memory breakdown -->
+    <div class="detail-section ds-red">
+      <div class="sh">
+        <div class="st red">Memory Requirements</div>
+        <div class="sv">82.52 GB</div>
+      </div>
+      <div class="li">
+        <div class="lab">Model Checkpoint (FP8)</div>
+        <div class="form">70B × 1 byte (FP8)</div>
+        <div class="amt">70 GB</div>
+      </div>
+      <div class="li">
+        <div class="lab">KV-Cache per Request</div>
+        <div class="form">see KV formula with 4K context</div>
+        <div class="amt">0.626 GB</div>
+      </div>
+      <div class="li">
+        <div class="lab">Total KV-Cache</div>
+        <div class="form">20 concurrent × 0.626 GB</div>
+        <div class="amt">12.52 GB</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total Needed</div>
+        <div class="form">70 + 12.52</div>
+        <div class="amt red">82.52 GB</div>
+      </div>
+    </div>
+
+    <div class="hbox green-bg">
+      <strong>✓ Fits:</strong> 82.52 GB needed vs. 640 GB available — plenty of headroom on 8× H100.
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Throughput analysis -->
+    <div class="detail-section ds-green">
+      <div class="sh">
+        <div class="st green">Throughput Analysis</div>
+      </div>
+      <div class="li">
+        <div class="lab">FLOPs per token</div>
+        <div class="form">2 × 70B params (input processing)</div>
+        <div class="amt">140 GFLOPS</div>
+      </div>
+      <div class="li">
+        <div class="lab">Theoretical TPS</div>
+        <div class="form">15,832 TFLOP/s ÷ 140 GFLOP/token</div>
+        <div class="amt">113,086 tok/s</div>
+      </div>
+      <div class="li">
+        <div class="lab">Per-request TPS</div>
+        <div class="form">113,086 / 20 concurrent</div>
+        <div class="amt">5,654 tok/s</div>
+      </div>
+      <div class="li">
+        <div class="lab">Response time</div>
+        <div class="form">600 tokens / 5,654 tok/s</div>
+        <div class="amt">0.106 s</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="detail-section ds-blue">
+      <div class="sh">
+        <div class="st blue">Daily Capacity Check</div>
+      </div>
+      <div class="li">
+        <div class="lab">Daily tokens needed</div>
+        <div class="form">20,000 req × (200+400) tokens</div>
+        <div class="amt">12,000,000</div>
+      </div>
+      <div class="li">
+        <div class="lab">Required throughput</div>
+        <div class="form">12M tokens / 86,400 s</div>
+        <div class="amt">138.9 tok/s</div>
+      </div>
+      <div class="li">
+        <div class="lab">Required per-request</div>
+        <div class="form">138.9 / 20 concurrent</div>
+        <div class="amt">6.94 tok/s</div>
+      </div>
+    </div>
+
+    <div class="hbox blue-bg">
+      <strong>✓ Capacity OK:</strong> Need 138.9 tok/s, have 113,086 tok/s theoretical — ~800× headroom if requests are evenly distributed.
+    </div>
+
+    <div class="bpad"></div>
+  </div>
+
+  <!-- ===================== TAB 4: COST COMPARISON ===================== -->
+  <div id="tab-cost" class="content-card hidden">
+
+    <div class="params-bar">
+      <div class="param"><strong>Model:</strong> 70B (FP8)</div>
+      <div class="param"><strong>Requests/day:</strong> 150,000</div>
+      <div class="param"><strong>Avg Input:</strong> 400 tokens</div>
+      <div class="param"><strong>Avg Output:</strong> 200 tokens</div>
+      <div class="param"><strong>Business Days:</strong> 30/month</div>
+    </div>
+
+    <div class="info-banner">
+      Monthly: 4,500,000 requests · 1.8B input tokens · 900M output tokens
+    </div>
+
+    <div class="summary-row cols-4">
+      <div class="summary-card">
+        <div class="pn" style="color:var(--orange)">Bedrock On-Demand</div>
+        <div class="tc">$1,944</div>
+        <div class="note">pay-per-token</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--red)">Bedrock Provisioned</div>
+        <div class="tc">$9,548</div>
+        <div class="note">1 model unit, always-on</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--blue)">EC2 g5.12xlarge</div>
+        <div class="tc">$2,609</div>
+        <div class="note">reserved instance</div>
+      </div>
+      <div class="summary-card">
+        <div class="pn" style="color:var(--green)">Local (3× RTX 5090) <span class="cheapest">Cheapest</span></div>
+        <div class="tc">$1,503</div>
+        <div class="note">self-hosted</div>
+      </div>
+    </div>
+
+    <!-- Bedrock On-Demand -->
+    <div class="detail-section ds-orange">
+      <div class="sh">
+        <div class="st orange">Bedrock On-Demand</div>
+        <div class="sv">$1,944/mo</div>
+      </div>
+      <div class="li">
+        <div class="lab">Input rate</div>
+        <div class="form">given</div>
+        <div class="amt">$0.72 / 1M tok</div>
+      </div>
+      <div class="li">
+        <div class="lab">Output rate</div>
+        <div class="form">given</div>
+        <div class="amt">$0.72 / 1M tok</div>
+      </div>
+      <div class="li">
+        <div class="lab">Monthly input cost</div>
+        <div class="form">1,800M × $0.72/1M</div>
+        <div class="amt">$1,296.00</div>
+      </div>
+      <div class="li">
+        <div class="lab">Monthly output cost</div>
+        <div class="form">900M × $0.72/1M</div>
+        <div class="amt">$648.00</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Monthly Total</div>
+        <div class="form"></div>
+        <div class="amt orange">$1,944.00</div>
+      </div>
+    </div>
+    <div class="li" style="padding:4px 42px;font-size:12px;color:var(--muted);border:none">
+      Yearly: $23,328 · Per request: $0.000432
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Bedrock Provisioned -->
+    <div class="detail-section ds-red">
+      <div class="sh">
+        <div class="st red">Bedrock Provisioned</div>
+        <div class="sv">$9,548/mo</div>
+      </div>
+      <div class="li">
+        <div class="lab">Model Units</div>
+        <div class="form">assumed</div>
+        <div class="amt">1 unit</div>
+      </div>
+      <div class="li">
+        <div class="lab">Cost per hour</div>
+        <div class="form">given</div>
+        <div class="amt">$13.08/h</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Monthly Total</div>
+        <div class="form">$13.08 × 730 h</div>
+        <div class="amt red">$9,548.40</div>
+      </div>
+    </div>
+    <div class="li" style="padding:4px 42px;font-size:12px;color:var(--muted);border:none">
+      Yearly: $114,581 · Per request: $0.00212
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- EC2 -->
+    <div class="detail-section ds-blue">
+      <div class="sh">
+        <div class="st blue">EC2 g5.12xlarge</div>
+        <div class="sv">$2,609/mo (reserved)</div>
+      </div>
+      <div class="li">
+        <div class="lab">Instance</div>
+        <div class="form">g5.12xlarge</div>
+        <div class="amt"></div>
+      </div>
+      <div class="li">
+        <div class="lab">On-Demand rate</div>
+        <div class="form"></div>
+        <div class="amt">$5.672/h</div>
+      </div>
+      <div class="li">
+        <div class="lab">Reserved rate</div>
+        <div class="form"></div>
+        <div class="amt">$3.573/h</div>
+      </div>
+      <div class="li">
+        <div class="lab">On-Demand monthly</div>
+        <div class="form">$5.672 × 730 h</div>
+        <div class="amt">$4,141</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Reserved monthly</div>
+        <div class="form">$3.573 × 730 h</div>
+        <div class="amt blue">$2,609</div>
+      </div>
+    </div>
+    <div class="li" style="padding:4px 42px;font-size:12px;color:var(--muted);border:none">
+      Reserved yearly: $31,303 · Per request: $0.000580
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Local -->
+    <div class="detail-section ds-green">
+      <div class="sh">
+        <div class="st green">Local Deployment (3× RTX 5090)</div>
+        <div class="sv">$1,503/mo</div>
+      </div>
+      <div class="li">
+        <div class="lab">Hardware: GPUs</div>
+        <div class="form">3 × RTX 5090</div>
+        <div class="amt">$8,400</div>
+      </div>
+      <div class="li">
+        <div class="lab">Hardware: Other</div>
+        <div class="form">CPU, RAM, etc.</div>
+        <div class="amt">$3,600</div>
+      </div>
+      <div class="li">
+        <div class="lab">Total Hardware</div>
+        <div class="form"></div>
+        <div class="amt">$12,000</div>
+      </div>
+      <div class="li" style="background:var(--section-bg)">
+        <div class="lab" style="color:var(--muted);font-size:13px">Monthly Operating Costs:</div>
+        <div class="form"></div>
+        <div class="amt"></div>
+      </div>
+      <div class="li">
+        <div class="lab">Depreciation</div>
+        <div class="form">$12,000 / 12 months</div>
+        <div class="amt">$1,000.00</div>
+      </div>
+      <div class="li">
+        <div class="lab">Power</div>
+        <div class="form">estimated @ $0.24/kWh</div>
+        <div class="amt">$402.96</div>
+      </div>
+      <div class="li">
+        <div class="lab">Other (HVAC/Internet)</div>
+        <div class="form">estimated</div>
+        <div class="amt">$100.00</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Monthly Total</div>
+        <div class="form"></div>
+        <div class="amt green">$1,503.00</div>
+      </div>
+    </div>
+    <div class="li" style="padding:4px 42px;font-size:12px;color:var(--muted);border:none">
+      Yearly: $18,036 · Per request: $0.000334
+    </div>
+
+    <div class="hbox green-bg">
+      <strong>Winner:</strong> Local deployment is cheapest at $1,503/mo, but requires managing hardware. Bedrock On-Demand ($1,944/mo) is close and fully managed. EC2 Reserved ($2,609) is a middle-ground. Bedrock Provisioned is 6× more expensive.
+    </div>
+
+    <div class="bpad"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(name){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

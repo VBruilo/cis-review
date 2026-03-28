@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 12 — Database Infrastructure Costs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--amber:#b45309;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}.badge.red{background:#fef2f2;color:#991b1b}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}.ds.am{border-left:4px solid var(--amber)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}.st.amber{color:var(--amber)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:220px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:100px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:220px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}.tr .amt.amber{color:var(--amber)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){
+    .sr.c2,.sr.c3{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:155px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>Database Infrastructure Costs</h1>
+    <div class="sub">Exercise 12 · Throughput Requirements, Classic vs HADR, EBS (gp3/io2), Aurora, DynamoDB DIY</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('tput')">Throughput Req.</button>
+    <button class="tab" onclick="showTab('hadr')">Classic vs HADR</button>
+    <button class="tab" onclick="showTab('rbd')">EBS (gp3 vs io2)</button>
+    <button class="tab" onclick="showTab('aurora')">Aurora</button>
+    <button class="tab" onclick="showTab('dynamo')">DynamoDB DIY</button>
+  </div>
+
+  <!-- ========== THROUGHPUT REQUIREMENTS ========== -->
+  <div id="tab-tput" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>READ:</strong> 10,000 req/s</div>
+      <div class="pm"><strong>WRITE:</strong> 1,000 req/s</div>
+    </div>
+    <div class="ib">Translate application-level requests into network, storage, and compute requirements</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">Network</div>
+        <div class="tc">0.16 Gbit/s</div>
+        <div class="nt">21 MB/s total</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">Storage</div>
+        <div class="tc">52,000 IOPS</div>
+        <div class="nt">0.40 GB/s throughput</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">Compute</div>
+        <div class="tc">7 CPU-seconds</div>
+        <div class="nt">per second of work</div>
+      </div>
+    </div>
+
+    <!-- Network -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Network Requirements</div><div class="sv">0.16 Gbit/s</div></div>
+      <div class="li"><div class="lab">Read data</div><div class="frm">10,000 req/s × 2 KB</div><div class="amt">20,000 KB/s</div></div>
+      <div class="li"><div class="lab">Write data</div><div class="frm">1,000 req/s × 1 KB</div><div class="amt">1,000 KB/s</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">21,000 KB/s × 8 / 1024²</div><div class="amt blue">0.16 Gbit/s</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Storage -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Storage Requirements</div><div class="sv">52,000 IOPS</div></div>
+      <div class="li"><div class="lab">Read I/O (amplified)</div><div class="frm">10,000 × 40 KB, 10,000 × 5 IOPS</div><div class="amt">400 MB/s · 50K IOPS</div></div>
+      <div class="li"><div class="lab">Write I/O (amplified)</div><div class="frm">1,000 × 16 KB, 1,000 × 2 IOPS</div><div class="amt">16 MB/s · 2K IOPS</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt orange">0.40 GB/s · 52K IOPS</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Key Concept:</strong> I/O amplification means each application request triggers multiple storage operations (e.g., a single read may cause 5 disk IOPS due to B-tree traversal). This multiplier is critical for sizing.</div>
+    <div class="sp"></div>
+
+    <!-- Compute -->
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">Compute Requirements</div><div class="sv">7 CPU-s/s</div></div>
+      <div class="li"><div class="lab">Read CPU</div><div class="frm">10,000 × 0.5 ms / 1000</div><div class="amt">5.0 CPU-s</div></div>
+      <div class="li"><div class="lab">Write CPU</div><div class="frm">1,000 × 2.0 ms / 1000</div><div class="amt">2.0 CPU-s</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">need ≥7 vCPUs continuously</div><div class="amt purple">7 CPU-seconds/s</div></div>
+    </div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== CLASSIC vs HADR ========== -->
+  <div id="tab-hadr" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> m6gd.8xlarge</div>
+      <div class="pm"><strong>Price:</strong> $1.4464/h</div>
+      <div class="pm"><strong>Single Avail:</strong> 99.99%</div>
+    </div>
+    <div class="ib">Classic (single instance) vs. HADR (2 instances across AZs with synchronous replication)</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">Classic (Single)</div>
+        <div class="tc">$1,041/mo</div>
+        <div class="nt">99.99% avail · 0.876 h downtime/yr</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">HADR (2 Instances)</div>
+        <div class="tc">$2,132/mo</div>
+        <div class="nt">99.999999% · 0.32 sec downtime/yr</div>
+      </div>
+    </div>
+
+    <!-- Classic -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Classic — Single Instance</div><div class="sv">$1,041/mo</div></div>
+      <div class="li"><div class="lab">Monthly Cost</div><div class="frm">$1.4464/h × 24 × 30</div><div class="amt">$1,041.41</div></div>
+      <div class="li"><div class="lab">Availability</div><div class="frm">given</div><div class="amt">99.99%</div></div>
+      <div class="li"><div class="lab">Downtime/year</div><div class="frm">365 × 24 × (1 − 0.9999)</div><div class="amt">0.876 hours</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- HADR -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">HADR — 2 Instances, Cross-AZ</div><div class="sv">$2,132/mo</div></div>
+      <div class="li"><div class="lab">Instance Cost</div><div class="frm">2 × $1,041.41</div><div class="amt">$2,082.82</div></div>
+      <div class="li sec"><div class="lab">Inter-AZ Replication:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Write Bandwidth</div><div class="frm">1,000 req/s × 1 KB ≈ 0.977 MB/s</div><div class="amt">0.977 MB/s</div></div>
+      <div class="li"><div class="lab">Inter-AZ rate</div><div class="frm">$0.01/GB, both directions</div><div class="amt">$0.02/GB total</div></div>
+      <div class="li"><div class="lab">Monthly Replication</div><div class="frm">0.977 MB/s → GB × $0.02 × 30d</div><div class="amt">$49.44</div></div>
+      <div class="tr"><div class="lab">Total Monthly</div><div class="frm">$2,082.82 + $49.44</div><div class="amt green">$2,132.25</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds gn">
+      <div class="sh"><div class="st green">HADR Availability</div></div>
+      <div class="li"><div class="lab">Combined Availability</div><div class="frm">1 − (1 − 0.9999)²</div><div class="amt">99.999999%</div></div>
+      <div class="li"><div class="lab">Downtime/year</div><div class="frm">(1 − 0.99999999) × 365 × 24 × 3600</div><div class="amt">0.32 seconds</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">HADR Availability Formula</div>
+      A_HADR = 1 − (1 − A_single)^n &nbsp;&nbsp;→&nbsp;&nbsp; 1 − (0.0001)² = 0.99999999
+    </div>
+
+    <div class="hb gn"><strong>Trade-off:</strong> HADR costs 2× more ($2,132 vs $1,041) but improves uptime from 99.99% (53 min downtime/yr) to 99.999999% (0.3 sec downtime/yr). The inter-AZ replication adds only ~$49/mo.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== EBS (gp3 vs io2) ========== -->
+  <div id="tab-rbd" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> m6g.2xlarge ($0.729/h)</div>
+      <div class="pm"><strong>Storage Need:</strong> 1 TB</div>
+      <div class="pm"><strong>IOPS Need:</strong> 52,000</div>
+      <div class="pm"><strong>Throughput Need:</strong> 409.6 MB/s</div>
+    </div>
+    <div class="ib">Compare EBS gp3 (general purpose) vs io2 (provisioned IOPS) — instance cost is the same for both</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">gp3 (Total Setup) <span class="badge green">Cheaper</span></div>
+        <div class="tc">$863/mo</div>
+        <div class="nt">$338 EBS + $525 instance</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">io2 (Total Setup)</div>
+        <div class="tc">$3,653/mo</div>
+        <div class="nt">$3,128 EBS + $525 instance</div>
+      </div>
+    </div>
+
+    <!-- gp3 -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">EBS gp3</div><div class="sv">$338 EBS + $525 inst</div></div>
+      <div class="li sec"><div class="lab">gp3 Base Includes:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Base IOPS (free)</div><div class="frm">included in gp3</div><div class="amt">3,000 IOPS</div></div>
+      <div class="li"><div class="lab">Base Throughput (free)</div><div class="frm">included in gp3</div><div class="amt">125 MB/s</div></div>
+      <div class="li sec"><div class="lab">Monthly Cost:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">1,024 GB × $0.08/GB</div><div class="amt">$81.92</div></div>
+      <div class="li"><div class="lab">Provisioned IOPS</div><div class="frm">(52,000 − 3,000) × $0.005</div><div class="amt">$245.00</div></div>
+      <div class="li"><div class="lab">Provisioned Throughput</div><div class="frm">(409.6 − 125) MB/s × $0.04</div><div class="amt">$11.38</div></div>
+      <div class="tr"><div class="lab">EBS gp3 Cost</div><div class="frm"></div><div class="amt blue">$338.30</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- io2 -->
+    <div class="ds rd">
+      <div class="sh"><div class="st red">EBS io2</div><div class="sv">$3,128 EBS + $525 inst</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">1,024 GB × $0.125/GB</div><div class="amt">$128.00</div></div>
+      <div class="li"><div class="lab">IOPS (≤32K tier)</div><div class="frm">32,000 × $0.065</div><div class="amt">$2,080.00</div></div>
+      <div class="li"><div class="lab">IOPS (32K–64K tier)</div><div class="frm">(52,000 − 32,000) × $0.046</div><div class="amt">$920.00</div></div>
+      <div class="tr"><div class="lab">EBS io2 Cost</div><div class="frm"></div><div class="amt red">$3,128.00</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Total comparison -->
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">Total Setup (Instance + EBS)</div></div>
+      <div class="li"><div class="lab">Instance (m6g.2xlarge)</div><div class="frm">$0.729/h × 24 × 30</div><div class="amt">$524.68</div></div>
+      <div class="li"><div class="lab">+ gp3</div><div class="frm"></div><div class="amt" style="color:var(--green)">$862.98</div></div>
+      <div class="li"><div class="lab">+ io2</div><div class="frm"></div><div class="amt" style="color:var(--red)">$3,652.68</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Verdict:</strong> gp3 is 4.2× cheaper than io2 for 52K IOPS. io2's tiered IOPS pricing ($0.065 up to 32K, $0.046 beyond) makes it extremely expensive. gp3 benefits from 3,000 free IOPS and 125 MB/s free throughput.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== AURORA ========== -->
+  <div id="tab-aurora" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Storage:</strong> 1 TB</div>
+      <div class="pm"><strong>IOPS:</strong> 52,000</div>
+      <div class="pm"><strong>Instance:</strong> db.r6g.2xlarge equivalent</div>
+    </div>
+    <div class="ib">Aurora Standard (pay-per-IO) vs Aurora IO-Optimized (free IOs, higher storage price)</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">Aurora Standard</div>
+        <div class="tc">$27,807/mo</div>
+        <div class="nt">crushed by IOPS costs</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">Aurora IO-Optimized <span class="badge green">Winner</span></div>
+        <div class="tc">$1,202/mo</div>
+        <div class="nt">no per-IO charges</div>
+      </div>
+    </div>
+
+    <!-- Aurora Standard -->
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Aurora Standard</div><div class="sv">$27,807/mo</div></div>
+      <div class="li"><div class="lab">Instance</div><div class="frm">$1.038/h × 24 × 30</div><div class="amt">$747.36</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">1,024 GB × $0.10/GB</div><div class="amt">$102.40</div></div>
+      <div class="li"><div class="lab">Storage IOPS</div><div class="frm">52K × 3600 × 24 × 30 / 1M × $0.20</div><div class="amt" style="color:var(--red)">$26,956.80</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt red">$27,806.56</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Aurora IO-Optimized -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Aurora IO-Optimized</div><div class="sv">$1,202/mo</div></div>
+      <div class="li"><div class="lab">Instance</div><div class="frm">$1.349/h × 24 × 30 (30% premium)</div><div class="amt">$971.28</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">1,024 GB × $0.225/GB (2.25× more)</div><div class="amt">$230.40</div></div>
+      <div class="li"><div class="lab">Storage IOPS</div><div class="frm">included — no charge</div><div class="amt" style="color:var(--green)">$0.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt green">$1,201.68</div></div>
+    </div>
+
+    <div class="hb rd"><strong>Dramatic difference:</strong> At 52K IOPS, Aurora Standard's per-IO pricing creates $27K in IO charges alone — 23× more than IO-Optimized. IO-Optimized's ~30% instance premium and ~2× storage premium are trivial by comparison. <strong>Always check IO-Optimized for IOPS-heavy workloads.</strong></div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== DYNAMODB DIY ========== -->
+  <div id="tab-dynamo" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> is4gen.8xlarge ($4.61/h)</div>
+      <div class="pm"><strong>Replicas:</strong> 3</div>
+      <div class="pm"><strong>Storage/inst:</strong> 30 TB SSD</div>
+      <div class="pm"><strong>Utilization:</strong> 25%</div>
+    </div>
+    <div class="ib">Build a DynamoDB-like key-value store on EC2 — compare $/operation against DynamoDB On-Demand</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--indigo)">DIY Read Cost</div>
+        <div class="tc">$0.0051 / M reads</div>
+        <div class="nt">24× cheaper than DynamoDB</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">DIY Write Cost</div>
+        <div class="tc">$0.21 / M writes</div>
+        <div class="nt">12× cheaper than DynamoDB</div>
+      </div>
+    </div>
+
+    <!-- Infrastructure -->
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">Infrastructure Setup (3 Replicas)</div></div>
+      <div class="li"><div class="lab">Cost per Instance</div><div class="frm">$4.61/h × 24 × 30</div><div class="amt">$3,319/mo</div></div>
+      <div class="li"><div class="lab">Total (3 replicas)</div><div class="frm">3 × $3,319</div><div class="amt">$9,958/mo</div></div>
+      <div class="li"><div class="lab">Total SSD Capacity</div><div class="frm">3 × 30 TB</div><div class="amt">90 TB</div></div>
+      <div class="li"><div class="lab">Cost per TB</div><div class="frm">$9,958 / (90 TB / 1.024)</div><div class="amt">$113.31/TB</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Read Cost -->
+    <div class="subh">Read Cost (Eventually Consistent, 4 KB)</div>
+    <div class="ds in">
+      <div class="sh"><div class="st indigo">DIY Read — Cost per Operation</div></div>
+      <div class="li"><div class="lab">IOPS per Instance</div><div class="frm">given (SSD random read)</div><div class="amt">1,000,000</div></div>
+      <div class="li"><div class="lab">IOPS across 3 nodes</div><div class="frm">3 × 1,000,000</div><div class="amt">3,000,000</div></div>
+      <div class="li"><div class="lab">Max IOPs/month</div><div class="frm">3M × 3600 × 24 × 30</div><div class="amt">7.78 × 10¹²</div></div>
+      <div class="li"><div class="lab">Utilized (25%)</div><div class="frm">× 0.25</div><div class="amt">1.94 × 10¹²</div></div>
+      <div class="li"><div class="lab">$/IOP</div><div class="frm">$9,958 / 1.94 × 10¹²</div><div class="amt">$0.00000000512</div></div>
+      <div class="tr"><div class="lab">$/Million Reads</div><div class="frm"></div><div class="amt indigo">$0.00512</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Write Cost -->
+    <div class="subh">Write Cost (4 KB, 3-way replication)</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">DIY Write — Cost per Operation</div></div>
+      <div class="li"><div class="lab">Write IOPS per Instance</div><div class="frm">given</div><div class="amt">800,000</div></div>
+      <div class="li"><div class="lab">Max write IOPs/month</div><div class="frm">800K × 3600 × 24 × 30</div><div class="amt">2.07 × 10¹²</div></div>
+      <div class="li"><div class="lab">Utilized (25%)</div><div class="frm">× 0.25</div><div class="amt">5.18 × 10¹¹</div></div>
+      <div class="li"><div class="lab">Write IOP cost</div><div class="frm">$9,958 / 5.18 × 10¹¹</div><div class="amt">$0.0000000192</div></div>
+      <div class="li sec"><div class="lab">Replication Network Cost:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Inter-AZ $/GB</div><div class="frm">$0.01 × 2 directions</div><div class="amt">$0.02/GB</div></div>
+      <div class="li"><div class="lab">Network cost per 4KB write</div><div class="frm">(replicas−1) × 4KB × $0.02/GB</div><div class="amt">$0.000000153</div></div>
+      <div class="li"><div class="lab">Total per write (IOP × 3 + net)</div><div class="frm">3 × $0.0192n + $0.153n</div><div class="amt">$0.000000210</div></div>
+      <div class="tr"><div class="lab">$/Million Writes</div><div class="frm"></div><div class="amt orange">$0.210</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Comparison -->
+    <div class="subh">DIY vs DynamoDB On-Demand</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Savings Factor</div></div>
+      <div class="li"><div class="lab">DynamoDB Read (On-Demand)</div><div class="frm">$0.125 / M RRU</div><div class="amt">$0.125</div></div>
+      <div class="li"><div class="lab">DIY Read</div><div class="frm"></div><div class="amt" style="color:var(--green)">$0.00512</div></div>
+      <div class="li"><div class="lab">Read Savings</div><div class="frm">$0.125 / $0.00512</div><div class="amt" style="color:var(--green);font-weight:900">24.4×</div></div>
+      <div class="li" style="border-top:2px solid #e5e5e5"><div class="lab">DynamoDB Write (On-Demand)</div><div class="frm">$0.625 / M WRU (4KB chunks)</div><div class="amt">$2.50/M</div></div>
+      <div class="li"><div class="lab">DIY Write</div><div class="frm">(DynamoDB charges per 1KB → ×4)</div><div class="amt" style="color:var(--green)">$0.210/M</div></div>
+      <div class="li"><div class="lab">Write Savings</div><div class="frm">$2.50 / $0.210</div><div class="amt" style="color:var(--green);font-weight:900">11.9×</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Massive margins:</strong> DynamoDB On-Demand is 12–24× more expensive than DIY. That's the premium for fully-managed, serverless, auto-scaling infrastructure. At high, predictable load, self-hosting wins on pure cost — but you pay in operational complexity.</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

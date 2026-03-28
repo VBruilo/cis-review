@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise 11 — Storage Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}
+  .tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}.sr.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}.badge.red{background:#fef2f2;color:#991b1b}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb)}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:210px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:100px}
+  .tr{display:grid;grid-template-columns:210px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){
+    .sr.c2,.sr.c3,.sr.c4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:150px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>Storage Deep Dive</h1>
+    <div class="sub">Exercise 11 · S3 vs S3 Express, HDD IOPS, Durability, Flash-based Object Store vs S3</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('base')">Baseline S3</button>
+    <button class="tab" onclick="showTab('s3cmp')">S3 vs S3 Express</button>
+    <button class="tab" onclick="showTab('hdd')">HDD IOPS</button>
+    <button class="tab" onclick="showTab('dur')">Durability</button>
+    <button class="tab" onclick="showTab('flash')">Flash vs S3 Express</button>
+  </div>
+
+  <!-- ========== BASELINE S3 ========== -->
+  <div id="tab-base" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Storage:</strong> 1,024 TB</div>
+      <div class="pm"><strong>GET:</strong> 10M req/day</div>
+      <div class="pm"><strong>PUT:</strong> 1M req/day</div>
+      <div class="pm"><strong>Month:</strong> 30 days</div>
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">S3 Standard</div>
+        <div class="tc">$21,774/mo</div>
+        <div class="nt">storage dominates (99%)</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--m)">Cost Breakdown</div>
+        <div class="tc" style="font-size:18px">$21,504 + $120 + $150</div>
+        <div class="nt">storage + GET + PUT</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">S3 Standard — Monthly Cost</div><div class="sv">$21,774</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">1,024 TB × $21/TB</div><div class="amt">$21,504.00</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">10M/day × 30 days / 1M × $0.40</div><div class="amt">$120.00</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">1M/day × 30 days / 1M × $5.00</div><div class="amt">$150.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt blue">$21,774.00</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Key Takeaway:</strong> At petabyte scale, storage cost ($21,504) is 98.8% of total. Request costs are marginal. This is the baseline for all other comparisons.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== S3 vs S3 EXPRESS ========== -->
+  <div id="tab-s3cmp" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Small Objects:</strong> 700K × 256 KB</div>
+      <div class="pm"><strong>Large Objects:</strong> 300K × 2,048 KB</div>
+      <div class="pm"><strong>Total Storage:</strong> ~757 GB</div>
+      <div class="pm"><strong>PUT:</strong> 1× per object, <strong>GET:</strong> 10× per object</div>
+    </div>
+
+    <div class="ib">S3 Express has lower request cost but higher storage + data transfer fees</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">S3 Standard <span class="badge green">Cheaper</span></div>
+        <div class="tc">$26.00/mo</div>
+        <div class="nt">cheap storage, simple pricing</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">S3 Express One Zone</div>
+        <div class="tc">$91.64/mo</div>
+        <div class="nt">3.5× more expensive</div>
+      </div>
+    </div>
+
+    <!-- S3 Standard -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">S3 Standard</div><div class="sv">$26.00</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">757 GB × $0.023/GB</div><div class="amt">$17.00</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">1M obj × 10 GET / 1M × $0.40</div><div class="amt">$4.00</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">1M obj × 1 PUT / 1M × $5.00</div><div class="amt">$5.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt blue">$26.00</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- S3 Express -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">S3 Express One Zone</div><div class="sv">$91.64</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">757 GB × $0.11/GB</div><div class="amt">$83.25</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">10M / 1M × $0.03</div><div class="amt">$0.30</div></div>
+      <div class="li"><div class="lab">Data retrieval (GET)</div><div class="frm">weighted size × 10 × $0.0006/GB</div><div class="amt">$4.54</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">1M / 1M × $1.13</div><div class="amt">$1.13</div></div>
+      <div class="li"><div class="lab">Data upload (PUT)</div><div class="frm">weighted size × 1 × $0.0032/GB</div><div class="amt">$2.42</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt orange">$91.64</div></div>
+    </div>
+
+    <div class="hb or"><strong>Why S3 Express is pricier here:</strong> Storage alone is $83.25 vs $17.00 — the 4.8× storage premium dwarfs the savings from cheaper GET requests ($0.30 vs $4.00). S3 Express only wins when request cost dominates (i.e., huge request volume, small storage).</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== HDD IOPS ========== -->
+  <div id="tab-hdd" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Target:</strong> 2.3M req/s peak throughput</div>
+      <div class="pm"><strong>HDD:</strong> 7200 RPM</div>
+      <div class="pm"><strong>Instance:</strong> d3en.12xlarge (24 HDDs)</div>
+    </div>
+
+    <div class="ib">Calculate how many HDDs are needed to hit 2.3M random IOPS</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--slate)">IOPS per HDD</div>
+        <div class="tc">~120</div>
+        <div class="nt">random I/O at 7200 RPM</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">HDDs Needed</div>
+        <div class="tc">19,090</div>
+        <div class="nt">for 2.3M IOPS</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">d3en.12xlarge Instances</div>
+        <div class="tc">~795</div>
+        <div class="nt">19,090 / 24 HDDs each</div>
+      </div>
+    </div>
+
+    <div class="subh">HDD Latency Breakdown</div>
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">Single HDD Access Time</div><div class="sv">8.3 ms</div></div>
+      <div class="li"><div class="lab">Seek Time</div><div class="frm">move head to track (given)</div><div class="amt">4.0 ms</div></div>
+      <div class="li"><div class="lab">Rotational Latency</div><div class="frm">7200 RPM → 60/7200/2 × 1000</div><div class="amt">4.3 ms</div></div>
+      <div class="li"><div class="lab">Transfer Time (1 KB)</div><div class="frm">1 KB / 250 MB/s ≈ 0.004 ms</div><div class="amt">≈ 0.0 ms</div></div>
+      <div class="tr"><div class="lab">Total Access Time</div><div class="frm"></div><div class="amt slate">8.3 ms</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Capacity Planning</div></div>
+      <div class="li"><div class="lab">IOPS per HDD</div><div class="frm">1000 ms / 8.3 ms</div><div class="amt">~120 IOPS</div></div>
+      <div class="li"><div class="lab">Target Throughput</div><div class="frm">given</div><div class="amt">2,300,000 req/s</div></div>
+      <div class="li"><div class="lab">HDDs Needed</div><div class="frm">2,300,000 / 120</div><div class="amt">19,090</div></div>
+      <div class="tr"><div class="lab">d3en.12xlarge Instances</div><div class="frm">19,090 / 24 HDDs</div><div class="amt red">~795</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Rotational Latency Formula</div>
+      (60 s / RPM) / 2 × 1000 = ms &nbsp;→&nbsp; (60 / 7200) / 2 × 1000 = 4.17 ms ≈ 4.3 ms
+    </div>
+
+    <div class="hb rd"><strong>Key Insight:</strong> HDDs are terrible for random small I/O — just ~120 IOPS each. You'd need ~800 large instances just for throughput. This is why S3 uses thousands of disks and why SSDs changed everything.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== DURABILITY ========== -->
+  <div id="tab-dur" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>MTBF:</strong> 2,500,000 hours</div>
+      <div class="pm"><strong>HDD Size:</strong> 26 TB</div>
+      <div class="pm"><strong>Data:</strong> 3,700 TB (3.7 PB)</div>
+    </div>
+
+    <div class="ib">How likely is data loss with unreplicated HDDs? And what does "11 nines" durability mean?</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">AFR (Annual Failure Rate)</div>
+        <div class="tc">0.35%</div>
+        <div class="nt">per HDD per year</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">Loss Probability (1 yr)</div>
+        <div class="tc">39.3%</div>
+        <div class="nt">with 142 unreplicated HDDs</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--pink)">Loss Probability (3 yr)</div>
+        <div class="tc">77.7%</div>
+        <div class="nt">almost certain data loss</div>
+      </div>
+    </div>
+
+    <div class="subh">Annual Failure Rate</div>
+    <div class="ds rd">
+      <div class="sh"><div class="st red">AFR from MTBF</div><div class="sv">0.35%</div></div>
+      <div class="li"><div class="lab">MTBF</div><div class="frm">given</div><div class="amt">2,500,000 h</div></div>
+      <div class="li"><div class="lab">AFR</div><div class="frm">(365 × 24) / 2,500,000</div><div class="amt">0.003504</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">Example: 10,000 HDD fleet</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Expected Failures</div></div>
+      <div class="li"><div class="lab">Fleet Size</div><div class="frm">given</div><div class="amt">10,000 HDDs</div></div>
+      <div class="li"><div class="lab">Failures per Year</div><div class="frm">10,000 × 0.003504</div><div class="amt">~35 HDDs</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">Realistic Scenario: 3.7 PB Data</div>
+    <div class="ds pk">
+      <div class="sh"><div class="st pink">Probability of Data Loss</div></div>
+      <div class="li"><div class="lab">Data</div><div class="frm">given</div><div class="amt">3,700 TB</div></div>
+      <div class="li"><div class="lab">HDD Size</div><div class="frm">given</div><div class="amt">26 TB</div></div>
+      <div class="li"><div class="lab">Needed HDDs</div><div class="frm">3,700 / 26</div><div class="amt">~142</div></div>
+      <div class="li"><div class="lab">P(loss) in 1 year</div><div class="frm">1 − (1 − 0.003504)^142</div><div class="amt" style="color:var(--red)">39.3%</div></div>
+      <div class="li"><div class="lab">P(loss) in 3 years</div><div class="frm">1 − ((1 − 0.003504)^142)³</div><div class="amt" style="color:var(--red)">77.7%</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Loss Probability Formula</div>
+      P(loss, 1yr) = 1 − (1 − AFR)^n &nbsp;&nbsp;|&nbsp;&nbsp; P(loss, k yr) = 1 − P(survive, 1yr)^k
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">S3 Durability Guarantee</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">11 Nines — 99.999999999%</div></div>
+      <div class="li"><div class="lab">Objects</div><div class="frm">video provider example</div><div class="amt">10 billion</div></div>
+      <div class="li"><div class="lab">Durability</div><div class="frm">11 nines</div><div class="amt">99.999999999%</div></div>
+      <div class="tr"><div class="lab">Expected lost/year</div><div class="frm">(1 − 0.99999999999) × 10B</div><div class="amt green">~0.1 objects</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Contrast:</strong> Without replication, 3.7 PB has a 39% chance of losing data in year 1. With S3's 11-nine durability and erasure coding, you'd expect to lose 0.1 objects per year out of 10 billion.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== FLASH vs S3 EXPRESS ========== -->
+  <div id="tab-flash" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Storage:</strong> 100 TB</div>
+      <div class="pm"><strong>Requests:</strong> 10,000/s (80% read, 20% write)</div>
+      <div class="pm"><strong>Object Size:</strong> 128 KB (solution) / 1,024 KB (task)</div>
+      <div class="pm"><strong>Erasure Factor:</strong> 1.33× / 1.8×</div>
+    </div>
+
+    <div class="ib">
+      Build your own flash-based object store with is4gen.8xlarge vs. using S3 Express
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--indigo)">EC2 Flash (is4gen) <span class="badge green">Cheaper</span></div>
+        <div class="tc">$16,596/mo</div>
+        <div class="nt">$166/TB · 5 instances</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">S3 Express One Zone</div>
+        <div class="tc">$19,794/mo</div>
+        <div class="nt">$198/TB</div>
+      </div>
+    </div>
+
+    <!-- Instance specs -->
+    <div class="subh">Instance: is4gen.8xlarge</div>
+    <div class="ds in">
+      <div class="sh"><div class="st indigo">Instance Specifications</div></div>
+      <div class="li"><div class="lab">Price</div><div class="frm"></div><div class="amt">$4.61/h</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">NVMe SSDs</div><div class="amt">30 TB</div></div>
+      <div class="li"><div class="lab">Network</div><div class="frm"></div><div class="amt">50 Gbit/s</div></div>
+      <div class="li"><div class="lab">Read IOPS</div><div class="frm"></div><div class="amt">1,000,000</div></div>
+      <div class="li"><div class="lab">Write IOPS</div><div class="frm"></div><div class="amt">800,000</div></div>
+      <div class="li"><div class="lab">BW per Drive</div><div class="frm"></div><div class="amt">8 GB/s</div></div>
+      <div class="li"><div class="lab">BW per Instance</div><div class="frm">4 drives × 8 GB/s</div><div class="amt">32 GB/s</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Dimensioning -->
+    <div class="subh">Dimensioning (bottleneck analysis)</div>
+    <div class="ds in">
+      <div class="sh"><div class="st indigo">How Many Instances?</div><div class="sv">5 needed</div></div>
+      <div class="li"><div class="lab">Durable Storage</div><div class="frm">100 TB × 1.33 erasure factor</div><div class="amt">133 TB</div></div>
+      <div class="li"><div class="lab">Throughput needed</div><div class="frm">10,000 req/s × 128 KB</div><div class="amt">1.22 GB/s</div></div>
+      <div class="li" style="background:var(--sbg)"><div class="lab" style="color:var(--m);font-size:13px">Bottleneck Checks (exact → ceil):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">① Storage Capacity</div><div class="frm">133 TB / 30 TB per inst</div><div class="amt">4.43 → <strong>5</strong></div></div>
+      <div class="li"><div class="lab">② Write IOPS</div><div class="frm">2,000 / 800,000</div><div class="amt">0.003 → 1</div></div>
+      <div class="li"><div class="lab">③ Read IOPS</div><div class="frm">8,000 / 1,000,000</div><div class="amt">0.008 → 1</div></div>
+      <div class="li"><div class="lab">④ Network BW</div><div class="frm">9.77 Gbit/s / 50 Gbit</div><div class="amt">0.20 → 1</div></div>
+      <div class="li"><div class="lab">⑤ Storage BW</div><div class="frm">1.22 GB/s / 32 GB/s</div><div class="amt">0.04 → 1</div></div>
+      <div class="tr"><div class="lab">Instances (max of above)</div><div class="frm">bottleneck = storage capacity</div><div class="amt indigo">5</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- EC2 Flash Cost -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">EC2 Flash — Monthly Cost</div><div class="sv">$16,596</div></div>
+      <div class="li"><div class="lab">Instance Cost</div><div class="frm">5 × $4.61/h × 24h × 30d</div><div class="amt">$16,596</div></div>
+      <div class="tr"><div class="lab">Per TB</div><div class="frm">$16,596 / 100 TB</div><div class="amt green">$165.96/TB</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- S3 Express Cost -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">S3 Express — Monthly Cost</div><div class="sv">$19,794</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">100 TB × 1024 × $0.11/GB</div><div class="amt">$11,264</div></div>
+      <div class="li"><div class="lab">GET requests</div><div class="frm">8K/s × 86400 × 30 / 1M × $0.03</div><div class="amt">$622.08</div></div>
+      <div class="li"><div class="lab">Data retrieval</div><div class="frm">8K/s × 128KB × 86400 × 30 → GB × $0.0006</div><div class="amt">$25.31</div></div>
+      <div class="li"><div class="lab">PUT requests</div><div class="frm">2K/s × 86400 × 30 / 1M × $1.13</div><div class="amt">$5,857.92</div></div>
+      <div class="li"><div class="lab">Data upload</div><div class="frm">2K/s × 128KB × 86400 × 30 → GB × $0.0032</div><div class="amt">$2,025.00</div></div>
+      <div class="tr"><div class="lab">Total / Per TB</div><div class="frm"></div><div class="amt orange">$19,794 ($198/TB)</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Result:</strong> Building your own flash store on EC2 ($166/TB) beats S3 Express ($198/TB) by ~16%. The bottleneck is storage capacity (5 instances needed), not IOPS or bandwidth. The trade-off: you manage the system yourself.</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

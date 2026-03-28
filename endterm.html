@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS 2026 Endterm — Klausur Aufschlüsselung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--amber:#b45309;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}.sr.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}.badge.red{background:#fef2f2;color:#991b1b}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}.ds.am{border-left:4px solid var(--amber)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}.st.amber{color:var(--amber)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}.tr .amt.amber{color:var(--amber)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){
+    .sr.c2,.sr.c3,.sr.c4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:155px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>CIS 2026 Endterm — Klausur Aufschlüsselung</h1>
+    <div class="sub">Alle Rechenaufgaben Schritt für Schritt · TUMCloud Pricing Sheet · 90 Credits</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('p3')">P3 Data Center</button>
+    <button class="tab" onclick="showTab('p4')">P4 Instance &amp; Serverless</button>
+    <button class="tab" onclick="showTab('p5')">P5 LLM</button>
+    <button class="tab" onclick="showTab('p6')">P6 OLTP Database</button>
+    <button class="tab" onclick="showTab('p7')">P7 Object Store</button>
+  </div>
+
+  <!-- ==================== P3: DATA CENTER ==================== -->
+  <div id="tab-p3" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Server:</strong> €3,900, 4yr, 500W (100%)</div>
+      <div class="pm"><strong>DC:</strong> 4MW, 8,000 servers</div>
+      <div class="pm"><strong>Construction:</strong> €18/W, 20yr</div>
+      <div class="pm"><strong>Electricity:</strong> €0.15/kWh</div>
+      <div class="pm"><strong>DC OPEX:</strong> €0.25/W-month</div>
+    </div>
+    <div class="ib">Lighting: 2MW · Heating/Cooling: 10MW · IT: 4MW → Total: 16MW</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) PUE</div>
+        <div class="tc">4.0</div>
+        <div class="nt">16 MW total / 4 MW IT</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">c) Breakeven-Preis</div>
+        <div class="tc">€459.75</div>
+        <div class="nt">pro Server pro Monat</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--m)">Servers</div>
+        <div class="tc">8,000</div>
+        <div class="nt">all rented out</div>
+      </div>
+    </div>
+
+    <!-- PUE -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) PUE Berechnung</div><div class="sv">4.0</div></div>
+      <div class="li"><div class="lab">IT Power</div><div class="frm">given</div><div class="amt">4 MW</div></div>
+      <div class="li"><div class="lab">Lighting</div><div class="frm">given</div><div class="amt">2 MW</div></div>
+      <div class="li"><div class="lab">Heating/Cooling</div><div class="frm">given</div><div class="amt">10 MW</div></div>
+      <div class="li"><div class="lab">Total DC Power</div><div class="frm">4 + 2 + 10</div><div class="amt">16 MW</div></div>
+      <div class="tr"><div class="lab">PUE</div><div class="frm">Total / IT = 16 / 4</div><div class="amt blue">4.0</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Breakeven -->
+    <div class="subh">c) Breakeven-Preis pro Server/Monat</div>
+
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">CAPEX</div><div class="sv">€118.75</div></div>
+      <div class="li"><div class="lab">Server amortisiert</div><div class="frm">€3,900 / (4 yr × 12)</div><div class="amt">€81.25</div></div>
+      <div class="li"><div class="lab">DC-Bau amortisiert</div><div class="frm">4MW × 10⁶ × €18 / 8000 / (20 × 12)</div><div class="amt">€37.50</div></div>
+      <div class="tr"><div class="lab">CAPEX Total</div><div class="frm">€81.25 + €37.50</div><div class="amt purple">€118.75</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">OPEX</div><div class="sv">€341.00</div></div>
+      <div class="li"><div class="lab">DC Misc OPEX</div><div class="frm">4MW × 10⁶ × €0.25 / 8,000</div><div class="amt">€125.00</div></div>
+      <div class="li sec"><div class="lab">Server Electricity:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Power Draw/Month</div><div class="frm">500W / 1000 × 24h × 30d</div><div class="amt">360 kWh</div></div>
+      <div class="li"><div class="lab">Server Energy Cost</div><div class="frm">360 kWh × €0.15</div><div class="amt">€54.00</div></div>
+      <div class="li sec"><div class="lab">DC Electricity (non-IT via PUE):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Non-IT Power per Server</div><div class="frm">(PUE−1) × 500W = 3 × 500W</div><div class="amt">1,500 W</div></div>
+      <div class="li"><div class="lab">DC Electricity/Server</div><div class="frm">1.5kW × 720h × €0.15</div><div class="amt">€162.00</div></div>
+      <div class="tr"><div class="lab">OPEX Total</div><div class="frm">€125 + €54 + €162</div><div class="amt orange">€341.00</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Breakeven-Preis</div><div class="sv">€459.75/server/month</div></div>
+      <div class="li"><div class="lab">CAPEX</div><div class="frm"></div><div class="amt">€118.75</div></div>
+      <div class="li"><div class="lab">OPEX</div><div class="frm"></div><div class="amt">€341.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€118.75 + €341.00</div><div class="amt red">€459.75</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Vergleich Exercise 4:</strong> Dort war PUE=1.5, hier PUE=4.0 (extrem schlecht). OPEX dominiert hier (74%) wegen des hohen PUE — in Ex4 dominierte CAPEX (70%). Die hohe DC-Electricity (€162) ist direkt durch den PUE=4 verursacht.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P4: INSTANCE & SERVERLESS ==================== -->
+  <div id="tab-p4" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Pricing Sheet:</strong> c8.large €1.00/h, t3.large €0.3125/h (20% base)</div>
+      <div class="pm"><strong>Burst rate:</strong> €0.50/vCPU-h</div>
+      <div class="pm"><strong>FaaS:</strong> €0.01/invoke, €0.005/GB-s</div>
+    </div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Burstable Breakeven</div>
+        <div class="tc">70%</div>
+        <div class="nt">1.4 vCPUs Utilization</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">d) Lambda Config B</div>
+        <div class="tc">€0.04</div>
+        <div class="nt">per invocation</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">e) EC2 besser in</div>
+        <div class="tc">[25; 720]</div>
+        <div class="nt">jobs/hour range</div>
+      </div>
+    </div>
+
+    <!-- Burstable -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Burstable Breakeven</div><div class="sv">70% (1.4 vCPU)</div></div>
+      <div class="li"><div class="lab">c8.large Kosten</div><div class="frm">given</div><div class="amt">€1.00/h</div></div>
+      <div class="li"><div class="lab">t3.large Base Cost</div><div class="frm">given (always paid)</div><div class="amt">€0.3125/h</div></div>
+      <div class="li"><div class="lab">t3.large Base Performance</div><div class="frm">20% × 2 vCPUs</div><div class="amt">0.4 vCPU</div></div>
+      <div class="li"><div class="lab">Budget for Burst</div><div class="frm">€1.00 − €0.3125</div><div class="amt">€0.6875/h</div></div>
+      <div class="li"><div class="lab">Burst vCPUs affordable</div><div class="frm">€0.6875 / €0.50 per vCPU-h</div><div class="amt">1.375 vCPU</div></div>
+      <div class="li"><div class="lab">Total usable</div><div class="frm">0.4 base + (implicitly ≤ budget)</div><div class="amt">0.4 + 1.0 = 1.4</div></div>
+      <div class="tr"><div class="lab">Breakeven Utilization</div><div class="frm">1.4 / 2 vCPUs</div><div class="amt blue">70%</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Burstable Breakeven Logic</div>
+      t3 cost = base_cost + max(0, used_vCPU − base_vCPU) × burst_rate<br>
+      Setze = c8 cost → löse nach used_vCPU auf
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Lambda Config B -->
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">d) Serverless Config B (768 MB, 7.3s → 8s billed)</div><div class="sv">€0.04</div></div>
+      <div class="li"><div class="lab">Invocation</div><div class="frm">1 × €0.01</div><div class="amt">€0.01</div></div>
+      <div class="li"><div class="lab">Duration</div><div class="frm">8s × 0.768 GB × €0.005/GB-s</div><div class="amt">€0.03</div></div>
+      <div class="tr"><div class="lab">Total per Invocation</div><div class="frm">€0.01 + €0.03</div><div class="amt purple">€0.04</div></div>
+    </div>
+
+    <div class="hb pu"><strong>Achtung:</strong> Billed per second <em>begun</em> → 7.3s wird auf 8s aufgerundet. Config: 768 MB = 0.768 GB.</div>
+
+    <div class="sp"></div>
+
+    <!-- Lambda vs EC2 Range -->
+    <div class="subh">e) EC2 vs Serverless — Throughput-Range</div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Config C: 1024 MB, 6s → Kosten</div></div>
+      <div class="li"><div class="lab">Config C Cost</div><div class="frm">€0.01 + (6s × 1.024 GB × €0.005)</div><div class="amt">€0.04</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">c8.large — Capacity &amp; Range</div><div class="sv">[25; 720] jobs/h</div></div>
+      <div class="li"><div class="lab">c8.large Cost</div><div class="frm">given</div><div class="amt">€1.00/h</div></div>
+      <div class="li"><div class="lab">Job Runtime on c8</div><div class="frm">given</div><div class="amt">5 seconds</div></div>
+      <div class="li sec"><div class="lab">Lower Bound (cost breakeven):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Min jobs to beat Lambda</div><div class="frm">€1.00/h ÷ €0.04/job</div><div class="amt">25 jobs/h</div></div>
+      <div class="li sec"><div class="lab">Upper Bound (capacity limit):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Max jobs (no queue overflow)</div><div class="frm">3600s / 5s per job</div><div class="amt">720 jobs/h</div></div>
+      <div class="tr"><div class="lab">EC2 besser im Range</div><div class="frm">≥25 (cost) und ≤720 (capacity)</div><div class="amt orange">[25; 720]</div></div>
+    </div>
+
+    <div class="hb or"><strong>Logik:</strong> Unter 25 jobs/h ist Lambda billiger (pay-per-use). Über 720 jobs/h kann c8.large nicht mithalten (Queue overflow → Jobs dropped). Dazwischen ist EC2 günstiger weil Fixkosten auf mehr Jobs verteilt werden.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P5: LLM ==================== -->
+  <div id="tab-p5" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Model:</strong> 8B params, 16-bit</div>
+      <div class="pm"><strong>Tokens:</strong> 500 in / 100 out</div>
+      <div class="pm"><strong>Usage:</strong> 100 req/h</div>
+      <div class="pm"><strong>FLOP/token:</strong> 4×10⁹</div>
+      <div class="pm"><strong>Concurrency:</strong> 1</div>
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">b) API-Kosten/Monat</div>
+        <div class="tc">€216</div>
+        <div class="nt">via TUMCloud LLM API</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">c) Best Instance</div>
+        <div class="tc">g8.2xlarge</div>
+        <div class="nt">€360/mo · GUM200 GPU</div>
+      </div>
+    </div>
+
+    <!-- API Cost -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">b) LLM API Kosten</div><div class="sv">€216/mo</div></div>
+      <div class="li"><div class="lab">Requests/Month</div><div class="frm">100/h × 24 × 30</div><div class="amt">72,000</div></div>
+      <div class="li"><div class="lab">Input Tokens/Month</div><div class="frm">72,000 × 500</div><div class="amt">36,000,000</div></div>
+      <div class="li"><div class="lab">Output Tokens/Month</div><div class="frm">72,000 × 100</div><div class="amt">7,200,000</div></div>
+      <div class="li sec"><div class="lab">Pricing Sheet (8B → Small Model):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Input Cost</div><div class="frm">36M / 1000 × €0.003</div><div class="amt">€108.00</div></div>
+      <div class="li"><div class="lab">Output Cost</div><div class="frm">7.2M / 1000 × €0.015</div><div class="amt">€108.00</div></div>
+      <div class="tr"><div class="lab">Total API Cost</div><div class="frm">€108 + €108</div><div class="amt blue">€216.00</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Instance Selection -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">c) Self-Hosted Instance Selection</div><div class="sv">g8.2xlarge</div></div>
+      <div class="li sec"><div class="lab">Step 1: Compute Requirement</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Tokens per second</div><div class="frm">600 tok/req × 100 req / 3600</div><div class="amt">16.67 tok/s</div></div>
+      <div class="li"><div class="lab">FLOP/s needed</div><div class="frm">16.67 × 4×10⁹</div><div class="amt">6.67 × 10¹⁰</div></div>
+      <div class="li sec"><div class="lab">Step 2: Memory Requirement</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Model Size</div><div class="frm">8×10⁹ × 2 bytes (16-bit)</div><div class="amt">16 GB (≈14.9 GiB)</div></div>
+      <div class="li sec"><div class="lab">Step 3: Instance Selection</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">g8.xlarge</div><div class="frm">GUM100: 7×10¹⁰ FLOP/s, 12 GB VRAM</div><div class="amt" style="color:var(--red)">❌ VRAM zu klein</div></div>
+      <div class="li"><div class="lab">g8.2xlarge</div><div class="frm">GUM200: 3.12×10¹¹ FLOP/s, 40 GB VRAM</div><div class="amt" style="color:var(--green)">✓ passt</div></div>
+      <div class="tr"><div class="lab">Monatliche Kosten</div><div class="frm">€0.50/h × 24 × 30</div><div class="amt green">€360.00</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Vergleich:</strong> API = €216/mo vs Self-Hosted = €360/mo. Die API ist hier günstiger! Aber: bei höherem Traffic würde Self-Hosted irgendwann gewinnen, weil die Instanz-Kosten fix sind.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P6: OLTP DATABASE ==================== -->
+  <div id="tab-p6" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Storage:</strong> 20 TB</div>
+      <div class="pm"><strong>I/O:</strong> 4 per txn</div>
+      <div class="pm"><strong>CPU:</strong> 0.08 s/txn</div>
+      <div class="pm"><strong>Peak:</strong> 100 txn/s</div>
+      <div class="pm"><strong>Volume:</strong> 100K txn/day</div>
+    </div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">d) SaaS Standard <span class="badge green">Winner</span></div>
+        <div class="tc">$3,434</div>
+        <div class="nt">low IO → Standard wins</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">d) SaaS IO-Optimized</div>
+        <div class="tc">$5,148</div>
+        <div class="nt">higher base, no IO savings</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--teal)">e) Self-Hosted</div>
+        <div class="tc">$5,072</div>
+        <div class="nt">r8.2xlarge + RBS</div>
+      </div>
+    </div>
+
+    <!-- SaaS Standard -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">d) OLTP SaaS — Standard Tier</div><div class="sv">$3,434.40</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">20 TB × 1024 GB × €0.15/GB</div><div class="amt">€3,072.00</div></div>
+      <div class="li"><div class="lab">Compute</div><div class="frm">€0.50/h × 24 × 30</div><div class="amt">€360.00</div></div>
+      <div class="li"><div class="lab">I/O Requests</div><div class="frm">100K txn × 4 IO × 30d / 1M × €0.20</div><div class="amt">€2.40</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt blue">€3,434.40</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- SaaS IO-Optimized -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">d) OLTP SaaS — IO-Optimized</div><div class="sv">$5,148.00</div></div>
+      <div class="li"><div class="lab">Storage</div><div class="frm">20 TB × 1024 GB × €0.225/GB</div><div class="amt">€4,608.00</div></div>
+      <div class="li"><div class="lab">Compute</div><div class="frm">€0.75/h × 24 × 30</div><div class="amt">€540.00</div></div>
+      <div class="li"><div class="lab">I/O Requests</div><div class="frm">included — €0.00</div><div class="amt">€0.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt orange">€5,148.00</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Standard gewinnt!</strong> IO-Kosten sind hier nur €2.40/mo — vernachlässigbar. IO-Optimized zahlt 50% mehr für Storage und Compute ohne echten Vorteil. Kontrast zu Ex12: dort gewann IO-Opt bei 52K IOPS (€26,957 IO-Kosten!).</div>
+
+    <div class="sp"></div>
+
+    <!-- Self-Hosted -->
+    <div class="subh">e) Self-Hosted (Instance + Remote Block Storage)</div>
+    <div class="ds tl">
+      <div class="sh"><div class="st teal">Self-Hosted Setup</div><div class="sv">€5,072</div></div>
+      <div class="li sec"><div class="lab">Step 1: CPU Requirement</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">CPU Cores needed</div><div class="frm">100 txn/s × 0.08 CPU-s/txn</div><div class="amt">8 vCPUs</div></div>
+      <div class="li"><div class="lab">Instance</div><div class="frm">r8.2xlarge (8 vCPU, 64 GB)</div><div class="amt">€0.3125/h × 720</div></div>
+      <div class="li"><div class="lab">Instance Cost</div><div class="frm"></div><div class="amt">€2,880.00</div></div>
+      <div class="li sec"><div class="lab">Step 2: Storage Provisioning</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">RBS Storage</div><div class="frm">20 TB × 1024 GB × €0.10/GB</div><div class="amt">€2,048.00</div></div>
+      <div class="li"><div class="lab">RBS Provisioned IOPS</div><div class="frm">100 txn/s × 4 IO = 400 IOPS × €0.36</div><div class="amt">€144.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€2,880 + €2,048 + €144</div><div class="amt teal">€5,072.00</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Ranking:</strong> SaaS Standard (€3,434) < Self-Hosted (€5,072) < SaaS IO-Opt (€5,148). Managed SaaS gewinnt hier — bei niedrigem IO-Volumen und großem Storage.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P7: OBJECT STORE ==================== -->
+  <div id="tab-p7" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Videos:</strong> 200,000 × 16 MB</div>
+      <div class="pm"><strong>Duration:</strong> 1 month</div>
+      <div class="pm"><strong>Access:</strong> 50% fetch once</div>
+      <div class="pm"><strong>Durability:</strong> 6 nines (p=10⁻⁶)</div>
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">ObjectStore Standard</div>
+        <div class="tc">$1,665</div>
+        <div class="nt">Storage $625 + PUT $1000 + GET $40</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">ObjectStore Express</div>
+        <div class="tc">$11,556</div>
+        <div class="nt">Express premium massive</div>
+      </div>
+    </div>
+
+    <!-- Standard -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a–c) ObjectStore Standard</div><div class="sv">€1,665</div></div>
+      <div class="li"><div class="lab">a) Storage</div><div class="frm">200K × 16 MB / 1024 × €0.20/GB</div><div class="amt">€625.00</div></div>
+      <div class="li"><div class="lab">b) PUT (upload all)</div><div class="frm">200,000 / 1000 × €5.00</div><div class="amt">€1,000.00</div></div>
+      <div class="li"><div class="lab">c) GET (50% fetch)</div><div class="frm">100,000 / 1000 × €0.40</div><div class="amt">€40.00</div></div>
+      <div class="tr"><div class="lab">Total Standard</div><div class="frm"></div><div class="amt blue">€1,665.00</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Express -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">a–c) ObjectStore Express</div><div class="sv">€11,555.63</div></div>
+      <div class="li"><div class="lab">a) Storage</div><div class="frm">200K × 16 MB / 1024 × €1.00/GB</div><div class="amt">€3,125.00</div></div>
+      <div class="li sec"><div class="lab">b) PUT (upload all):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">  PUT requests</div><div class="frm">200,000 / 1000 × €2.50</div><div class="amt">€500.00</div></div>
+      <div class="li"><div class="lab">  PUT data upload</div><div class="frm">200K × 16 MB / 1024 × €2.50/GB</div><div class="amt">€7,812.50</div></div>
+      <div class="li sec"><div class="lab">c) GET (50% fetch):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">  GET requests</div><div class="frm">100,000 / 1000 × €0.20</div><div class="amt">€20.00</div></div>
+      <div class="li"><div class="lab">  GET data retrieval</div><div class="frm">100K × 16 MB / 1024 × €0.05/GB</div><div class="amt">€78.13</div></div>
+      <div class="tr"><div class="lab">Total Express</div><div class="frm"></div><div class="amt orange">€11,535.63</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Durability -->
+    <div class="ds pk">
+      <div class="sh"><div class="st pink">d) Durability — Verlustwahrscheinlichkeit</div><div class="sv">18.13%</div></div>
+      <div class="li"><div class="lab">Durability per object</div><div class="frm">6 nines = 99.9999%</div><div class="amt">p(loss) = 10⁻⁶</div></div>
+      <div class="li"><div class="lab">Number of objects</div><div class="frm">given</div><div class="amt">200,000</div></div>
+      <div class="li"><div class="lab">P(all survive)</div><div class="frm">(1 − 10⁻⁶)^200,000</div><div class="amt">0.8187</div></div>
+      <div class="tr"><div class="lab">P(≥1 object lost)</div><div class="frm">1 − 0.8187</div><div class="amt pink">18.13%</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Durability Formula</div>
+      P(≥1 lost) = 1 − (1 − p)^n &nbsp;&nbsp;→&nbsp;&nbsp; 1 − (1 − 10⁻⁶)^200,000 = 18.13%
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Network e) -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">e) Network — Same Region</div><div class="sv">€781.25</div></div>
+      <div class="li"><div class="lab">Data fetched</div><div class="frm">100K users × 16 MB / 1024</div><div class="amt">1,562.5 GB</div></div>
+      <div class="li"><div class="lab">VM → Internet (OUT)</div><div class="frm">1,562.5 GB × €0.50/GB</div><div class="amt">€781.25</div></div>
+      <div class="li"><div class="lab">ObjectStore → VM</div><div class="frm">same region = free</div><div class="amt">€0.00</div></div>
+      <div class="tr"><div class="lab">Total Network</div><div class="frm"></div><div class="amt green">€781.25</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Network f) -->
+    <div class="ds rd">
+      <div class="sh"><div class="st red">f) Network — Cross-Region Mistake</div><div class="sv">€1,718.75</div></div>
+      <div class="li"><div class="lab">Data transferred</div><div class="frm">100K × 16 MB / 1024</div><div class="amt">1,562.5 GB</div></div>
+      <div class="li sec"><div class="lab">3 Charge Points:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">① VM → Internet (OUT)</div><div class="frm">1,562.5 GB × €0.50</div><div class="amt">€781.25</div></div>
+      <div class="li"><div class="lab">② ObjectStore OUT (R2→R1)</div><div class="frm">1,562.5 GB × €0.30</div><div class="amt">€468.75</div></div>
+      <div class="li"><div class="lab">③ VM IN (R1 from R2)</div><div class="frm">1,562.5 GB × €0.30</div><div class="amt">€468.75</div></div>
+      <div class="tr"><div class="lab">Total Network</div><div class="frm">€781.25 + €468.75 + €468.75</div><div class="amt red">€1,718.75</div></div>
+    </div>
+
+    <div class="hb rd"><strong>Teurer Fehler:</strong> Falsche Region kostet €937.50 extra pro Monat (+120%). Cross-Region Traffic wird <em>doppelt</em> berechnet (OUT + IN). ObjectStore Traffic ist normalerweise frei (same region), aber cross-region löst Netzwerk-Charges aus!</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

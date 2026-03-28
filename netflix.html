@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix Transcoding — Lambda vs EC2 Cost Breakdown</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 18px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}
+  .tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}
+  .sr.c3{grid-template-columns:1fr 1fr 1fr}
+  .sr.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}
+  .badge.red{background:#fef2f2;color:#991b1b}
+
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}
+  .ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}
+  .ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}
+  .ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}
+
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb)}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+
+  .li{display:grid;grid-template-columns:210px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:100px}
+  .li.dim .lab,.li.dim .frm,.li.dim .amt{color:#aaa}
+
+  .tr{display:grid;grid-template-columns:210px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}
+
+  .sp{height:8px}.bp{padding-bottom:24px}
+
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}
+  .hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}
+  .hb.or{background:var(--hlO);color:#92400e}
+
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+
+  /* pipeline diagram */
+  .pipeline{padding:20px 24px;display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center}
+  .pipe-node{border:2px solid var(--cb);border-radius:10px;padding:12px 16px;text-align:center;background:#fff;min-width:120px}
+  .pipe-node .pn-title{font-size:13px;font-weight:700}
+  .pipe-node .pn-sub{font-size:11px;color:var(--m);margin-top:2px}
+  .pipe-node.s3{border-color:#d97706;background:#fffbeb}
+  .pipe-node.lambda{border-color:var(--purple);background:#f5f3ff}
+  .pipe-arrow{font-size:22px;color:#bbb;padding:0 6px;flex-shrink:0}
+
+  /* EC2 table */
+  .mt{width:100%;border-collapse:collapse;font-size:13px}
+  .mt th{background:var(--sbg);font-weight:700;text-align:left;padding:10px 14px;border-bottom:1.5px solid var(--cb);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--m)}
+  .mt td{padding:9px 14px;border-bottom:1px solid #f0f0f0;font-family:var(--mono);font-size:13px}
+  .mt td:first-child{font-family:var(--sans);font-weight:600}
+  .mt tr:last-child td{border-bottom:none}
+  .mt .win{background:#f0fdf4}
+
+  .hidden{display:none}
+
+  @media(max-width:700px){
+    .sr.c2,.sr.c3,.sr.c4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:150px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+    .pipeline{flex-direction:column}
+    .pipe-arrow{transform:rotate(90deg)}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>Netflix Video Transcoding — Cost Breakdown</h1>
+    <div class="sub">Serverless (Lambda) Pipeline vs. EC2 Instances · 2-hour movie, 6 output formats</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview')">Overview</button>
+    <button class="tab" onclick="showTab('seg')">Phase 1: Segmentation</button>
+    <button class="tab" onclick="showTab('trans')">Phase 2: Transcoding</button>
+    <button class="tab" onclick="showTab('ec2')">EC2 Comparison</button>
+    <button class="tab" onclick="showTab('pricing')">Pricing Reference</button>
+  </div>
+
+  <!-- ========== OVERVIEW ========== -->
+  <div id="tab-overview" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Movie:</strong> 120 min, 30 FPS</div>
+      <div class="pm"><strong>Size:</strong> 2 GB/h → 4 GB total</div>
+      <div class="pm"><strong>Segment:</strong> 5 min each → 24 segments</div>
+      <div class="pm"><strong>Formats:</strong> 6 output resolutions</div>
+      <div class="pm"><strong>Lambdas:</strong> 24 × 6 = 144 transcoders</div>
+    </div>
+
+    <div class="ib">Pipeline: Upload → S3 → Segmenter (Lambda) → S3 → 144 Transcoders (Lambda) → S3</div>
+
+    <!-- Pipeline diagram -->
+    <div class="pipeline">
+      <div class="pipe-node s3">
+        <div class="pn-title">S3 Bucket</div>
+        <div class="pn-sub">Source movie</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node lambda">
+        <div class="pn-title">1× Segmenter</div>
+        <div class="pn-sub">Lambda (8 GB)</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node s3">
+        <div class="pn-title">S3 Bucket</div>
+        <div class="pn-sub">24 segments</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node lambda">
+        <div class="pn-title">144× Transcoder</div>
+        <div class="pn-sub">24 seg × 6 fmt</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node s3">
+        <div class="pn-title">S3 Bucket</div>
+        <div class="pn-sub">Output videos</div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">Phase 1: Segmentation</div>
+        <div class="tc">$0.0071</div>
+        <div class="nt">1 Lambda, 82s runtime</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">Phase 2: Transcoding</div>
+        <div class="tc">$4.30</div>
+        <div class="nt">144 Lambdas, ~350s each</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">Total Lambda Pipeline</div>
+        <div class="tc">$4.31</div>
+        <div class="nt">per movie (all 6 formats)</div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- Cost split -->
+    <div class="ds bl">
+      <div class="sh">
+        <div class="st blue">Total Cost Breakdown</div>
+        <div class="sv">$4.31</div>
+      </div>
+      <div class="li">
+        <div class="lab">Phase 1: Segmentation</div>
+        <div class="frm">1 Lambda + S3 I/O</div>
+        <div class="amt">$0.0071</div>
+      </div>
+      <div class="li">
+        <div class="lab">Phase 2: Transcoding</div>
+        <div class="frm">144 Lambdas + S3 I/O</div>
+        <div class="amt">$4.2963</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total per Movie</div>
+        <div class="frm"></div>
+        <div class="amt blue">$4.3034</div>
+      </div>
+    </div>
+
+    <div class="hb bl">
+      <strong>Key Insight:</strong> Phase 2 (transcoding) dominates at 99.8% of total cost. S3 request costs are negligible. Lambda compute duration is the main cost driver — each of the 144 transcoders runs ~350 seconds.
+    </div>
+
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== PHASE 1: SEGMENTATION ========== -->
+  <div id="tab-seg" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Lambda Config:</strong> 8 GB RAM</div>
+      <div class="pm"><strong>vCPUs:</strong> 8 / 1.75 = 4.57</div>
+      <div class="pm"><strong>Bandwidth:</strong> 100 MB/s (est.)</div>
+      <div class="pm"><strong>Segments:</strong> 24 (120 min ÷ 5 min)</div>
+    </div>
+
+    <div class="subh">Derived Parameters</div>
+    <div class="ds pu">
+      <div class="sh">
+        <div class="st purple">Segmentation Setup</div>
+      </div>
+      <div class="li">
+        <div class="lab"># of Segments</div>
+        <div class="frm">120 min ÷ 5 min/segment</div>
+        <div class="amt">24</div>
+      </div>
+      <div class="li">
+        <div class="lab">Movie Size</div>
+        <div class="frm">120 min / 60 × 2 GB/h × 1024</div>
+        <div class="amt">4,096 MB</div>
+      </div>
+      <div class="li">
+        <div class="lab">Movie Load Time</div>
+        <div class="frm">4,096 MB ÷ 100 MB/s</div>
+        <div class="amt">40.96 s</div>
+      </div>
+      <div class="li">
+        <div class="lab">Lambda Runtime</div>
+        <div class="frm">2 × load time (read + write)</div>
+        <div class="amt">81.92 s</div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">Cost Calculation</div>
+    <div class="ds pu">
+      <div class="sh">
+        <div class="st purple">S3 Cost</div>
+        <div class="sv">$0.000120</div>
+      </div>
+      <div class="li">
+        <div class="lab">S3 Reads</div>
+        <div class="frm">1 GET × $0.0000004</div>
+        <div class="amt">$0.0000004</div>
+      </div>
+      <div class="li">
+        <div class="lab">S3 Writes</div>
+        <div class="frm">24 PUTs × $0.000005</div>
+        <div class="amt">$0.000120</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total S3</div>
+        <div class="frm"></div>
+        <div class="amt purple">$0.000120</div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds pu">
+      <div class="sh">
+        <div class="st purple">Lambda Cost</div>
+        <div class="sv">$0.006991</div>
+      </div>
+      <div class="li">
+        <div class="lab">Duration Cost</div>
+        <div class="frm">81.92 s × 8 GB × $0.00001067/GB-s</div>
+        <div class="amt">$0.006991</div>
+      </div>
+      <div class="li">
+        <div class="lab">Invocation Cost</div>
+        <div class="frm">1 × $0.0000002</div>
+        <div class="amt">$0.0000002</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total Lambda</div>
+        <div class="frm"></div>
+        <div class="amt purple">$0.006991</div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds pu" style="border-left-color:var(--pink)">
+      <div class="sh">
+        <div class="st pink">Phase 1 Total</div>
+        <div class="sv">$0.0071</div>
+      </div>
+      <div class="li">
+        <div class="lab">S3 Cost</div>
+        <div class="frm"></div>
+        <div class="amt">$0.000120</div>
+      </div>
+      <div class="li">
+        <div class="lab">Lambda Cost</div>
+        <div class="frm"></div>
+        <div class="amt">$0.006991</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total Segmentation</div>
+        <div class="frm"></div>
+        <div class="amt pink">$0.0071</div>
+      </div>
+    </div>
+
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== PHASE 2: TRANSCODING ========== -->
+  <div id="tab-trans" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Lambdas:</strong> 24 segments × 6 formats = 144</div>
+      <div class="pm"><strong>Graviton FPS/vCPU:</strong> 5.6875</div>
+      <div class="pm"><strong>vCPUs per Lambda:</strong> 4.57</div>
+      <div class="pm"><strong>FPS per Lambda:</strong> 26</div>
+    </div>
+
+    <div class="ib">Each Lambda loads one segment from S3, transcodes it to one output format, writes result back to S3</div>
+
+    <div class="subh">Per-Lambda Calculation</div>
+    <div class="ds or">
+      <div class="sh">
+        <div class="st orange">Single Transcoder Lambda</div>
+        <div class="sv">$0.02983</div>
+      </div>
+      <div class="li">
+        <div class="lab">Transcoding FPS</div>
+        <div class="frm">5.6875 FPS/vCPU × 4.57 vCPUs</div>
+        <div class="amt">26 FPS</div>
+      </div>
+      <div class="li">
+        <div class="lab">Frames per Segment</div>
+        <div class="frm">5 min × 60 s × 30 FPS</div>
+        <div class="amt">9,000</div>
+      </div>
+      <div class="li">
+        <div class="lab">Transcoding Time</div>
+        <div class="frm">9,000 frames ÷ 26 FPS</div>
+        <div class="amt">346.15 s</div>
+      </div>
+      <div class="li">
+        <div class="lab">Segment Size</div>
+        <div class="frm">(5/60) h × 2 GB/h × 1024</div>
+        <div class="amt">170.67 MB</div>
+      </div>
+      <div class="li">
+        <div class="lab">Load + Store Time</div>
+        <div class="frm">2 × 170.67 MB ÷ 100 MB/s</div>
+        <div class="amt">3.41 s</div>
+      </div>
+      <div class="li">
+        <div class="lab">Total Runtime</div>
+        <div class="frm">346.15 + 3.41</div>
+        <div class="amt">349.57 s</div>
+      </div>
+      <div class="li" style="background:var(--sbg)">
+        <div class="lab" style="color:var(--m);font-size:13px">Cost Components:</div>
+        <div class="frm"></div>
+        <div class="amt"></div>
+      </div>
+      <div class="li">
+        <div class="lab">Lambda Duration</div>
+        <div class="frm">349.57 s × 8 GB × $0.00001067/GB-s</div>
+        <div class="amt">$0.02983</div>
+      </div>
+      <div class="li">
+        <div class="lab">Lambda Invocation</div>
+        <div class="frm">$0.0000002</div>
+        <div class="amt">$0.0000002</div>
+      </div>
+      <div class="li">
+        <div class="lab">S3 (1 GET + 1 PUT)</div>
+        <div class="frm">$0.0000004 + $0.000005</div>
+        <div class="amt">$0.0000054</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Cost per Lambda</div>
+        <div class="frm"></div>
+        <div class="amt orange">$0.02983</div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">Phase 2 Total (all 144 Lambdas)</div>
+    <div class="ds or" style="border-left-color:var(--red)">
+      <div class="sh">
+        <div class="st red">Phase 2 Aggregated</div>
+        <div class="sv">$4.2963</div>
+      </div>
+      <div class="li">
+        <div class="lab">Total Lambda Cost</div>
+        <div class="frm">144 × ($0.02983 + $0.0000002)</div>
+        <div class="amt">$4.2956</div>
+      </div>
+      <div class="li">
+        <div class="lab">Total S3 Cost</div>
+        <div class="frm">144 × $0.0000054</div>
+        <div class="amt">$0.00078</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Total Phase 2</div>
+        <div class="frm"></div>
+        <div class="amt red">$4.2963</div>
+      </div>
+    </div>
+
+    <div class="hb or">
+      <strong>Breakdown:</strong> Lambda compute is 99.98% of Phase 2 cost. S3 requests add only $0.00078. The actual bottleneck is transcoding speed — each Lambda spends ~346 s on pure transcoding vs. ~3.4 s on I/O.
+    </div>
+
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== EC2 COMPARISON ========== -->
+  <div id="tab-ec2" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Benchmark:</strong> Graviton instances (ARM)</div>
+      <div class="pm"><strong>Movie:</strong> 216,000 frames (120 min × 30 FPS)</div>
+      <div class="pm"><strong>Formats:</strong> 6 output resolutions</div>
+    </div>
+
+    <div class="ib">EC2 instances run the full movie sequentially per resolution — no segmentation needed. Sequential processing: one format after another.</div>
+
+    <div class="subh">EC2 Instance Comparison</div>
+    <div style="padding:0 24px 8px">
+      <div class="ds gn" style="margin:0">
+        <table class="mt">
+          <thead>
+            <tr>
+              <th>Instance</th>
+              <th>FPS</th>
+              <th>$/second</th>
+              <th>$/frame</th>
+              <th>$/movie/resolution</th>
+              <th>$/movie (6 fmt)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>c6g.4xlarge</td>
+              <td>92</td>
+              <td>$0.000151</td>
+              <td>$0.00000164</td>
+              <td>$0.3545</td>
+              <td>$2.13</td>
+            </tr>
+            <tr>
+              <td>c7g.4xlarge</td>
+              <td>133</td>
+              <td>$0.000161</td>
+              <td>$0.00000121</td>
+              <td>$0.2615</td>
+              <td>$1.57</td>
+            </tr>
+            <tr class="win">
+              <td>c8g.4xlarge <span class="badge green">Best $/frame</span></td>
+              <td>159</td>
+              <td>$0.000177</td>
+              <td>$0.00000111</td>
+              <td>$0.2405</td>
+              <td>$1.44</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="subh">Lambda vs. EC2: Head-to-Head</div>
+    <div class="ds in">
+      <div class="sh">
+        <div class="st indigo">Cost Comparison per Movie</div>
+      </div>
+      <div class="li">
+        <div class="lab">Lambda Pipeline</div>
+        <div class="frm">Phase 1 + Phase 2</div>
+        <div class="amt" style="color:var(--red)">$4.30</div>
+      </div>
+      <div class="li">
+        <div class="lab">EC2 c6g.4xlarge</div>
+        <div class="frm">sequential, 92 FPS</div>
+        <div class="amt">$2.13</div>
+      </div>
+      <div class="li">
+        <div class="lab">EC2 c7g.4xlarge</div>
+        <div class="frm">sequential, 133 FPS</div>
+        <div class="amt">$1.57</div>
+      </div>
+      <div class="li">
+        <div class="lab">EC2 c8g.4xlarge</div>
+        <div class="frm">sequential, 159 FPS</div>
+        <div class="amt" style="color:var(--green)">$1.44</div>
+      </div>
+      <div class="tr">
+        <div class="lab">Lambda Premium</div>
+        <div class="frm">$4.30 / $1.44</div>
+        <div class="amt red">~3× more expensive</div>
+      </div>
+    </div>
+
+    <div class="hb gn">
+      <strong>Trade-off:</strong> Lambda costs ~3× more but finishes in ~350 s (wall clock) thanks to parallelism, vs. EC2 which processes sequentially (216K frames ÷ 159 FPS = ~22.6 min per format × 6 = ~2.3 hours). Lambda wins on latency, EC2 wins on cost.
+    </div>
+
+    <div class="bp"></div>
+  </div>
+
+  <!-- ========== PRICING ========== -->
+  <div id="tab-pricing" class="cc hidden">
+    <div class="ib">Reference pricing used for all calculations</div>
+
+    <div style="padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="ds pu" style="margin:0">
+        <div class="sh"><div class="st purple">Lambda Pricing</div></div>
+        <div class="li"><div class="lab">Invocation</div><div class="frm"></div><div class="amt">$0.0000002</div></div>
+        <div class="li"><div class="lab">Duration</div><div class="frm"></div><div class="amt">$0.00001067/GB-s</div></div>
+        <div class="li"><div class="lab">GB per vCPU</div><div class="frm"></div><div class="amt">1.75</div></div>
+      </div>
+      <div class="ds or" style="margin:0">
+        <div class="sh"><div class="st orange">S3 Pricing</div></div>
+        <div class="li"><div class="lab">GET (Read)</div><div class="frm"></div><div class="amt">$0.0000004</div></div>
+        <div class="li"><div class="lab">PUT (Write)</div><div class="frm"></div><div class="amt">$0.000005</div></div>
+      </div>
+    </div>
+
+    <div style="padding:0 24px 8px">
+      <div class="ds gn" style="margin:0">
+        <div class="sh"><div class="st green">EC2 Graviton Instances</div></div>
+        <div class="li"><div class="lab">c6g.4xlarge</div><div class="frm">92 FPS</div><div class="amt">$0.000151/s</div></div>
+        <div class="li"><div class="lab">c7g.4xlarge</div><div class="frm">133 FPS</div><div class="amt">$0.000161/s</div></div>
+        <div class="li"><div class="lab">c8g.4xlarge</div><div class="frm">159 FPS</div><div class="amt">$0.000177/s</div></div>
+      </div>
+    </div>
+
+    <div style="padding:0 24px 20px">
+      <div class="ds bl" style="margin:0">
+        <div class="sh"><div class="st blue">General Parameters</div></div>
+        <div class="li"><div class="lab">Movie Duration</div><div class="frm"></div><div class="amt">120 min</div></div>
+        <div class="li"><div class="lab">Frame Rate</div><div class="frm"></div><div class="amt">30 FPS</div></div>
+        <div class="li"><div class="lab">Size per Hour</div><div class="frm"></div><div class="amt">2 GB</div></div>
+        <div class="li"><div class="lab">Segment Duration</div><div class="frm"></div><div class="amt">5 min</div></div>
+        <div class="li"><div class="lab">Output Formats</div><div class="frm"></div><div class="amt">6</div></div>
+        <div class="li"><div class="lab">c6g.4xlarge FPS (16 vCPU)</div><div class="frm"></div><div class="amt">91 → 5.69 FPS/vCPU</div></div>
+        <div class="li"><div class="lab">Lambda Config</div><div class="frm"></div><div class="amt">8 GB → 4.57 vCPU</div></div>
+        <div class="li"><div class="lab">Lambda Avg Bandwidth</div><div class="frm"></div><div class="amt">100 MB/s</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
