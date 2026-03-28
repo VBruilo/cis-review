@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS 2025 Retake — Klausur Aufschlüsselung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;
+    --t:#1a1a1a;--m:#6b6b6b;
+    --blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--amber:#b45309;
+    --hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;
+    --mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif;
+  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}.sr.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}.badge.red{background:#fef2f2;color:#991b1b}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}.ds.am{border-left:4px solid var(--amber)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}.st.amber{color:var(--amber)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}.tr .amt.amber{color:var(--amber)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  .tbl{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .tbl table{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl th{background:var(--sbg);padding:10px 12px;text-align:left;font-weight:700;border-bottom:1.5px solid var(--cb)}
+  .tbl td{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-family:var(--mono);font-size:12.5px}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl .win{background:#f0fdf4;font-weight:700}
+  .tbl .fail{color:#999;text-decoration:line-through}
+  @media(max-width:700px){
+    .sr.c2,.sr.c3,.sr.c4{grid-template-columns:1fr}
+    .li,.tr{grid-template-columns:155px 1fr auto}
+    .li .frm{font-size:11px}
+    .pb{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>CIS 2025 Retake — Klausur Aufschlüsselung</h1>
+    <div class="sub">15. April 2025 · Prof. Leis · 90 Credits · TUMCloud Pricing Sheet</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('p4')">P4 Data Center</button>
+    <button class="tab" onclick="showTab('p6')">P6 Network Cost</button>
+    <button class="tab" onclick="showTab('p7')">P7 Optimal Instance</button>
+    <button class="tab" onclick="showTab('p8')">P8 TUM-Greet</button>
+  </div>
+
+  <!-- ==================== P4: DATA CENTER HOSTING ==================== -->
+  <div id="tab-p4" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>TUMCloud:</strong> €2,426/Monat (cd.special)</div>
+      <div class="pm"><strong>Server:</strong> €16,100 Kaufpreis, 700W</div>
+      <div class="pm"><strong>Strom:</strong> €0.25/kWh</div>
+      <div class="pm"><strong>Server-Lifetime:</strong> min. 3 Jahre</div>
+    </div>
+    <div class="ib">Vergleich: TUMCloud-Miete vs. eigenen Server im Keller betreiben</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Break-Even</div>
+        <div class="tc">7 Monate</div>
+        <div class="nt">ab dann ist Keller günstiger</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) Co-Location 3J</div>
+        <div class="tc">€17,100</div>
+        <div class="nt">Server + Install + Miete</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--teal)">d) Total Power (PUE)</div>
+        <div class="tc">1,750 W</div>
+        <div class="nt">PUE 2.5 × 700W IT</div>
+      </div>
+    </div>
+
+    <!-- a) Break-Even -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Break-Even — Cloud vs. Keller</div><div class="sv">7 Monate</div></div>
+      <div class="li sec"><div class="lab">Monatliche Stromkosten berechnen:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Leistung</div><div class="frm">given</div><div class="amt">700 W = 0.7 kW</div></div>
+      <div class="li"><div class="lab">Stunden pro Monat</div><div class="frm">24h × 30 Tage</div><div class="amt">720 h</div></div>
+      <div class="li"><div class="lab">Verbrauch/Monat</div><div class="frm">0.7 kW × 720 h</div><div class="amt">504 kWh</div></div>
+      <div class="li"><div class="lab">Stromkosten/Monat</div><div class="frm">504 kWh × €0.25/kWh</div><div class="amt">€126.00</div></div>
+      <div class="li sec"><div class="lab">Break-Even-Gleichung:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Cloud-Kosten</div><div class="frm">n × €2,426</div><div class="amt">n × €2,426</div></div>
+      <div class="li"><div class="lab">Keller-Kosten</div><div class="frm">€16,100 + n × €126</div><div class="amt">€16,100 + n × €126</div></div>
+      <div class="li"><div class="lab">Gleichsetzen</div><div class="frm">n × 2426 = 16100 + n × 126</div><div class="amt">—</div></div>
+      <div class="li"><div class="lab">Auflösen</div><div class="frm">n = 16100 / (2426 − 126)</div><div class="amt">n = 16100 / 2300</div></div>
+      <div class="tr"><div class="lab">Break-Even</div><div class="frm">= 7.0 Monate</div><div class="amt blue">7 Monate</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Break-Even Formel</div>
+      n = Fixed_Cost / (Cloud_Monthly − OPEX_Monthly) = 16,100 / (2,426 − 126)
+    </div>
+
+    <div class="hb bl"><strong>Wichtig:</strong> Die Stromkosten (OPEX) des Keller-Servers müssen immer einbezogen werden! Ohne OPEX wäre der Break-Even bei 16100/2426 ≈ 6.6 Monate — falsch! Nur mit OPEX ergibt sich das korrekte Ergebnis von 7 Monaten.</div>
+
+    <div class="sp"></div>
+
+    <!-- b) Co-Location -->
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">b) Co-Location — 3-Jahres-Kosten</div><div class="sv">€17,100</div></div>
+      <div class="li"><div class="lab">Server-Kaufpreis</div><div class="frm">given</div><div class="amt">€16,100</div></div>
+      <div class="li"><div class="lab">Installationsgebühr</div><div class="frm">einmalig</div><div class="amt">€100</div></div>
+      <div class="li"><div class="lab">Monats-Miete</div><div class="frm">€25/Monat × 36 Monate</div><div class="amt">€900</div></div>
+      <div class="tr"><div class="lab">Total 3 Jahre</div><div class="frm">16100 + 100 + 900</div><div class="amt purple">€17,100</div></div>
+    </div>
+
+    <div class="hb pu"><strong>Beachte:</strong> Bei Co-Location bringt der Kunde eigene Hardware mit. TUMCloud stellt nur Platz, Netzwerk, Kühlung. Alle Betriebskosten (Strom etc.) sind in der Monatsmiete von €25 enthalten — daher keine separate Stromrechnung.</div>
+
+    <div class="sp"></div>
+
+    <!-- d) PUE -->
+    <div class="ds tl">
+      <div class="sh"><div class="st teal">d) PUE — Gesamtenergieverbrauch</div><div class="sv">1,750 W</div></div>
+      <div class="li"><div class="lab">IT-Verbrauch</div><div class="frm">given</div><div class="amt">700 W</div></div>
+      <div class="li"><div class="lab">PUE</div><div class="frm">given</div><div class="amt">2.5</div></div>
+      <div class="tr"><div class="lab">Total Power</div><div class="frm">PUE × IT = 2.5 × 700</div><div class="amt teal">1,750 W</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Power Usage Effectiveness</div>
+      PUE = Total Facility Power / IT Equipment Power &nbsp;→&nbsp; Total = PUE × IT
+    </div>
+
+    <div class="hb gn"><strong>PUE-Kritik (e):</strong> PUE misst nicht die Nachhaltigkeit — nur Effizienz. Es berücksichtigt nicht die Energiequelle (Kohle vs. Solar) und kann leicht manipuliert werden (z.B. ineffizientere Server verwenden → niedrigerer PUE, aber mehr Gesamtverbrauch).</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P6: NETWORK COST ==================== -->
+  <div id="tab-p6" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>IN (Internet→Cloud):</strong> €0/MB</div>
+      <div class="pm"><strong>OUT (Cloud→Internet):</strong> €0.5/MB</div>
+      <div class="pm"><strong>Cross-Zone:</strong> €0.1/MB je Richtung</div>
+      <div class="pm"><strong>Cross-Region:</strong> €0.3/MB</div>
+      <div class="pm"><strong>Same Zone:</strong> €0/MB</div>
+    </div>
+    <div class="ib">PUT-Request: ① 5MB User→Primary · ② 10MB Primary→Secondary · ③ 1MB Secondary→Primary · ④ 2MB Primary→User</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Same Zone</div>
+        <div class="tc">€1.00</div>
+        <div class="nt">nur Egress zum Internet</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) Cross-Zone</div>
+        <div class="tc">€3.20</div>
+        <div class="nt">Zone A ↔ Zone B + Egress</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">c) Cross-Region</div>
+        <div class="tc">€4.30</div>
+        <div class="nt">Region 1 ↔ Region 2 + Egress</div>
+      </div>
+    </div>
+
+    <!-- a) Same Zone -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Both in Zone A, Region 1</div><div class="sv">€1.00</div></div>
+      <div class="li"><div class="lab">① User → Primary (5MB)</div><div class="frm">Internet IN = €0/MB</div><div class="amt">€0.00</div></div>
+      <div class="li"><div class="lab">② Primary → Secondary (10MB)</div><div class="frm">Same Zone = €0/MB</div><div class="amt">€0.00</div></div>
+      <div class="li"><div class="lab">③ Secondary → Primary (1MB)</div><div class="frm">Same Zone = €0/MB</div><div class="amt">€0.00</div></div>
+      <div class="li"><div class="lab">④ Primary → User (2MB)</div><div class="frm">OUT to Internet = 2 × €0.5</div><div class="amt">€1.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€0 + €0 + €0 + €1.00</div><div class="amt blue">€1.00</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- b) Cross-Zone -->
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">b) Primary Zone A, Secondary Zone B (Same Region)</div><div class="sv">€3.20</div></div>
+      <div class="li"><div class="lab">① User → Primary (5MB)</div><div class="frm">Internet IN = €0/MB</div><div class="amt">€0.00</div></div>
+      <div class="li sec"><div class="lab">② Primary → Secondary (10MB) — Cross-Zone:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">&nbsp;&nbsp;OUT from Zone A</div><div class="frm">10 × €0.1</div><div class="amt">€1.00</div></div>
+      <div class="li"><div class="lab">&nbsp;&nbsp;IN to Zone B</div><div class="frm">10 × €0.1</div><div class="amt">€1.00</div></div>
+      <div class="li sec"><div class="lab">③ Secondary → Primary (1MB) — Cross-Zone:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">&nbsp;&nbsp;OUT from Zone B</div><div class="frm">1 × €0.1</div><div class="amt">€0.10</div></div>
+      <div class="li"><div class="lab">&nbsp;&nbsp;IN to Zone A</div><div class="frm">1 × €0.1</div><div class="amt">€0.10</div></div>
+      <div class="li"><div class="lab">④ Primary → User (2MB)</div><div class="frm">OUT to Internet = 2 × €0.5</div><div class="amt">€1.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€0 + €2 + €0.2 + €1</div><div class="amt purple">€3.20</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <!-- c) Cross-Region -->
+    <div class="ds or">
+      <div class="sh"><div class="st orange">c) Primary Region 1, Secondary Region 2</div><div class="sv">€4.30</div></div>
+      <div class="li"><div class="lab">① User → Primary (5MB)</div><div class="frm">Internet IN = €0/MB</div><div class="amt">€0.00</div></div>
+      <div class="li"><div class="lab">② Primary → Secondary (10MB)</div><div class="frm">R1→R2 OUT = 10 × €0.3</div><div class="amt">€3.00</div></div>
+      <div class="li"><div class="lab">③ Secondary → Primary (1MB)</div><div class="frm">R2→R1 OUT = 1 × €0.3</div><div class="amt">€0.30</div></div>
+      <div class="li"><div class="lab">④ Primary → User (2MB)</div><div class="frm">OUT to Internet = 2 × €0.5</div><div class="amt">€1.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€0 + €3 + €0.3 + €1</div><div class="amt orange">€4.30</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Merke:</strong> Internet-Ingress ist immer kostenlos. Cross-Zone berechnet beide Richtungen (IN + OUT je €0.1). Cross-Region berechnet nur den ausgehenden Transfer (€0.3/MB). Same-Zone ist komplett kostenlos.</div>
+
+    <div class="sp"></div>
+
+    <!-- e) Tail Latency -->
+    <div class="ds tl">
+      <div class="sh"><div class="st teal">e) Tail Latency — Kann p99 &lt; 170ms garantiert werden?</div></div>
+      <div class="li"><div class="lab">Gegebene Latenzen</div><div class="frm">Tabelle zeigt nur Durchschnitte</div><div class="amt">Averages</div></div>
+      <div class="li"><div class="lab">p99 Tail Latency</div><div class="frm">Tail kann beliebig höher sein</div><div class="amt">unbekannt</div></div>
+      <div class="tr"><div class="lab">Antwort</div><div class="frm">Keine Konfiguration kann p99 &lt; 170ms garantieren</div><div class="amt teal">Nicht möglich</div></div>
+    </div>
+
+    <div class="hb rd"><strong>Trick-Frage!</strong> Die Tabelle zeigt nur Durchschnittswerte. Aus Durchschnitts-Latenzen kann man keine Tail-Latency (p99) ableiten. Keine der Konfigurationen kann die Garantie liefern.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P7: COST-OPTIMAL INSTANCE ==================== -->
+  <div id="tab-p7" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Algo A:</strong> 1.25 CPU-h, 300 GB Scan, perfekt skalierbar</div>
+      <div class="pm"><strong>Algo B:</strong> 5 CPU-h, 20 GB Scan, 15% seriell, ≤ 1.5h</div>
+      <div class="pm"><strong>Billing:</strong> per second begun, min 60s</div>
+    </div>
+    <div class="ib">Zwei Phasen: Data Scanning (netzwerk-limitiert) → Computation (CPU-limitiert). Kosten = Gesamtzeit × €/s</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Algorithm A</div>
+        <div class="tc">c8.xlarge · €246.75</div>
+        <div class="nt">3,525 s Laufzeit</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) Algorithm B</div>
+        <div class="tc">d8.2xlarge · €1,116.72</div>
+        <div class="nt">4,652.5 s ≤ 5,400 s</div>
+      </div>
+    </div>
+
+    <!-- Algorithm A: Instance Comparison Table -->
+    <div class="subh">a) Algorithm A — Alle Instanzen im Vergleich</div>
+
+    <div class="fbox">
+      <div class="fl">Kostenformel</div>
+      Cost = (t_scan + t_compute) × €/s &nbsp;&nbsp;wobei&nbsp; t_scan = 300GB / BW &nbsp;&nbsp; t_compute = 4,500s / vCPUs
+    </div>
+
+    <div class="tbl">
+      <table>
+        <tr><th>Instance</th><th>vCPUs</th><th>BW (GB/s)</th><th>€/s</th><th>t_scan (s)</th><th>t_compute (s)</th><th>Total (s)</th><th>Cost (€)</th></tr>
+        <tr class="win"><td><strong>c8.large</strong></td><td>2</td><td>0.0625</td><td>0.035</td><td>4,800</td><td>2,250</td><td>7,050</td><td><strong>246.75</strong></td></tr>
+        <tr class="win"><td><strong>c8.xlarge ✓</strong></td><td>4</td><td>0.1250</td><td>0.070</td><td>2,400</td><td>1,125</td><td>3,525</td><td><strong>246.75</strong></td></tr>
+        <tr><td>r8.large</td><td>2</td><td>0.0625</td><td>0.060</td><td>4,800</td><td>2,250</td><td>7,050</td><td>423.00</td></tr>
+        <tr><td>r8.2xlarge</td><td>8</td><td>0.3125</td><td>0.240</td><td>960</td><td>562.5</td><td>1,522.5</td><td>365.40</td></tr>
+        <tr><td>m8.medium</td><td>1</td><td>0.0313</td><td>0.030</td><td>9,585</td><td>4,500</td><td>14,085</td><td>422.55</td></tr>
+        <tr><td>m8.4xlarge</td><td>16</td><td>0.6250</td><td>0.400</td><td>480</td><td>281.25</td><td>761.25</td><td>304.50</td></tr>
+        <tr><td>d8.xlarge</td><td>4</td><td>0.2500</td><td>0.120</td><td>1,200</td><td>1,125</td><td>2,325</td><td>279.00</td></tr>
+        <tr><td>d8.2xlarge</td><td>8</td><td>0.5000</td><td>0.240</td><td>600</td><td>562.5</td><td>1,162.5</td><td>279.00</td></tr>
+      </table>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Gewinner: c8.xlarge</div><div class="sv">€246.75</div></div>
+      <div class="li"><div class="lab">Scan Time</div><div class="frm">300 GB / 0.125 GB/s</div><div class="amt">2,400 s</div></div>
+      <div class="li"><div class="lab">Compute Time</div><div class="frm">1.25 CPU-h × 3600 / 4 vCPUs</div><div class="amt">1,125 s</div></div>
+      <div class="li"><div class="lab">Total Runtime</div><div class="frm">2400 + 1125</div><div class="amt">3,525 s</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">3525 × €0.070</div><div class="amt blue">€246.75</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Tie-Breaker:</strong> c8.large und c8.xlarge haben identische Kosten (€246.75), aber c8.xlarge hat die halbe Laufzeit (3,525s vs 7,050s). Bei gleichem Preis wird die schnellere Instanz gewählt → c8.xlarge.</div>
+
+    <div class="sp"></div>
+
+    <!-- Algorithm B: With Amdahl's Law -->
+    <div class="subh">b) Algorithm B — Amdahl's Law + Latenz-Constraint</div>
+
+    <div class="fbox">
+      <div class="fl">Amdahl's Compute Time</div>
+      t_compute = (s × T + (1−s) × T / N) × 3600 = 2700 + 15300/N &nbsp;&nbsp; wobei s=0.15, T=5h, N=vCPUs
+    </div>
+
+    <div class="tbl">
+      <table>
+        <tr><th>Instance</th><th>vCPUs</th><th>BW</th><th>€/s</th><th>t_scan</th><th>t_compute</th><th>Total (s)</th><th>≤5400?</th><th>Cost (€)</th></tr>
+        <tr class="fail"><td>c8.large</td><td>2</td><td>0.0625</td><td>0.035</td><td>320</td><td>10,350</td><td>10,670</td><td>✗</td><td>—</td></tr>
+        <tr class="fail"><td>c8.xlarge</td><td>4</td><td>0.1250</td><td>0.070</td><td>160</td><td>6,525</td><td>6,685</td><td>✗</td><td>—</td></tr>
+        <tr class="fail"><td>r8.large</td><td>2</td><td>0.0625</td><td>0.060</td><td>320</td><td>10,350</td><td>10,670</td><td>✗</td><td>—</td></tr>
+        <tr><td>r8.2xlarge</td><td>8</td><td>0.3125</td><td>0.240</td><td>64</td><td>4,612.5</td><td>4,676.5</td><td>✓</td><td>1,122.36</td></tr>
+        <tr class="fail"><td>m8.medium</td><td>1</td><td>0.0313</td><td>0.030</td><td>639</td><td>18,000</td><td>18,639</td><td>✗</td><td>—</td></tr>
+        <tr><td>m8.4xlarge</td><td>16</td><td>0.6250</td><td>0.400</td><td>32</td><td>3,656</td><td>3,688</td><td>✓</td><td>1,475.20</td></tr>
+        <tr class="fail"><td>d8.xlarge</td><td>4</td><td>0.2500</td><td>0.120</td><td>80</td><td>6,525</td><td>6,605</td><td>✗</td><td>—</td></tr>
+        <tr class="win"><td><strong>d8.2xlarge ✓</strong></td><td>8</td><td>0.5000</td><td>0.240</td><td>40</td><td>4,612.5</td><td>4,652.5</td><td>✓</td><td><strong>1,116.72</strong></td></tr>
+      </table>
+    </div>
+
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">b) Gewinner: d8.2xlarge</div><div class="sv">€1,116.72</div></div>
+      <div class="li sec"><div class="lab">Amdahl's Law Berechnung:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Serial Fraction (s)</div><div class="frm">given</div><div class="amt">15%</div></div>
+      <div class="li"><div class="lab">Serial Time</div><div class="frm">0.15 × 5h × 3600</div><div class="amt">2,700 s</div></div>
+      <div class="li"><div class="lab">Parallel Time</div><div class="frm">0.85 × 5h × 3600 / 8 vCPUs</div><div class="amt">1,912.5 s</div></div>
+      <div class="li"><div class="lab">Total Compute</div><div class="frm">2700 + 1912.5</div><div class="amt">4,612.5 s</div></div>
+      <div class="li sec"><div class="lab">Gesamtzeit:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Scan Time</div><div class="frm">20 GB / 0.5 GB/s</div><div class="amt">40 s</div></div>
+      <div class="li"><div class="lab">Total Wall-Clock</div><div class="frm">40 + 4612.5</div><div class="amt">4,652.5 s</div></div>
+      <div class="li"><div class="lab">Latenz-Constraint</div><div class="frm">4652.5 ≤ 5400 (1.5h)</div><div class="amt" style="color:var(--green)">✓ erfüllt</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">4653 × €0.240</div><div class="amt purple">€1,116.72</div></div>
+    </div>
+
+    <div class="hb pu"><strong>Warum d8.2xlarge statt r8.2xlarge?</strong> Beide haben 8 vCPUs und €0.240/s. Aber d8.2xlarge hat höhere Bandbreite (0.5 vs 0.3125 GB/s), also kürzere Scanzeit → kürzere Gesamtzeit → geringere Kosten. Bei gleichem €/s entscheidet die schnellere Gesamtlaufzeit.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P8: TUM-GREET ARCHITECTURE ==================== -->
+  <div id="tab-p8" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Users:</strong> 200,000</div>
+      <div class="pm"><strong>Video:</strong> 6.25×10⁵ FLOP / Video</div>
+      <div class="pm"><strong>Video Size:</strong> 16 MB</div>
+      <div class="pm"><strong>Watch Rate:</strong> 50% (1× access)</div>
+    </div>
+    <div class="ib">TUMCloud will jedem User ein personalisiertes Video zum Jahresende schicken</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Bulk Generation</div>
+        <div class="tc">€729.19</div>
+        <div class="nt">c8.large (bester FLOP/€)</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">b) ObjectStore</div>
+        <div class="tc">€1,665</div>
+        <div class="nt">vs Express: €83,645</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">c) On-Demand FaaS</div>
+        <div class="tc">€0.825 / Video</div>
+        <div class="nt">6.25 GB · 2 Invocations</div>
+      </div>
+    </div>
+
+    <!-- a) Bulk Generation -->
+    <div class="subh">a) Kosteneffizienteste Instanz für Video-Erzeugung</div>
+
+    <div class="tbl">
+      <table>
+        <tr><th>Instance</th><th>FLOP/s</th><th>€/s</th><th>FLOP/€</th><th>Rang</th></tr>
+        <tr class="win"><td><strong>c8.large ✓</strong></td><td>6.00E+06</td><td>0.035</td><td><strong>1.714×10⁸</strong></td><td>🥇</td></tr>
+        <tr><td>r8.large</td><td>1.00E+07</td><td>0.060</td><td>1.667×10⁸</td><td>2</td></tr>
+        <tr><td>r8.2xlarge</td><td>4.00E+07</td><td>0.240</td><td>1.667×10⁸</td><td>2</td></tr>
+        <tr><td>c8.xlarge</td><td>1.12E+07</td><td>0.070</td><td>1.600×10⁸</td><td>4</td></tr>
+        <tr><td>m8.4xlarge</td><td>5.60E+07</td><td>0.400</td><td>1.400×10⁸</td><td>5</td></tr>
+        <tr><td>d8.xlarge</td><td>1.60E+07</td><td>0.120</td><td>1.333×10⁸</td><td>6</td></tr>
+        <tr><td>d8.2xlarge</td><td>3.20E+07</td><td>0.240</td><td>1.333×10⁸</td><td>6</td></tr>
+        <tr><td>m8.medium</td><td>3.50E+06</td><td>0.030</td><td>1.167×10⁸</td><td>8</td></tr>
+      </table>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) c8.large — Bulk Video Generation</div><div class="sv">€729.19</div></div>
+      <div class="li"><div class="lab">Total FLOP</div><div class="frm">200,000 × 6.25×10⁵</div><div class="amt">1.25×10¹¹ FLOP</div></div>
+      <div class="li"><div class="lab">FLOP/s (c8.large)</div><div class="frm">given</div><div class="amt">6.00×10⁶</div></div>
+      <div class="li"><div class="lab">Runtime</div><div class="frm">1.25×10¹¹ / 6×10⁶</div><div class="amt">20,833.3 s</div></div>
+      <div class="li"><div class="lab">Billed Seconds</div><div class="frm">⌈20833.3⌉ (per second begun)</div><div class="amt">20,834 s</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">20,834 × €0.035</div><div class="amt blue">€729.19</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Methodik:</strong> FLOP/€ Ratio für jede Instanz berechnen (= FLOP/s ÷ €/s). c8.large gewinnt mit 1.714×10⁸ FLOP/€. Ceiling auf ganze Sekunden wegen „per second begun" Billing.</div>
+
+    <div class="sp"></div>
+
+    <!-- b) Storage -->
+    <div class="subh">b) Storage-Kosten — ObjectStore vs. ObjectStore Express</div>
+
+    <div class="ds gn">
+      <div class="sh"><div class="st green">ObjectStore</div><div class="sv">€1,665</div></div>
+      <div class="li sec"><div class="lab">Bestandsaufnahme:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Total Videos</div><div class="frm">given</div><div class="amt">200,000</div></div>
+      <div class="li"><div class="lab">Video Size</div><div class="frm">given</div><div class="amt">16 MB</div></div>
+      <div class="li"><div class="lab">Total Storage</div><div class="frm">200,000 × 16 MB / 1024</div><div class="amt">3,125 GB</div></div>
+      <div class="li"><div class="lab">Videos accessed</div><div class="frm">50% × 200,000</div><div class="amt">100,000 GETs</div></div>
+      <div class="li sec"><div class="lab">Kosten:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Storage (1 Monat)</div><div class="frm">€0.2/GB/month × 3125</div><div class="amt">€625.00</div></div>
+      <div class="li"><div class="lab">PUT Requests</div><div class="frm">200,000 × €5/1000</div><div class="amt">€1,000.00</div></div>
+      <div class="li"><div class="lab">GET Requests</div><div class="frm">100,000 × €0.4/1000</div><div class="amt">€40.00</div></div>
+      <div class="li"><div class="lab">GET Data Retrieval</div><div class="frm">€0/MB</div><div class="amt">€0.00</div></div>
+      <div class="tr"><div class="lab">Total ObjectStore</div><div class="frm">625 + 1000 + 40 + 0</div><div class="amt green">€1,665</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">ObjectStore Express</div><div class="sv">€83,645</div></div>
+      <div class="li sec"><div class="lab">Kosten:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Storage (1 Monat)</div><div class="frm">€1/GB/month × 3125</div><div class="amt">€3,125.00</div></div>
+      <div class="li"><div class="lab">PUT Requests</div><div class="frm">200,000 × €2.5/1000</div><div class="amt">€500.00</div></div>
+      <div class="li"><div class="lab">GET Requests</div><div class="frm">100,000 × €0.2/1000</div><div class="amt">€20.00</div></div>
+      <div class="li"><div class="lab">GET Data Retrieval</div><div class="frm">100,000 × 16 MB × €0.05/MB</div><div class="amt">€80,000.00</div></div>
+      <div class="tr"><div class="lab">Total Express</div><div class="frm">3125 + 500 + 20 + 80000</div><div class="amt red">€83,645</div></div>
+    </div>
+
+    <div class="hb rd"><strong>Express ist 50× teurer!</strong> Der Data-Retrieval-Preis (€0.05/MB) macht den Unterschied. 100K Videos × 16 MB = 1.6M MB × €0.05 = €80,000 allein für Retrieval. ObjectStore hat €0/MB Retrieval → dramatisch günstiger bei großen Dateien.</div>
+
+    <div class="sp"></div>
+
+    <!-- c) On-Demand FaaS -->
+    <div class="subh">c) On-Demand Video via Serverless Functions</div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Constraint: Video in ≤ 1 Sekunde generieren</div></div>
+      <div class="li sec"><div class="lab">FaaS Konfiguration:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">2 GB = 1 vCPU</div><div class="frm">given (Pricing Sheet)</div><div class="amt">—</div></div>
+      <div class="li"><div class="lab">FLOP/s per vCPU</div><div class="frm">given</div><div class="amt">1.00×10⁵</div></div>
+      <div class="li"><div class="lab">Max Size</div><div class="frm">given</div><div class="amt">8 GB</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Versuch 1: Single Invocation</div><div class="sv">✗ unmöglich</div></div>
+      <div class="li"><div class="lab">Benötigte FLOP/s</div><div class="frm">6.25×10⁵ / 1s</div><div class="amt">6.25×10⁵</div></div>
+      <div class="li"><div class="lab">Benötigte vCPUs</div><div class="frm">6.25×10⁵ / 1×10⁵</div><div class="amt">6.25 vCPUs</div></div>
+      <div class="li"><div class="lab">Benötigte GB</div><div class="frm">6.25 × 2 GB/vCPU</div><div class="amt">12.5 GB</div></div>
+      <div class="tr"><div class="lab">Ergebnis</div><div class="frm">12.5 GB &gt; 8 GB Max</div><div class="amt red">✗ Überschreitet Max</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Versuch 2: Zwei Invocations (Split Work)</div><div class="sv">✓ optimal</div></div>
+      <div class="li"><div class="lab">FLOP pro Invocation</div><div class="frm">6.25×10⁵ / 2</div><div class="amt">3.125×10⁵</div></div>
+      <div class="li"><div class="lab">Benötigte FLOP/s</div><div class="frm">3.125×10⁵ / 1s</div><div class="amt">3.125×10⁵</div></div>
+      <div class="li"><div class="lab">Benötigte vCPUs</div><div class="frm">3.125×10⁵ / 1×10⁵</div><div class="amt">3.125 vCPUs</div></div>
+      <div class="li"><div class="lab">Benötigte GB</div><div class="frm">3.125 × 2</div><div class="amt">6.25 GB ≤ 8 GB ✓</div></div>
+      <div class="li"><div class="lab">Laufzeit</div><div class="frm">3.125×10⁵ / (3.125 × 10⁵)</div><div class="amt">1.0 s (exakt)</div></div>
+      <div class="li sec"><div class="lab">Kosten pro Video:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Invocation Cost</div><div class="frm">2 × €0.10</div><div class="amt">€0.200</div></div>
+      <div class="li"><div class="lab">Duration Cost</div><div class="frm">2 × (1s × 6.25 GB × €0.05)</div><div class="amt">€0.625</div></div>
+      <div class="tr"><div class="lab">Cost per Video</div><div class="frm">€0.20 + €0.625</div><div class="amt green">€0.825</div></div>
+    </div>
+
+    <div class="sp"></div>
+
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">Warum nicht 3 Invocations oder größere Config?</div></div>
+      <div class="li sec"><div class="lab">Alternative: 2 Invocations, 7 GB config:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Runtime</div><div class="frm">3.125×10⁵ / (3.5 × 10⁵)</div><div class="amt">0.893 s</div></div>
+      <div class="li"><div class="lab">Billed</div><div class="frm">per second begun → 1s</div><div class="amt">1 s</div></div>
+      <div class="li"><div class="lab">Cost</div><div class="frm">2 × (0.1 + 7 × 0.05)</div><div class="amt" style="color:var(--red)">€0.90 &gt; €0.825</div></div>
+      <div class="li sec"><div class="lab">Alternative: 3 Invocations, ~4.17 GB config:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Cost</div><div class="frm">3 × (0.1 + 4.17 × 0.05)</div><div class="amt" style="color:var(--red)">€0.925 &gt; €0.825</div></div>
+    </div>
+
+    <div class="hb or"><strong>Kernidee:</strong> Per-second-begun Billing bedeutet: ob 0.89s oder 1.0s — es wird 1s berechnet. Daher ist 6.25 GB (exakt 1.0s) optimal: minimale GB-Konfiguration die gerade noch in 1s passt. Jede größere Config verschwendet Geld für die gleiche Billing-Sekunde. Mehr Invocations haben höhere Fixkosten (€0.10 je).</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

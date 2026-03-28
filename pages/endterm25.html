@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS 2025 Endterm — Klausur Aufschlüsselung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;--t:#1a1a1a;--m:#6b6b6b;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;--mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif}
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){.sr.c2,.sr.c3{grid-template-columns:1fr}.li,.tr{grid-template-columns:155px 1fr auto}.li .frm{font-size:11px}.pb{flex-direction:column;gap:6px}}
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>CIS 2025 Endterm — Klausur Aufschlüsselung</h1>
+    <div class="sub">11. Februar 2025 · Prof. Leis · 90 Credits · TUMCloud Pricing 2025</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('p4')">P4 Data Center</button>
+    <button class="tab" onclick="showTab('p5')">P5 Workload Cost</button>
+    <button class="tab" onclick="showTab('p6')">P6 Compute Service</button>
+    <button class="tab" onclick="showTab('p7')">P7 TUM-DB Architecture</button>
+    <button class="tab" onclick="showTab('p8')">P8 Pricing Model</button>
+    <button class="tab" onclick="showTab('p9')">P9 Queueing Theory</button>
+  </div>
+
+  <!-- ==================== P4: DATA CENTER ==================== -->
+  <div id="tab-p4" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Server:</strong> €3,000, 4yr, 500W (100%)</div>
+      <div class="pm"><strong>DC:</strong> 4MW, 8,000 servers</div>
+      <div class="pm"><strong>Construction:</strong> €24/W, 20yr</div>
+      <div class="pm"><strong>Electricity:</strong> €0.12/kWh</div>
+      <div class="pm"><strong>OPEX:</strong> €0.10/W-month</div>
+    </div>
+    <div class="ib">Lighting: 1MW · HVAC: 7MW · IT: 4MW → Total: 12MW</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) PUE</div>
+        <div class="tc">3.0</div>
+        <div class="nt">12MW / 4MW</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">d) Breakeven Price</div>
+        <div class="tc">€292.10</div>
+        <div class="nt">per server / month</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">b) Legal Issue</div>
+        <div class="tc">PUE > 1.2</div>
+        <div class="nt">§11 EnEfG violation</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) PUE</div><div class="sv">3.0</div></div>
+      <div class="li"><div class="lab">IT Power</div><div class="frm">given</div><div class="amt">4 MW</div></div>
+      <div class="li"><div class="lab">Lighting</div><div class="frm">given</div><div class="amt">1 MW</div></div>
+      <div class="li"><div class="lab">HVAC</div><div class="frm">given</div><div class="amt">7 MW</div></div>
+      <div class="li"><div class="lab">Total</div><div class="frm">4 + 1 + 7</div><div class="amt">12 MW</div></div>
+      <div class="tr"><div class="lab">PUE</div><div class="frm">12 / 4</div><div class="amt blue">3.0</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">d) Breakeven-Preis pro Server/Monat</div>
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">CAPEX</div><div class="sv">€112.50</div></div>
+      <div class="li"><div class="lab">Server</div><div class="frm">€3,000 / (4 × 12)</div><div class="amt">€62.50</div></div>
+      <div class="li"><div class="lab">DC Construction</div><div class="frm">4MW × 10⁶ × €24 / 8000 / (20 × 12)</div><div class="amt">€50.00</div></div>
+      <div class="tr"><div class="lab">CAPEX Total</div><div class="frm">€62.50 + €50.00</div><div class="amt purple">€112.50</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">OPEX</div><div class="sv">€179.60</div></div>
+      <div class="li"><div class="lab">Misc OPEX</div><div class="frm">4MW × 10⁶ × €0.10 / 8,000</div><div class="amt">€50.00</div></div>
+      <div class="li sec"><div class="lab">Server Electricity:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Power/Month</div><div class="frm">500W × 720h / 1000</div><div class="amt">360 kWh</div></div>
+      <div class="li"><div class="lab">Server Energy</div><div class="frm">360 kWh × €0.12</div><div class="amt">€43.20</div></div>
+      <div class="li sec"><div class="lab">DC Electricity (PUE overhead):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Non-IT Power/Server</div><div class="frm">(PUE−1) × 500W = 2 × 500W</div><div class="amt">1,000 W</div></div>
+      <div class="li"><div class="lab">DC Electricity</div><div class="frm">1.0kW × 720h × €0.12</div><div class="amt">€86.40</div></div>
+      <div class="tr"><div class="lab">OPEX Total</div><div class="frm">€50 + €43.20 + €86.40</div><div class="amt orange">€179.60</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Breakeven</div><div class="sv">€292.10/server/month</div></div>
+      <div class="li"><div class="lab">CAPEX</div><div class="frm"></div><div class="amt">€112.50</div></div>
+      <div class="li"><div class="lab">OPEX</div><div class="frm"></div><div class="amt">€179.60</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm"></div><div class="amt red">€292.10</div></div>
+    </div>
+
+    <div class="hb rd"><strong>Vergleich:</strong> 2026 Endterm hatte identische Aufgabe mit PUE=4.0 → €459.75. Hier PUE=3.0 → €292.10. Der PUE macht ~€167 Unterschied pro Server/Monat — fast alles durch DC-Electricity.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P5: WORKLOAD COST ==================== -->
+  <div id="tab-p5" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> cd.medium</div>
+      <div class="pm"><strong>OD:</strong> €10/h</div>
+      <div class="pm"><strong>Spot:</strong> €1/h (80% success)</div>
+      <div class="pm"><strong>Reserved:</strong> €1.50/h (3h)</div>
+    </div>
+    <div class="ib">Trace: 5, 7, 1, 4, 1, 10, 8, 6, 12, 2, 0, 5 → 61 Jobs, Peak=12, 15 min/Job</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) On-Demand</div>
+        <div class="tc">€152.50</div>
+        <div class="nt">61 × 0.25h × €10</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">b) Reserved</div>
+        <div class="tc">€54.00</div>
+        <div class="nt">12 × 3h × €1.50</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">c) Spot (expected) <span class="badge green">Cheapest</span></div>
+        <div class="tc">€42.70</div>
+        <div class="nt">blended rate €2.80/h</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) On-Demand</div><div class="sv">€152.50</div></div>
+      <div class="li"><div class="lab">Total Jobs</div><div class="frm">5+7+1+4+1+10+8+6+12+2+0+5</div><div class="amt">61</div></div>
+      <div class="li"><div class="lab">Instance-Hours</div><div class="frm">61 × 0.25h</div><div class="amt">15.25h</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">15.25h × €10/h</div><div class="amt blue">€152.50</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">b) Reserved</div><div class="sv">€54.00</div></div>
+      <div class="li"><div class="lab">Peak</div><div class="frm">max of trace</div><div class="amt">12</div></div>
+      <div class="li"><div class="lab">Commitment</div><div class="frm">3h block</div><div class="amt">3 hours</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">12 × 3h × €1.50</div><div class="amt orange">€54.00</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds gn">
+      <div class="sh"><div class="st green">c) Spot (Expected Cost)</div><div class="sv">€42.70</div></div>
+      <div class="li"><div class="lab">Spot Success Rate</div><div class="frm">given</div><div class="amt">80%</div></div>
+      <div class="li"><div class="lab">Blended Rate</div><div class="frm">80% × €1 + 20% × €10</div><div class="amt">€2.80/h</div></div>
+      <div class="li"><div class="lab">Instance-Hours</div><div class="frm">same as OD</div><div class="amt">15.25h</div></div>
+      <div class="tr"><div class="lab">Expected Cost</div><div class="frm">15.25h × €2.80</div><div class="amt green">€42.70</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Spot-Trick:</strong> Mit 80% Erfolgsrate und Fallback auf On-Demand ergibt sich ein blended Rate von €2.80/h — viel billiger als Reserved (€1.50 × Peak) und On-Demand (€10). Der Schlüssel: Spot-Failure führt nur zu On-Demand-Preis, nicht zu Job-Verlust.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P6: COMPUTE SERVICE ==================== -->
+  <div id="tab-p6" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Algo A:</strong> 0.25 CPU-h, 5 GB, perfect scaling</div>
+      <div class="pm"><strong>Algo B:</strong> 8 CPU-h, 0.5 GB, 20% serial, ≤4h wallclock</div>
+      <div class="pm"><strong>FaaS:</strong> €0.10/req + €0.05/GB-s, max 10min, 2GB=1vCPU</div>
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">a) Algo A — FaaS</div>
+        <div class="tc">€90.10</div>
+        <div class="nt">5 GB config, 900s runtime</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">b) Algo B — Container</div>
+        <div class="tc">€32.00</div>
+        <div class="nt">4 vCPU, 8 GB, 3.2h</div>
+      </div>
+    </div>
+
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">a) Algorithm A — Serverless FaaS</div><div class="sv">€90.10</div></div>
+      <div class="li"><div class="lab">Memory needed</div><div class="frm">given</div><div class="amt">5 GB</div></div>
+      <div class="li"><div class="lab">Config</div><div class="frm">any ≥ 5 GB (e.g., 5 GB)</div><div class="amt">5 GB = 2.5 vCPU</div></div>
+      <div class="li"><div class="lab">Runtime</div><div class="frm">0.25 CPU-h / 2.5 vCPU × 3600</div><div class="amt">360s</div></div>
+      <div class="li"><div class="lab">But: max FaaS = 10 min</div><div class="frm">360s ≤ 600s ✓</div><div class="amt">OK</div></div>
+      <div class="li sec"><div class="lab">Costs:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Invocation</div><div class="frm">1 × €0.10</div><div class="amt">€0.10</div></div>
+      <div class="li"><div class="lab">Duration</div><div class="frm">360s × 5 GB × €0.05/GB-s</div><div class="amt">€90.00</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€0.10 + €90.00</div><div class="amt purple">€90.10</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">b) Algorithm B — Container</div><div class="sv">€32.00</div></div>
+      <div class="li"><div class="lab">Constraint</div><div class="frm">wallclock ≤ 4h, 20% serial</div><div class="amt"></div></div>
+      <div class="li sec"><div class="lab">Amdahl Check with 4 vCPU:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Serial portion</div><div class="frm">20% × 8h</div><div class="amt">1.6h</div></div>
+      <div class="li"><div class="lab">Parallel portion</div><div class="frm">80% × 8h / 4 vCPU</div><div class="amt">1.6h</div></div>
+      <div class="li"><div class="lab">Wallclock</div><div class="frm">1.6 + 1.6</div><div class="amt">3.2h ≤ 4h ✓</div></div>
+      <div class="li sec"><div class="lab">Memory: 0.5 GB → min for 4 vCPU = 8 GB</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">vCPU Cost</div><div class="frm">4 × €1/h × 3.2h</div><div class="amt">€12.80</div></div>
+      <div class="li"><div class="lab">Memory Cost</div><div class="frm">8 GB × €0.75/h × 3.2h</div><div class="amt">€19.20</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">€12.80 + €19.20</div><div class="amt blue">€32.00</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Key:</strong> Bei Algo B muss Amdahl's Law mit dem 4h-Limit kombiniert werden. Mit 4 vCPU: wallclock = 0.2×8 + 0.8×8/4 = 3.2h ✓. Mit 2 vCPU wäre es 0.2×8 + 0.8×8/2 = 4.8h ✗ (zu langsam). Die Container-Config 4vCPU/8GB ist der sweet spot.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P7: TUM-DB ARCHITECTURE ==================== -->
+  <div id="tab-p7" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Arch A:</strong> 1× c.small + Block Storage, SlowDB (25 FLOP/txn)</div>
+      <div class="pm"><strong>Arch B:</strong> 3× FastDB (1 primary + 2 secondary), 10 FLOP/txn</div>
+      <div class="pm"><strong>Both:</strong> 8 IOP/txn, no cache</div>
+    </div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Arch A — Cost/1M Txn</div>
+        <div class="tc">€2.50</div>
+        <div class="nt">c.small + Block Storage</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">b) Arch B — Cost/1M Txn <span class="badge green">Cheaper</span></div>
+        <div class="tc">€0.03</div>
+        <div class="nt">3× io.large, IOP built-in</div>
+      </div>
+    </div>
+
+    <div class="subh">a) Architecture A — Single c.small + Block Storage</div>
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Provisioning &amp; Cost</div><div class="sv">€2.50 / 1M Txn</div></div>
+      <div class="li sec"><div class="lab">Step 1: Find max Txn/s</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Compute limit (c.small)</div><div class="frm">1×10⁴ FLOP/s ÷ 25 FLOP/txn</div><div class="amt">400 txn/s</div></div>
+      <div class="li"><div class="lab">→ IOPS needed</div><div class="frm">400 txn/s × 8 IOP/txn</div><div class="amt">3,200 IOP/s</div></div>
+      <div class="li sec"><div class="lab">Step 2: Monthly fixed costs</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">c.small Instance</div><div class="frm">€2/h × 24 × 30</div><div class="amt">€1,440</div></div>
+      <div class="li"><div class="lab">Block Storage IOPS</div><div class="frm">3,200 × €0.36/IOP-month</div><div class="amt">€1,152</div></div>
+      <div class="li"><div class="lab">Total Monthly</div><div class="frm"></div><div class="amt">€2,592</div></div>
+      <div class="li sec"><div class="lab">Step 3: Max Txn/month</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Throughput</div><div class="frm">400 txn/s × 3600 × 24 × 30</div><div class="amt">~1.036B txn</div></div>
+      <div class="tr"><div class="lab">Cost per 1M Txn</div><div class="frm">€2,592 / 1036 × 1</div><div class="amt blue">€2.50</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">b) Architecture B — 3× FastDB (primary-secondary)</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Instance Selection &amp; Cost</div><div class="sv">€0.03 / 1M Txn</div></div>
+      <div class="li sec"><div class="lab">Find best Txn/€ instance:</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">c.small</div><div class="frm">min(10⁴/25, N/A IOP) → compute-bound</div><div class="amt">400 txn/s / €2</div></div>
+      <div class="li"><div class="lab">cd.medium</div><div class="frm">min(10⁶/10, 10⁴/8)</div><div class="amt">1,250 txn/s / €10</div></div>
+      <div class="li"><div class="lab">io.large</div><div class="frm">min(5×10⁶/10, 10⁸/8)</div><div class="amt" style="color:var(--green)">500K txn/s / €18 ✓</div></div>
+      <div class="li"><div class="lab">balanced.large</div><div class="frm">min(5.5×10⁶/10, 5×10⁶/8)</div><div class="amt">550K txn/s / €24</div></div>
+      <div class="li sec"><div class="lab">io.large wins (highest txn/€):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">3 Instances Monthly</div><div class="frm">3 × €18/h × 720h</div><div class="amt">€38,880</div></div>
+      <div class="li"><div class="lab">Max Txn/month (primary only)</div><div class="frm">500K txn/s × 2.592M s</div><div class="amt">~1.296T txn</div></div>
+      <div class="tr"><div class="lab">Cost per 1M Txn</div><div class="frm">€38,880 / 1.296×10⁶ M</div><div class="amt green">€0.03</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Arch B ist 83× billiger pro Txn!</strong> Der Grund: io.large hat 10⁸ built-in IOPS (kein extra Block Storage nötig) und FastDB braucht nur 10 FLOP vs SlowDB's 25. Aber: Arch B braucht 3 teure Instances (€38,880/mo) — lohnt sich nur bei extrem hohem Durchsatz.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P8: PRICING MODEL ==================== -->
+  <div id="tab-p8" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Customers:</strong> 20,000</div>
+      <div class="pm"><strong>Storage:</strong> 400 TB</div>
+      <div class="pm"><strong>Throughput:</strong> 25,000 txn/s</div>
+    </div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">Subscription</div>
+        <div class="tc">€500,000</div>
+        <div class="nt">€25 × 20K customers</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">Consumption</div>
+        <div class="tc">€129,600</div>
+        <div class="nt">€2/M txn × volume</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">Storage-Only</div>
+        <div class="tc">€204,800</div>
+        <div class="nt">€0.50/GB × 400TB</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Revenue pro Modell</div></div>
+      <div class="li"><div class="lab">Subscription</div><div class="frm">€25 × 20,000</div><div class="amt">€500,000/mo</div></div>
+      <div class="li"><div class="lab">Consumption</div><div class="frm">25K/s × 2,592,000s × €2/1M</div><div class="amt">€129,600/mo</div></div>
+      <div class="li"><div class="lab">Storage-Only</div><div class="frm">400 TB × 1024 × 1024 MB / 1024 × €0.50</div><div class="amt">€204,800/mo</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">b) Problem mit Subscription</div></div>
+      <div class="li"><div class="lab">Issue</div><div class="frm">flat fee incentivizes overuse</div><div class="amt">Exploitation Risk</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds gn">
+      <div class="sh"><div class="st green">c) Engineering 2× effizienter</div></div>
+      <div class="li"><div class="lab">Effect on Internal Cost</div><div class="frm">same txn volume, 50% resources</div><div class="amt">−50% Cost</div></div>
+      <div class="li"><div class="lab">Revenue (consumption)</div><div class="frm">unchanged — same txn/s</div><div class="amt">€129,600</div></div>
+      <div class="tr"><div class="lab">Profit Impact</div><div class="frm">same revenue, half the cost</div><div class="amt green">↑ Profit</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Key Insight:</strong> Bei consumption-based pricing profitiert der Anbieter von Engineering-Effizienz (weniger Kosten, gleicher Revenue). Bei subscription-based pricing gibt es kein Incentive für Kunden, weniger zu nutzen.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P9: QUEUEING THEORY ==================== -->
+  <div id="tab-p9" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Observed:</strong> avg L = 3 jobs in system</div>
+      <div class="pm"><strong>Observed:</strong> avg W = 150ms per request</div>
+      <div class="pm"><strong>Model:</strong> M/M/1 (exponential arrivals & service)</div>
+    </div>
+    <div class="ib">Open-loop benchmark (exponential inter-arrival times). Given L and W, derive system parameters.</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) Min Processing Speed</div>
+        <div class="tc">25 req/s</div>
+        <div class="nt">at max 80% utilization</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">c) Queue Length (Lq)</div>
+        <div class="tc">0.05</div>
+        <div class="nt">λ=10, µ=50 → ρ=0.2</div>
+      </div>
+    </div>
+
+    <div class="subh">b) Min Processing Speed (µ) at ≤80% utilization</div>
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">Derive µ from L and W</div><div class="sv">µ ≥ 25 req/s</div></div>
+      <div class="li sec"><div class="lab">Step 1: Find λ (arrival rate)</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Little's Law: L = λW</div><div class="frm">λ = L / W</div><div class="amt"></div></div>
+      <div class="li"><div class="lab">λ</div><div class="frm">3 / 0.150s</div><div class="amt">20 req/s</div></div>
+      <div class="li sec"><div class="lab">Step 2: Find µ at ρ ≤ 0.8</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">ρ = λ / µ → µ = λ / ρ</div><div class="frm">20 / 0.8</div><div class="amt"></div></div>
+      <div class="tr"><div class="lab">Min µ</div><div class="frm">20 / 0.8</div><div class="amt purple">25 req/s</div></div>
+    </div>
+
+    <div class="fbox">
+      <div class="fl">Queueing Theory Formulas (M/M/1)</div>
+      L = λW (Little's Law) &nbsp;|&nbsp; ρ = λ/µ &nbsp;|&nbsp; Lq = ρ²/(1−ρ) &nbsp;|&nbsp; Wq = Lq/λ &nbsp;|&nbsp; W = Wq + 1/µ
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">c) Queue Length at λ=10, µ=50</div>
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Queue Length (Lq)</div><div class="sv">0.05</div></div>
+      <div class="li"><div class="lab">λ</div><div class="frm">given</div><div class="amt">10 req/s</div></div>
+      <div class="li"><div class="lab">µ</div><div class="frm">given</div><div class="amt">50 req/s</div></div>
+      <div class="li"><div class="lab">ρ</div><div class="frm">10 / 50</div><div class="amt">0.2</div></div>
+      <div class="li"><div class="lab">Lq</div><div class="frm">0.2² / (1 − 0.2)</div><div class="amt">0.04 / 0.8</div></div>
+      <div class="tr"><div class="lab">Lq</div><div class="frm">0.04 / 0.8</div><div class="amt blue">0.05</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Intuition:</strong> Bei nur 20% Auslastung (ρ=0.2) ist die Warteschlange fast leer (0.05 Requests). Erst ab ρ > 0.7 explodiert Lq (bei ρ=0.9 → Lq=8.1). Das ist die "Hockey Stick" Kurve aus P5 der 2023 Retake.</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

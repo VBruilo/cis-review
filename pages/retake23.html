@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIS 2023 Retake — Klausur Aufschlüsselung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#1a1a1a;--card:#fff;--cb:#e5e5e5;--sbg:#faf8f5;--t:#1a1a1a;--m:#6b6b6b;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--teal:#0d9488;--purple:#7c3aed;--pink:#db2777;--indigo:#4f46e5;--slate:#475569;--amber:#b45309;--hlY:#fef9c3;--hlB:#eff6ff;--hlG:#f0fdf4;--hlR:#fef2f2;--hlP:#f5f3ff;--hlO:#fffbeb;--mono:'JetBrains Mono',monospace;--sans:'Source Sans 3',sans-serif}
+  body{font-family:var(--sans);background:var(--bg);color:var(--t);min-height:100vh;padding:24px}
+  .ctn{max-width:960px;margin:0 auto}
+  .hdr h1{font-size:28px;font-weight:900;color:#f5f5f5;letter-spacing:-.5px}
+  .hdr .sub{font-size:14px;color:#999;margin-top:4px;margin-bottom:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:8px;border:1.5px solid #444;background:#2a2a2a;color:#bbb;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+  .tab:hover{border-color:#666;color:#eee}.tab.active{background:#f5f5f5;color:#1a1a1a;border-color:#f5f5f5}
+  .cc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .pb{background:var(--hlY);border-bottom:1.5px solid #e5d9a0;padding:14px 24px;display:flex;gap:24px;flex-wrap:wrap}
+  .pm{font-size:13px;color:var(--m)}.pm strong{color:var(--t);font-weight:700}
+  .ib{background:#f5f5f5;padding:10px 24px;font-size:13px;color:var(--m);border-bottom:1px solid var(--cb)}
+  .sr{display:grid;gap:12px;padding:20px 24px;border-bottom:1px solid var(--cb)}
+  .sr.c2{grid-template-columns:1fr 1fr}.sr.c3{grid-template-columns:1fr 1fr 1fr}
+  .sc{border:1.5px solid var(--cb);border-radius:10px;padding:16px}
+  .sc .pn{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc .tc{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+  .sc .nt{font-size:12px;color:var(--m)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  .badge.green{background:#dcfce7;color:#15803d}
+  .ds{margin:16px 24px;border-radius:10px;overflow:hidden;border:1.5px solid var(--cb)}
+  .ds.bl{border-left:4px solid var(--blue)}.ds.pu{border-left:4px solid var(--purple)}.ds.or{border-left:4px solid var(--orange)}.ds.tl{border-left:4px solid var(--teal)}.ds.gn{border-left:4px solid var(--green)}.ds.rd{border-left:4px solid var(--red)}.ds.pk{border-left:4px solid var(--pink)}.ds.in{border-left:4px solid var(--indigo)}.ds.sl{border-left:4px solid var(--slate)}
+  .sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--sbg);border-bottom:1px solid var(--cb);flex-wrap:wrap;gap:8px}
+  .st{font-size:17px;font-weight:700}
+  .st.blue{color:var(--blue)}.st.purple{color:var(--purple)}.st.orange{color:var(--orange)}.st.teal{color:var(--teal)}.st.green{color:var(--green)}.st.red{color:var(--red)}.st.pink{color:var(--pink)}.st.indigo{color:var(--indigo)}.st.slate{color:var(--slate)}
+  .sv{font-size:20px;font-weight:900;letter-spacing:-.5px}
+  .li{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:9px 18px;border-bottom:1px solid #f0f0f0;font-size:14px}
+  .li:last-child{border-bottom:none}
+  .li .lab{font-weight:600}.li .frm{font-family:var(--mono);font-size:12.5px;color:var(--m);text-align:center}
+  .li .amt{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;min-width:90px}
+  .li.sec{background:var(--sbg)}.li.sec .lab{color:var(--m);font-size:13px}
+  .tr{display:grid;grid-template-columns:230px 1fr auto;align-items:center;padding:12px 18px;background:#fafafa;border-top:2px solid var(--cb)}
+  .tr .lab{font-weight:700;font-size:15px}
+  .tr .amt{font-family:var(--mono);font-size:16px;font-weight:700;text-align:right}
+  .tr .amt.blue{color:var(--blue)}.tr .amt.purple{color:var(--purple)}.tr .amt.orange{color:var(--orange)}.tr .amt.teal{color:var(--teal)}.tr .amt.green{color:var(--green)}.tr .amt.red{color:var(--red)}.tr .amt.pink{color:var(--pink)}.tr .amt.indigo{color:var(--indigo)}.tr .amt.slate{color:var(--slate)}
+  .sp{height:8px}.bp{padding-bottom:24px}
+  .hb{margin:12px 24px;padding:14px 18px;border-radius:8px;font-size:13px}
+  .hb.bl{background:var(--hlB);color:#1e40af}.hb.pu{background:var(--hlP);color:#5b21b6}.hb.gn{background:var(--hlG);color:#166534}.hb.rd{background:var(--hlR);color:#991b1b}.hb.or{background:var(--hlO);color:#92400e}
+  .subh{padding:16px 24px 8px;font-size:15px;font-weight:700;color:var(--m)}
+  .fbox{margin:16px 24px;background:#f8f7f4;border:1.5px solid #e0ddd5;border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;text-align:center;letter-spacing:.3px}
+  .fbox .fl{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .hidden{display:none}
+  @media(max-width:700px){.sr.c2,.sr.c3{grid-template-columns:1fr}.li,.tr{grid-template-columns:155px 1fr auto}.li .frm{font-size:11px}.pb{flex-direction:column;gap:6px}}
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">
+    <h1>CIS 2023 Retake — Klausur Aufschlüsselung</h1>
+    <div class="sub">2. Oktober 2023 · Prof. Leis · 90 Credits · TUMCloud Pricing 2023 Retake</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('p4')">P4 Latency &amp; Failures</button>
+    <button class="tab" onclick="showTab('p6')">P6 ML Hardware</button>
+    <button class="tab" onclick="showTab('p7')">P7 Workload Cost</button>
+    <button class="tab" onclick="showTab('p8')">P8 Data Shuffling</button>
+    <button class="tab" onclick="showTab('p9')">P9 OLAP Architecture</button>
+  </div>
+
+  <!-- ==================== P4: LATENCY & FAILURES ==================== -->
+  <div id="tab-p4" class="cc">
+    <div class="pb">
+      <div class="pm"><strong>Frontend</strong> calls A, B, C in parallel</div>
+      <div class="pm"><strong>A:</strong> 2s + DB 4s</div>
+      <div class="pm"><strong>B:</strong> 1s + subs B1(3s), B2(1s), B3(6s)</div>
+      <div class="pm"><strong>C:</strong> 5s</div>
+    </div>
+    <div class="ib">Frontend → {A, B, C} parallel. B internally calls B1, B2, B3. Worst-case tail latency.</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) B parallel</div>
+        <div class="tc">7s</div>
+        <div class="nt">B waits for slowest sub</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--purple)">b) B majority quorum</div>
+        <div class="tc">6s</div>
+        <div class="nt">B waits for 2nd fastest</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">c) Failure probability</div>
+        <div class="tc">46%</div>
+        <div class="nt">1 − 0.9 × 0.8 × 0.75</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) Parallel Calls — Worst Case</div><div class="sv">7s</div></div>
+      <div class="li"><div class="lab">Path A</div><div class="frm">2s (call) + 4s (DB)</div><div class="amt">6s</div></div>
+      <div class="li"><div class="lab">Path B (parallel subs)</div><div class="frm">1s + max(3s, 1s, 6s)</div><div class="amt">7s</div></div>
+      <div class="li"><div class="lab">Path C</div><div class="frm">direct</div><div class="amt">5s</div></div>
+      <div class="tr"><div class="lab">System Latency</div><div class="frm">max(6, 7, 5)</div><div class="amt blue">7s</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">b) Majority Quorum — Worst Case</div><div class="sv">6s</div></div>
+      <div class="li"><div class="lab">Path A</div><div class="frm">2s + 4s</div><div class="amt">6s</div></div>
+      <div class="li"><div class="lab">Path B (quorum: 2/3)</div><div class="frm">1s + 2nd_fastest(3, 1, 6) = 1+3</div><div class="amt">4s</div></div>
+      <div class="li"><div class="lab">Path C</div><div class="frm">direct</div><div class="amt">5s</div></div>
+      <div class="tr"><div class="lab">System Latency</div><div class="frm">max(6, 4, 5)</div><div class="amt purple">6s</div></div>
+    </div>
+
+    <div class="hb pu"><strong>Quorum-Trick:</strong> Majority (2 of 3) → B wartet nur auf den 2.-schnellsten Sub-Call (3s statt 6s). Das spart 1s auf dem kritischen Pfad. B1=3s und B2=1s antworten zuerst → B fertig nach 4s.</div>
+    <div class="sp"></div>
+
+    <div class="ds rd">
+      <div class="sh"><div class="st red">c) Failure Probability</div><div class="sv">46%</div></div>
+      <div class="li"><div class="lab">P(A succeeds)</div><div class="frm">1 − 0.10</div><div class="amt">0.90</div></div>
+      <div class="li"><div class="lab">P(B succeeds)</div><div class="frm">1 − 0.20</div><div class="amt">0.80</div></div>
+      <div class="li"><div class="lab">P(C succeeds)</div><div class="frm">1 − 0.25</div><div class="amt">0.75</div></div>
+      <div class="li"><div class="lab">P(all succeed)</div><div class="frm">0.9 × 0.8 × 0.75</div><div class="amt">0.54</div></div>
+      <div class="tr"><div class="lab">P(unable to process)</div><div class="frm">1 − 0.54</div><div class="amt red">46%</div></div>
+    </div>
+
+    <div class="fbox"><div class="fl">Failure Formula (all needed)</div>P(fail) = 1 − ∏ P(component_i succeeds)</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P6: ML HARDWARE ==================== -->
+  <div id="tab-p6" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Training:</strong> 72 TFLOP total</div>
+      <div class="pm"><strong>Setup b):</strong> 6× comp1.med (spot)</div>
+      <div class="pm"><strong>Amdahl c):</strong> 20% non-parallelizable</div>
+    </div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--indigo)">a) Best FLOP/$</div>
+        <div class="tc">ai2.2xlarge</div>
+        <div class="nt">7.5×10¹⁰ FLOP/$/h</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">b) Spot Cost</div>
+        <div class="tc">$150</div>
+        <div class="nt">6× comp1.med @ $6/h spot</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">c) Amdahl Speedup</div>
+        <div class="tc">3.0×</div>
+        <div class="nt">limited by 20% serial</div>
+      </div>
+    </div>
+
+    <div class="subh">a) FLOP/$ Analyse (On-Demand)</div>
+    <div class="ds in">
+      <div class="sh"><div class="st indigo">Instance Vergleich</div></div>
+      <div class="li"><div class="lab">cis1.small</div><div class="frm">1×10⁴ / $2</div><div class="amt">5×10³</div></div>
+      <div class="li"><div class="lab">cis2.med</div><div class="frm">3×10⁶ / $4</div><div class="amt">7.5×10⁵</div></div>
+      <div class="li"><div class="lab">mem1.med</div><div class="frm">6×10⁸ / $6</div><div class="amt">1×10⁸</div></div>
+      <div class="li"><div class="lab">comp1.med</div><div class="frm">8×10⁸ / $8</div><div class="amt">1×10⁸</div></div>
+      <div class="li"><div class="lab">mem1.xlarge</div><div class="frm">1×10⁸ / $10</div><div class="amt">1×10⁷</div></div>
+      <div class="li"><div class="lab">ai2.large</div><div class="frm">5×10¹¹ / $8</div><div class="amt">6.25×10¹⁰</div></div>
+      <div class="li"><div class="lab">ai2.2xlarge</div><div class="frm">12×10¹¹ / $16</div><div class="amt" style="color:var(--green)">7.5×10¹⁰ ✓</div></div>
+      <div class="tr"><div class="lab">Best FLOP/$</div><div class="frm"></div><div class="amt indigo">ai2.2xlarge</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">b) Spot Training Cost (6× comp1.med)</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Training auf 6 Spot Instances</div><div class="sv">$150</div></div>
+      <div class="li"><div class="lab">Total FLOP/s (6 inst)</div><div class="frm">6 × 8×10⁸</div><div class="amt">4.8×10⁹</div></div>
+      <div class="li"><div class="lab">Training Time</div><div class="frm">72×10¹² / 4.8×10⁹</div><div class="amt">15,000 s</div></div>
+      <div class="li"><div class="lab">→ in Stunden</div><div class="frm">15,000 / 3600</div><div class="amt">4.167 h</div></div>
+      <div class="li"><div class="lab">Spot Rate</div><div class="frm">comp1.med spot</div><div class="amt">$6/h</div></div>
+      <div class="tr"><div class="lab">Total Cost</div><div class="frm">6 × 4.167h × $6/h</div><div class="amt green">$150.00</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">c) Amdahl's Law (6 Instances, 20% serial)</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Speedup</div><div class="sv">3.0×</div></div>
+      <div class="li"><div class="lab">Serial Fraction (s)</div><div class="frm">given</div><div class="amt">20%</div></div>
+      <div class="li"><div class="lab">Parallel Fraction (p)</div><div class="frm">1 − 0.2</div><div class="amt">80%</div></div>
+      <div class="li"><div class="lab">Number of Nodes (n)</div><div class="frm">given</div><div class="amt">6</div></div>
+      <div class="tr"><div class="lab">Speedup</div><div class="frm">1 / (0.2 + 0.8/6) = 1/0.333</div><div class="amt orange">3.0×</div></div>
+    </div>
+    <div class="fbox"><div class="fl">Amdahl's Law</div>Speedup = 1 / (s + p/n) &nbsp;→&nbsp; 1 / (0.2 + 0.8/6) = 3.0×</div>
+    <div class="hb or"><strong>Insight:</strong> Trotz 6 Nodes nur 3× Speedup wegen 20% serieller Anteil. Mit unendlich Nodes wäre max 5× möglich (1/0.2).</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P7: WORKLOAD COST ==================== -->
+  <div id="tab-p7" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> cis2.med</div>
+      <div class="pm"><strong>On-Demand:</strong> $4/h</div>
+      <div class="pm"><strong>Spot:</strong> $1/h</div>
+      <div class="pm"><strong>Reserved:</strong> $1.5/h (3h)</div>
+      <div class="pm"><strong>Savings Plan:</strong> $1.5/h (3h)</div>
+    </div>
+    <div class="ib">Trace: 5, 7, 1, 4, 1, 2, 8, 6, 2, 10, 0, 5 → 51 Jobs total, Peak=10, 15 min/Job</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) On-Demand</div>
+        <div class="tc">$51.00</div>
+        <div class="nt">51 × 0.25h × $4</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--orange)">b) Reserved</div>
+        <div class="tc">$45.00</div>
+        <div class="nt">10 × 3h × $1.5</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">c) Savings Plan <span class="badge green">Best</span></div>
+        <div class="tc">$35.00</div>
+        <div class="nt">SP + On-Demand Overflow</div>
+      </div>
+    </div>
+
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">a) On-Demand</div><div class="sv">$51.00</div></div>
+      <div class="li"><div class="lab">Total Jobs</div><div class="frm">5+7+1+4+1+2+8+6+2+10+0+5</div><div class="amt">51</div></div>
+      <div class="li"><div class="lab">Instance-Hours</div><div class="frm">51 × 15 min / 60</div><div class="amt">12.75 h</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">12.75h × $4/h</div><div class="amt blue">$51.00</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="ds or">
+      <div class="sh"><div class="st orange">b) Reserved (3h Commitment)</div><div class="sv">$45.00</div></div>
+      <div class="li"><div class="lab">Peak Load</div><div class="frm">max of trace</div><div class="amt">10 instances</div></div>
+      <div class="li"><div class="lab">Commitment</div><div class="frm">3h block</div><div class="amt">3 hours</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">10 × 3h × $1.50/h</div><div class="amt orange">$45.00</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">c) Savings Plan vs Reserved</div>
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Savings Plan — Flexibler als Reserved</div><div class="sv">$35.00</div></div>
+      <div class="li sec"><div class="lab">SP-Logik: hourly commitment, use at will</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Jobs per Hour</div><div class="frm">H1: 5+7+1+4=17, H2: 1+2+8+6=17, H3: 2+10+0+5=17</div><div class="amt">17 / 17 / 17</div></div>
+      <div class="li"><div class="lab">SP covers per hour</div><div class="frm">commit 4 inst → 4×4 slots/h</div><div class="amt">16 jobs/h</div></div>
+      <div class="li"><div class="lab">SP Cost</div><div class="frm">4 × $1.50/h × 3h</div><div class="amt">$18.00</div></div>
+      <div class="li sec"><div class="lab">Overflow (On-Demand):</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Overflow Jobs</div><div class="frm">(17−16) + (17−16) + (17−16)</div><div class="amt">3 jobs</div></div>
+      <div class="li"><div class="lab">But: peak slot overflow</div><div class="frm">slots >4 inst need OD per slot</div><div class="amt">17 instance-slots</div></div>
+      <div class="li"><div class="lab">Overflow Cost</div><div class="frm">17 × 0.25h × $4/h</div><div class="amt">$17.00</div></div>
+      <div class="tr"><div class="lab">Total SP</div><div class="frm">$18 + $17</div><div class="amt green">$35.00</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Warum SP besser:</strong> Reserved muss für Peak (10) provisionieren → zahlt für viel Leerkapazität. SP committet nur 4 Instances stabil, Rest flexibel On-Demand. Bei fluktuierendem Load (wie hier: 1 bis 10 pro Slot) ist SP immer besser als Reserved.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P8: DATA SHUFFLING ==================== -->
+  <div id="tab-p8" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Instance:</strong> mem1.xlarge ($10/h, 10 Gbit/s)</div>
+      <div class="pm"><strong>3 Workers:</strong> je 30 GB Daten</div>
+      <div class="pm"><strong>Process Rate:</strong> 40 GB/s</div>
+      <div class="pm"><strong>Compression:</strong> 50% pro Phase</div>
+    </div>
+    <div class="ib">3 Phasen: N:M Shuffle → N:1 Shuffle → Final Aggregation. Alles sequentiell. 1 GB = 10⁹ byte.</div>
+
+    <div class="sr c2">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">a) Cost (mem1.xlarge)</div>
+        <div class="tc">≈ $0.63</div>
+        <div class="nt">223.3s total instance-seconds</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">b) Best Instance</div>
+        <div class="tc">ai2.large</div>
+        <div class="nt">network-bound → best Gbit/$</div>
+      </div>
+    </div>
+
+    <div class="subh">Netzwerk-Bandbreite</div>
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">mem1.xlarge Conversion</div></div>
+      <div class="li"><div class="lab">Network</div><div class="frm">10 Gbit/s ÷ 8</div><div class="amt">1.25 GB/s</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">Phase 1: N:M Shuffle (alle 3 Worker identisch)</div>
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">Phase 1 — pro Worker</div><div class="sv">48.75s</div></div>
+      <div class="li"><div class="lab">Process 30 GB</div><div class="frm">30 / 40 GB/s</div><div class="amt">0.75s</div></div>
+      <div class="li"><div class="lab">Send 15 GB to 2 others</div><div class="frm">15 / 1.25 × 2</div><div class="amt">24.00s</div></div>
+      <div class="li"><div class="lab">Receive 15 GB from 2 others</div><div class="frm">15 / 1.25 × 2</div><div class="amt">24.00s</div></div>
+      <div class="tr"><div class="lab">Phase 1 per Worker</div><div class="frm">0.75 + 24 + 24</div><div class="amt blue">48.75s</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">Phase 2: N:1 Shuffle</div>
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">Phase 2 — W2 &amp; W3 (senden an W1)</div><div class="sv">19.125s</div></div>
+      <div class="li"><div class="lab">Process 45 GB</div><div class="frm">45 / 40</div><div class="amt">1.125s</div></div>
+      <div class="li"><div class="lab">Send 22.5 GB to W1</div><div class="frm">22.5 / 1.25</div><div class="amt">18.00s</div></div>
+      <div class="tr"><div class="lab">Phase 2 (W2/W3)</div><div class="frm">1.125 + 18</div><div class="amt purple">19.125s</div></div>
+    </div>
+    <div class="sp"></div>
+    <div class="ds pu">
+      <div class="sh"><div class="st purple">Phase 2 — W1 (empfängt von W2+W3)</div><div class="sv">37.125s</div></div>
+      <div class="li"><div class="lab">Process 45 GB</div><div class="frm">45 / 40</div><div class="amt">1.125s</div></div>
+      <div class="li"><div class="lab">Receive 22.5 GB × 2</div><div class="frm">22.5 / 1.25 × 2</div><div class="amt">36.00s</div></div>
+      <div class="tr"><div class="lab">Phase 2 (W1)</div><div class="frm">1.125 + 36</div><div class="amt purple">37.125s</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">Phase 3: Final Aggregation (nur W1)</div>
+    <div class="ds or">
+      <div class="sh"><div class="st orange">Phase 3 — W1 only</div><div class="sv">1.6875s</div></div>
+      <div class="li"><div class="lab">Process 67.5 GB</div><div class="frm">67.5 / 40</div><div class="amt">1.6875s</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <div class="subh">Gesamtkosten</div>
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Total Instance-Seconds → Cost</div><div class="sv">≈ $0.63</div></div>
+      <div class="li"><div class="lab">W1 Laufzeit</div><div class="frm">48.75 + 37.125 + 1.6875</div><div class="amt">87.5625s</div></div>
+      <div class="li"><div class="lab">W2 Laufzeit</div><div class="frm">48.75 + 19.125</div><div class="amt">67.875s</div></div>
+      <div class="li"><div class="lab">W3 Laufzeit</div><div class="frm">48.75 + 19.125</div><div class="amt">67.875s</div></div>
+      <div class="li"><div class="lab">Total Instance-Seconds</div><div class="frm">87.56 + 67.88 + 67.88</div><div class="amt">223.31s</div></div>
+      <div class="tr"><div class="lab">Cost</div><div class="frm">(223.31 / 3600) × $10/h</div><div class="amt red">≈ $0.63</div></div>
+    </div>
+
+    <div class="hb bl"><strong>b) Best Instance:</strong> Workload ist network-bound (Datenübertragung 48s vs Processing 0.75s in Phase 1). Deshalb: höchste Gbit/$ Ratio gewinnt → ai2.large mit 25 Gbit / $8 = 3.125 Gbit/$ ist am besten.</div>
+    <div class="bp"></div>
+  </div>
+
+  <!-- ==================== P9: OLAP ARCHITECTURE ==================== -->
+  <div id="tab-p9" class="cc hidden">
+    <div class="pb">
+      <div class="pm"><strong>Query:</strong> 1.5 GB from Object Storage</div>
+      <div class="pm"><strong>RAM:</strong> 2 GB needed</div>
+      <div class="pm"><strong>Process:</strong> 75 MB/s per vCPU, linear scaling</div>
+      <div class="pm"><strong>Min Billing:</strong> 60s (VM + Container)</div>
+    </div>
+    <div class="ib">a) Snowflake Pattern: Disaggregated Storage &amp; Compute</div>
+
+    <div class="sr c3">
+      <div class="sc">
+        <div class="pn" style="color:var(--blue)">VM (mem1.med)</div>
+        <div class="tc">$0.11</div>
+        <div class="nt">60s min billing dominiert</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--green)">Container <span class="badge green">Cheapest</span></div>
+        <div class="tc">$0.035</div>
+        <div class="nt">0.5 vCPU, 2 GB, 60s</div>
+      </div>
+      <div class="sc">
+        <div class="pn" style="color:var(--red)">Serverless (FaaS)</div>
+        <div class="tc">$2.11</div>
+        <div class="nt">$0.10 invoke kills it</div>
+      </div>
+    </div>
+
+    <div class="subh">b) Compute Service Vergleich</div>
+
+    <!-- VM -->
+    <div class="ds bl">
+      <div class="sh"><div class="st blue">mem1.med (6 vCPU, 16 GB, $6/h)</div><div class="sv">$0.11</div></div>
+      <div class="li"><div class="lab">Processing Time</div><div class="frm">1500 MB / (75 × 6 vCPU)</div><div class="amt">3.33s</div></div>
+      <div class="li"><div class="lab">Billed Time</div><div class="frm">max(60s minimum, 3.33s)</div><div class="amt">60s</div></div>
+      <div class="li"><div class="lab">Instance Cost</div><div class="frm">60s × $6/3600</div><div class="amt">$0.10</div></div>
+      <div class="li"><div class="lab">S3 GET</div><div class="frm">1 request</div><div class="amt">$0.01</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$0.10 + $0.01</div><div class="amt blue">$0.11</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- Container -->
+    <div class="ds gn">
+      <div class="sh"><div class="st green">Container (0.5 vCPU, 2 GB)</div><div class="sv">$0.035</div></div>
+      <div class="li sec"><div class="lab">Strategy: minimize vCPU → minimize memory cost</div><div class="frm"></div><div class="amt"></div></div>
+      <div class="li"><div class="lab">Processing Time</div><div class="frm">1500 MB / (75 × 0.5 vCPU)</div><div class="amt">40s</div></div>
+      <div class="li"><div class="lab">Billed Time</div><div class="frm">max(60s minimum, 40s)</div><div class="amt">60s</div></div>
+      <div class="li"><div class="lab">vCPU Cost</div><div class="frm">0.5 × $1/h × 60/3600</div><div class="amt">$0.0083</div></div>
+      <div class="li"><div class="lab">Memory Cost</div><div class="frm">2 GB × $0.50/h × 60/3600</div><div class="amt">$0.0167</div></div>
+      <div class="li"><div class="lab">S3 GET</div><div class="frm">1 request</div><div class="amt">$0.01</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$0.0083 + $0.0167 + $0.01</div><div class="amt green">$0.035</div></div>
+    </div>
+    <div class="sp"></div>
+
+    <!-- FaaS -->
+    <div class="ds rd">
+      <div class="sh"><div class="st red">Serverless FaaS (2 GB = 1 vCPU)</div><div class="sv">$2.11</div></div>
+      <div class="li"><div class="lab">Processing Time</div><div class="frm">1500 MB / (75 × 1 vCPU)</div><div class="amt">20s</div></div>
+      <div class="li"><div class="lab">Invocation</div><div class="frm">per request</div><div class="amt">$0.10</div></div>
+      <div class="li"><div class="lab">Duration</div><div class="frm">20s × 2 GB × $0.05/GB-s</div><div class="amt">$2.00</div></div>
+      <div class="li"><div class="lab">S3 GET</div><div class="frm">1 request</div><div class="amt">$0.01</div></div>
+      <div class="tr"><div class="lab">Total</div><div class="frm">$0.10 + $2.00 + $0.01</div><div class="amt red">$2.11</div></div>
+    </div>
+
+    <div class="hb gn"><strong>Container gewinnt:</strong> 3× billiger als VM (kein overhead durch 60s min bei billigen Ressourcen), 60× billiger als FaaS ($0.10 Invocation + teure GB-s Duration). Der Trick: CPU-Kosten skalieren linear mit CPU-h (fix), aber Memory wird per <em>Wallclock</em> berechnet → weniger vCPU = längere Laufzeit aber nicht teurer bei CPU.</div>
+
+    <div class="sp"></div>
+    <div class="subh">d) Parallele S3-Requests für volle Bandbreite</div>
+    <div class="ds sl">
+      <div class="sh"><div class="st slate">Parallel Requests Needed</div><div class="sv">30</div></div>
+      <div class="li"><div class="lab">Target Bandwidth</div><div class="frm">10 Gbit/s = 1.25 GB/s</div><div class="amt">1.25 GB/s</div></div>
+      <div class="li"><div class="lab">S3 Latency</div><div class="frm">40ms + 10MB / 50MB/s</div><div class="amt">240 ms</div></div>
+      <div class="li"><div class="lab">Throughput per Request</div><div class="frm">10 MB / 0.240s</div><div class="amt">41.67 MB/s</div></div>
+      <div class="tr"><div class="lab">Parallel Requests</div><div class="frm">1250 MB/s / 41.67 MB/s</div><div class="amt slate">30</div></div>
+    </div>
+
+    <div class="hb bl"><strong>Latency Hiding:</strong> Ein einzelner S3 GET dauert 240ms, liefert aber nur 10 MB. Um 1.25 GB/s zu erreichen, braucht man 30 parallele Requests — das ist Bandwidth-Delay-Product in Aktion.</div>
+    <div class="bp"></div>
+  </div>
+
+</div>
+<script>
+function showTab(n){
+  document.querySelectorAll('[id^="tab-"]').forEach(e=>e.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
